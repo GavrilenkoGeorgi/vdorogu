@@ -1,0 +1,11 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{THE_REQUEST} css/([^\s?]*) [NC]
+RewriteCond %{THE_REQUEST} js/([^\s?]*) [NC]
+RewriteCond %{THE_REQUEST} img/([^\s?]*) [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ^ %1 [L,NE,R=302]
+RewriteRule ^(.*)$ public/index.php?$1 [L,QSA]

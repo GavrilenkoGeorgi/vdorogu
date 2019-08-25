@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h1 class="text-center">Логін</h1>
+
+<div class="container py-2">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-4">
+      <!-- Errors if any -->
+      {% if errors is not empty %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% for error in errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
+      <!-- Form -->
+      <form method="post" action="/login/create">
+        <div class="form-group">
+          <label for="inputEmail">Email address</label>
+          <input
+            id="inputEmail"
+            type="email"
+            name="email"
+            class="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Email"
+            value="{{ email }}"
+            autocomplete="username email"
+            autofocus
+          >
+        </div>
+        <div class="form-group">
+          <label for="inputPassword">Password</label>
+          <input
+            id="inputPassword"
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Password"
+            autocomplete="current-password"
+          >
+        </div>
+        <!-- Checkbox -->
+        <div class="custom-control custom-checkbox mb-3">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="remember_me"
+            name="remember_me"
+            {% if remember_me %} checked="checked" {% endif %}
+          />
+          <label class="custom-control-label" for="remember_me">Remember me</label>
+        </div>
+        <button id="loginBtn" type="submit" class="btn btn-primary" disabled>Log In</button>
+        <a href="/password/forgot">Forgot password?</a>
+        <!-- Recaptcha hidden input -->
+        <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+      </form>
+    </div>
+  </div>
+</div>
+<script src="https://www.google.com/recaptcha/api.js?render=6LckWK8UAAAAAACm11deBGEpofja_8PmLJJ6zHch"></script>
+<script defer type="module" src="/public/js/recaptcha.js"></script>
+{% endblock %}

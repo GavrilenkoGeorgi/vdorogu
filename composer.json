@@ -1,0 +1,17 @@
+{
+    "name": "todo-viewer-editor/package-name",
+    "description": "Test assignment",
+    "require": {
+        "twig/twig": "~2.0",
+        "vlucas/phpdotenv": "^3.4",
+        "mailgun/mailgun-php": "^2.8",
+        "kriswallsmith/buzz": "^1.0",
+        "nyholm/psr7": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+             "Core\\": "Core/",
+             "App\\": "App/"
+        }
+    }
+}
