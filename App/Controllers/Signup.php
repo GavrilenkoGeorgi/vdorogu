@@ -28,11 +28,11 @@ class Signup extends \Core\Controller
   *
   * @return void
   */
-  public function createAction()
-  {
+  public function createAction() {
     $user = new User($_POST);
     if ($user->save()) {
-      $this->redirect('/');
+      $user->sendActivationEmail();
+      $this->redirect('/signup/success');
     } else {
       View::renderTemplate('Signup/new.html', [
         'user' => $user
@@ -44,8 +44,27 @@ class Signup extends \Core\Controller
   *
   * @return void
   */
-  public function successAction()
-  {
+  public function successAction() {
     View::renderTemplate('Signup/success.html');
   }
+  /**
+   * Activate a new account
+   * 
+   * @return void
+   */
+  public function activateAction() {
+    // get the token from the url in the route params array
+    User::activate($this->route_params['token']);
+    $this->redirect('/signup/activated');
+  }
+  /**
+   * Show the activation success page
+   * 
+   * @return void
+   */
+  public function activatedAction() {
+    View::renderTemplate('Signup/activated.html');
+  }
 }
+
+//04:26
