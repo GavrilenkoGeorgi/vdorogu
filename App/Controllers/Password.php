@@ -51,7 +51,7 @@ class Password extends \Core\Controller {
     $user = $this->getUserOrExit($token);
 
     if ($user->resetPassword($_POST['password'])) {
-      echo "Password valid";
+      View::renderTemplate('Password/reset_success.html');
     } else {
       View::renderTemplate('Password/reset.html', [
         'token' => $token,
