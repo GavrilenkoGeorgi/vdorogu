@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile{% endblock %}
+
+{% block main %}
+
+{% block footer %}
+<script src="/public/js/app.js"></script>
+
+<script>
+  $(document).ready(function() {
+    const userId = '{{ user.id }}'
+    /**
+     * Validate the form
+     */
+    $('#formProfile').validate({
+      rules: {
+        name: 'required',
+        lastName: 'required',
+        email: {
+          required: true,
+          email: true,
+          remote: {
+            url: '/account/validate-email',
+            data: { // to pass to the remote method
+              ignore_id: function() {
+                return userId;
+              }
+            }
+          }
+        },
+        password: {
+          minlength: 6,
+          validPassword: true
+        },
+        birthDate: 'required',
+      },
+      messages: {
+        email: {
+          remote: 'Email already taken'
+        }
+      }
+    })
+  })
+</script>
+
+{% endblock %}
+<h1 class="text-center">Edit profile</h1>
+
+<div class="container py-2">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-4">
+      <!-- Errors if any -->
+      {% if user.errors is not empty %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Please review your input:</strong>
+        <ul>
+        {% for error in user.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
+    <!-- Form -->
+      <form method="post" id="formProfile" action="/profile/update">
+        <!-- Name -->
+        <div class="form-group row">
+          <label for="inputName">Name</label>
+          <input
+            id="inputName"
+            name="name"
+            value="{{ user.name }}"
+            required
+            class="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Your name here"
+          >
+        </div>
+        <!-- Last name -->
+        <div class="form-group row">
+          <label for="inputName">Name</label>
+          <input
+            id="inputLastName"
+            name="lastName"
+            value="{{ user.last_name }}"
+            required
+            class="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Your name here"
+          >
+        </div>
+        <!-- Email -->
+        <div class="form-group row">
+          <label for="inputEmail">Email address</label>
+          <input
+            id="inputEmail"
+            type="email"
+            name="email"
+            value="{{ user.email }}"
+            required
+            class="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Enter email"
+            autocomplete="username email"
+          >
+        </div>
+        <!-- Password -->
+        <div class="form-group row">
+          <label for="inputPassword">Password</label>
+          <input
+            id="inputPassword"
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Password"
+            autocomplete="new-password"
+            title="Minimum 6 chars, at least one letter and number"
+            aria-describedby="passwordHelp"
+          >
+          <small id="passwordHelp" class="form-text text-muted">Leave blank to keep current password.</small>
+        </div>
+        <!-- Show password checkbox -->
+        <div class="form-group row custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            onclick="togglePasswordVis()"
+            class="custom-control-input"
+            id="signupPasswordCheckbox"
+            name="signupPasswordCheckbox"
+          />
+          <label class="custom-control-label" for="signupPasswordCheckbox">Show password</label>
+        </div>
+        <!-- Birthday -->
+        <div class="form-group row">
+          <label for="birthDate">Date of birth</label>
+            <input
+              class="form-control"
+              type="date"
+              value="{{ user.birth_date }}"
+              id="birthDate"
+              name="birthDate"
+            >
+        </div>
+        <!-- Gender -->
+        <fieldset class="form-group row">
+          <legend class="col-form-label col-sm-2 pl-0">Gender</legend>
+          <div class="col-sm-10 pl-0">
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input radio-inline"
+                type="radio"
+                name="gender"
+                id="genderMale"
+                value="male"
+                checked
+              >
+              <label class="form-check-label" for="genderMale">
+                Male
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input radio-inline"
+                type="radio"
+                name="gender"
+                id="genderFemale"
+                value="female"
+                {% if user.gender == 'female' %} checked {% endif %}
+              >
+              <label class="form-check-label" for="genderFemale">
+                Female
+              </label>
+            </div>
+          </div>
+        </fieldset>
+        <!-- Vehicle -->
+        <fieldset class="form-group row">
+          <legend class="col-form-label col-sm-2 pl-0">Vehicle</legend>
+          <div class="col-sm-10 pl-0">
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input radio-inline"
+                type="radio"
+                name="car"
+                id="noCar"
+                value="0"
+                checked
+                onclick="toggleCarNameField()"
+              >
+              <label class="form-check-label" for="nocar">
+                No
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input radio-inline"
+                type="radio"
+                name="car"
+                id="car"
+                value="1"
+                onclick="toggleCarNameField()"
+                {% if user.car %}checked{% endif %}
+              >
+              <label class="form-check-label" for="car">
+                Yes
+              </label>
+            </div>
+          </div>
+        </fieldset>
+        <!-- Vehicle name -->
+        <div class="form-group row">
+          <label for="inputCarName">Car name</label>
+          <input
+            class="form-control"
+            id="inputCarName"
+            name="carName"
+            value="{{ user.car_name }}"
+            {% if user.car == 0 %}disabled{% endif %}
+            placeholder="Ford, Subaru, Renault"
+          >
+        </div>
+        <!-- Save button -->
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/profile/show">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+  {{ user.name }}
+  {{ user.lastName }}
+  {{ user.email }}
+  {{ user.gender }}
+  {{ user.birth_date }}
+  {{ user.car }}
+  {{ user.car_name }}
+{% endblock %}
