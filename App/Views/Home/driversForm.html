@@ -1,0 +1,42 @@
+<!-- Drivers form -->
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <form method="post" id="formDriverSearch" action="/findroutes/driversearch">
+        <!-- Driver departure -->
+        <div class="form-group">
+          <label for="driverDeparture">Звідки:</label>
+          <select class="form-control" id="driverDeparture">
+            <option>Виберіть</option>
+            {% for city in cities %}
+            <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Driver destination -->
+        <div class="form-group">
+          <label for="driverDestination">Куди:</label>
+          <select class="form-control" id="driverDestination">
+              <option>Виберіть</option>
+              {% for city in cities %}
+              <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="driverDate">Виберіть дату:</label>
+            <input
+              class="form-control"
+              type="date"
+              value=""
+              id="driverDate"
+              name="driverDate"
+              required
+            >
+        </div>
+        <!-- button -->
+        <button type="submit" class="btn btn-primary">Пошук водіїв</button>
+      </form>
+    </div>
+  </div>
+</div>
