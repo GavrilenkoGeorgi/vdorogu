@@ -3,19 +3,6 @@
   padding: 0;
 }
 
-.flash-alert-info {
-  background-color: #d9edf7;
-  border: 1px solid #ccc;
-}
-
-.flash-alert-success {
-  background-color: #dff0d8;
-}
-
-.flash-alert-warning {
-  background-color: #fcf8e3;
-}
-
 .parallax {
   display: flex;
   height: 60vh;
@@ -31,10 +18,12 @@ html {
   position: relative;
   min-height: 100%;
 }
+
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
+
 .footer {
   position: absolute;
   bottom: 0;

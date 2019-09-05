@@ -29,7 +29,7 @@ class RememberedLogin extends \Core\Model {
     $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
     $stmt->execute();
 
-    return $stmt->fetch(); // 3:15
+    return $stmt->fetch();
   }
   /**
    * Get the user model associated with this remembered login

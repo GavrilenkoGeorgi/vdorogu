@@ -5,8 +5,6 @@ namespace App\Controllers;
 use \Core\View;
 use \App\Auth;
 use \App\Flash;
-use \App\Models\User;
-
 
 /**
  * Profile controller
