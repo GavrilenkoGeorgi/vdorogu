@@ -5,8 +5,9 @@ namespace App\Models;
 use PDO;
 use App\Config;
 use \App\Token;
-use \App\Mail;
+use \App\Mailer;
 use \Core\View;
+use \DateTime;
 
 /**
  * User model
@@ -38,18 +39,54 @@ class User extends \Core\Model {
   */
   public function save() {
     $this->validate();
-
     if (empty($this->errors)) {
       $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
-      $sql = 'INSERT INTO users (name, email, password_hash)
-              VALUES (:name, :email, :password_hash)';
+      $token = new Token();
+      $hashed_token = $token->getHash();
+      $this->activation_token = $token->getValue();
+      // User credentials sql
+      $sql = "INSERT INTO users (name,
+                                last_name,
+                                email,
+                                password_hash,
+                                activation_hash,
+                                birth_date,
+                                gender,
+                                car";
+      if (isset($this->carName)) {
+        $sql .= ', car_name)';
+      } else {
+        $sql .= ')';
+      }
+      $sql .= "\nVALUES (:name,
+                      :last_name,
+                      :email,
+                      :password_hash,
+                      :activation_hash,
+                      :birth_date,
+                      :gender,
+                      :car";
+      if (isset($this->carName)) {
+        $sql .= ', :car_name)';
+      } else {
+        $sql .= ')';
+      }
       $db = static::getDB();
       $stmt = $db->prepare($sql);
-
+      // echo $sql;
       $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
+      $stmt->bindValue(':last_name', $this->lastName, PDO::PARAM_STR);
       $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
       $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+      $stmt->bindValue(':activation_hash', $hashed_token, PDO::PARAM_STR);
+
+      $stmt->bindValue(':birth_date', $this->birthDate, PDO::PARAM_STR);
+      $stmt->bindValue(':gender', $this->gender, PDO::PARAM_STR);
+      $stmt->bindValue(':car', $this->car, PDO::PARAM_INT);
+      if (isset($this->carName)) {
+        $stmt->bindValue(':car_name', $this->carName, PDO::PARAM_STR);
+      }
 
       return $stmt->execute();
     }
@@ -62,37 +99,59 @@ class User extends \Core\Model {
   * @return void
   */
   public function validate() {
-    // Name
-    if ($this->name == '') {
-      $this->errors[] = 'Name is required';
-    }
-
     // email
     if (filter_var($this->email, FILTER_VALIDATE_EMAIL) === false) {
       $this->errors[] = 'Invalid email';
     }
-    // if (static::emailExists($this->email)) {
-    if ($this->emailExists($this->email)) {
+
+    if ($this->emailExists($this->email, $this->id ?? null)) {
       $this->errors[] = 'Email already taken';
+      // if email is already taken,
+      // even if he agrees to the terms,
+      // he will not be able to register with existing email
+    }
+    // new email
+    // check if user accepted the agreement
+    if (empty($this->terms) && !$this->id) {
+      $this->errors[] = 'Check to agree to the terms and conditions';
+    }
+    // Password
+    if (isset($this->password)) {
+      if (strlen($this->password) < 6) {
+        $this->errors[] = 'Password must be at least 6 chars';
+      }
+  
+      if (preg_match('/.*[a-z]+.*/i', $this->password) == 0) {
+        $this->errors[] = 'Password needs at least one letter';
+      }
+  
+      if (preg_match('/.*\d+.*/i', $this->password) == 0) {
+        $this->errors[] = 'Password needs at least one number';
+      }
+    }
+    // Name
+    if ($this->name == '') {
+      $this->errors[] = 'Name is required';
+    }
+    // Last Name
+    if ($this->lastName == '') {
+      $this->errors[] = 'Last name is required';
+    }
+    // Birth date
+    $date = DateTime::createFromFormat("Y-m-d", $this->birthDate);
+    $validDate = $date !== false && !array_sum($date::getLastErrors());
+    if (!$validDate) {
+      $this->errors[] = 'Check your birthday';
+    }
+    // Gender
+    if ($this->gender == '') {
+      $this->errors[] = 'Check your gender';
+    }
+    // Car exists
+    if ($this->car == '1' && isset($this->carName) && $this->carName == '') {
+      $this->errors[] = 'You forgot the make of your car';
     }
 
-    // password
-    /*
-    if ($this->password != $this->password_confirmation) {
-      $this->errors[] = 'Password must match confirmation';
-    }*/
-
-    if (strlen($this->password) < 6) {
-      $this->errors[] = 'Password must be at least 6 chars';
-    }
-
-    if (preg_match('/.*[a-z]+.*/i', $this->password) == 0) {
-      $this->errors[] = 'Password needs at least one letter';
-    }
-
-    if (preg_match('/.*\d+.*/i', $this->password) == 0) {
-      $this->errors[] = 'Password needs at least one number';
-    }
   }
   /**
   * See if email exists (it supposed to be unique)
@@ -101,8 +160,14 @@ class User extends \Core\Model {
   * @return boolean True if a record already exists with
   * the specified email, false otherwise
   */
-  public static function emailExists($email) {
-    return static::findByEmail($email) !== false;
+  public static function emailExists($email, $ignore_id = null) {
+    $user = static::findByEmail($email);
+    if ($user) {
+      if ($user->id != $ignore_id) {
+        return true;
+      }
+    }
+    return false;
   }
   /**
   * Find a user model by email address
@@ -121,7 +186,6 @@ class User extends \Core\Model {
     $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 
     $stmt->execute();
-    // $this->errors[] = 'No user with this email';
     return $stmt->fetch();
   }
   /**
@@ -139,7 +203,6 @@ class User extends \Core\Model {
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
     $stmt->execute();
-
     return $stmt->fetch();
   }
   /**
@@ -178,7 +241,7 @@ class User extends \Core\Model {
   */
   public static function authenticate($email, $password) {
     $user = static::findByEmail($email);
-    if ($user) {
+    if ($user && $user->is_active) {
       if (password_verify($password, $user->password_hash)) {
         return $user;
       }
@@ -234,11 +297,9 @@ class User extends \Core\Model {
   protected function sendPasswordResetEmail() {
     $url = 'http://' . $_SERVER['HTTP_HOST'] . '/password/reset/' . $this->password_reset_token;
 
-    // $text = "Please click on the folowing URL to reset your password: $url";
-    // $html = "Please click <a href=\"$url\">here</a> to reset your password.";
     $text = View::getTemplate('Password/reset_email.txt', ['url' => $url]);
     $html = View::getTemplate('Password/reset_email.html', ['url' => $url]);
-    Mail::send($this->email, 'Password reset', $text, $html);
+    Mailer::send($this->email, 'Password reset', $text, $html);
   }
   /**
    * Find a user model by password reset token and expiry
@@ -278,11 +339,28 @@ class User extends \Core\Model {
     // assign the value of the argument to the password property of the user
     $this->password = $password;
     $this->validate();
-    return empty($this->errors);
+    if (empty($this->errors)) {
+      $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
+
+      $sql = 'UPDATE users
+              SET password_hash = :password_hash,
+                  password_reset_hash = NULL,
+                  password_reset_expires_at = NULL
+              WHERE id = :id';
+      $db = static::getDB();
+      $stmt = $db->prepare($sql);
+
+      $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+      $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+
+      return $stmt->execute();
+    }
+    return false;
   }
 
   /**
   * Get recatcha score
+  * Move this somewhere
   *
   * @return void
   */
@@ -305,5 +383,113 @@ class User extends \Core\Model {
     } else {
       return false;
     }
+  }
+  /**
+   * Send password reset instructions in an email to the user
+   * 
+   * @return void
+   */
+  // it is public cause we need to access it outside the class
+  public function sendActivationEmail() {
+    $url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
+    echo 'sending email';
+    $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]);
+    $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]);
+    Mailer::send($this->email, 'Account activation', $text, $html);
+  }
+  /**
+   * Activate the user account with the specified activation token
+   * 
+   * @param string $value Activation token from the URL
+   * 
+   * @return void
+   */
+  public static function activate($value) {
+    $token = new Token($value);
+    $hashed_token = $token->getHash();
+
+    // sql to find the user token based on the token hash
+    $sql = 'UPDATE users
+            SET is_active = 1,
+                activation_hash = null
+            WHERE activation_hash = :hashed_token';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':hashed_token', $hashed_token, PDO::PARAM_STR);
+    $stmt->execute();
+  }
+  /**
+   * Update the users's profile
+   * 
+   * @param array $data Data from the edit profile form
+   * 
+   * @return boolean True if the data was updated, false otherwise
+   */
+  public function updateProfile($data) {
+    // $data is $_POST from update action in profile controller
+    // What's this?
+    $this->name = $data['name'];
+    $this->lastName = $data['lastName'];
+    $this->email = $data['email'];
+    $this->birthDate = $data['birthDate'];
+    $this->gender = $data['gender'];
+    $this->car = $data['car'];
+    if (isset($data['carName'])) {
+      $this->carName = $data['carName'];
+    } else {
+      $this->carName = null;
+    }
+
+    // Only validate and update the password if a value is provided
+    if ($data['password'] != '') {
+      $this->password = $data['password'];
+    }
+    // Validate all data
+    $this->validate();
+
+    if (empty($this->errors)) {
+      // sql for user credentials
+      $sql = "UPDATE users
+              SET name = :name,
+                  last_name = :last_name,
+                  email = :email,
+                  birth_date = :birth_date,
+                  gender = :gender,
+                  car = :car,
+                  car_name = :car_name";
+      // Add password only if it's set
+      if (isset($this->password)) {
+        $sql .= ", password_hash = :password_hash";
+      }
+      // move the 'where' clause here so that all the set clauses are together
+      $sql .= "\nWHERE id = :id";
+
+      $db = static::getDB();
+      $stmt = $db->prepare($sql);
+
+      // current user id
+      $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+      // user data
+      $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
+      $stmt->bindValue(':last_name', $this->lastName, PDO::PARAM_STR);
+      $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
+      $stmt->bindValue(':birth_date', $this->birthDate, PDO::PARAM_STR);
+      $stmt->bindValue(':gender', $this->gender, PDO::PARAM_STR);
+      $stmt->bindValue(':car', $this->car, PDO::PARAM_INT);
+      if (!empty($this->carName)) {
+        $stmt->bindValue(':car_name', $this->carName, PDO::PARAM_STR);
+      } else {
+        $stmt->bindValue(':car_name', $this->carName, PDO::PARAM_NULL);
+      }
+      // Add password if it's set
+      if (isset($this->password)) {
+        $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
+        $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+      }
+
+      return $stmt->execute();;
+    }
+    return false;
   }
 }

@@ -66,5 +66,3 @@ class Signup extends \Core\Controller
     View::renderTemplate('Signup/activated.html');
   }
 }
-
-//04:26

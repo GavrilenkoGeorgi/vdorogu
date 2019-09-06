@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Add question{% endblock %}
+
+{% block main %}
+
+<section class="container">
+  <article class="row justify-content-center">
+    <div class="col-12 col-md-4">
+      <!-- Errors if any -->
+      {% if question.errors is not empty %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% for error in question.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
+      <h1 class="text-center">Ask your question</h1>
+      <form method="post" id="addQuestion" action="/questions/add">
+        <!-- Add question form -->
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input
+            type="text"
+            class="form-control"
+            id="subject"
+            name="subject"
+            value="{{ question.subject }}"
+            placeholder="Would be really helpful.."
+          >
+        </div>
+        <!-- Text input -->
+        <div class="form-group">
+          <label for="body">And your question here:</label>
+          <textarea
+            class="form-control"
+            id="body"
+            name="body"
+            rows="3"
+          >{{ question.body }}</textarea>
+        </div>
+        <!-- Button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </article>
+</section>
+{% endblock %}

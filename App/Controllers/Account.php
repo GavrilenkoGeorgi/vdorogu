@@ -12,6 +12,7 @@ class Account extends \Core\Controller {
    * @return void
    */
   public function validateEmailAction() {
+    // ignore id if not set pass null
     $is_valid = ! User::emailExists($_GET['email'], $_GET['ignore_id'] ?? null);
 
     header('Content-type: application/json');

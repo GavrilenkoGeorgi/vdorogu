@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}All questions{% endblock %}
+
+{% block main %}
+
+<section class="container">
+  <article class="row justify-content-between">
+      <div class="col-sm-12">
+        <h1>All questions!</h1>
+        <a href="questions">Ask one.</a>
+      </div>
+      {% for question in allQuestions %}
+        <div class="col-sm-12 col-md-6 p-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ question.subject }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                {{ question.name }}
+                {{ question.last_name }}
+              </h6>
+              <p class="card-text">{{ question.body }}</p>
+              {% if current_user %}
+              <a href="answers?id={{ question.id }}" class="card-link">Answer</a>
+              <a href="#" class="card-link">Delete</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+  </article>
+</section>
+{% endblock %}

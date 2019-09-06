@@ -3,21 +3,20 @@
 namespace App\Controllers;
 
 use \Core\View;
-use \App\Auth;
 
 /**
- * Items controller (example)
+ * Rules
  * 
  * PHP version 7.0
  */
 
-class Items extends Authenticated {
+class Rules extends \Core\Controller {
   /**
-   * Items index
+   * Rules index view
    * 
    * @return void
    */
   public function indexAction() {
-    View::renderTemplate('Items/index.html');
+    View::renderTemplate('Rules/index.html');
   }
 }

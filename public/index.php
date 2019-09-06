@@ -29,13 +29,16 @@ $router = new Core\Router();
 
 // Add the routes
 $router->add('', ['controller' => 'Home', 'action' => 'index']);
+$router->add('rules', ['controller' => 'Rules', 'action' => 'index']);
 $router->add('login', ['controller' => 'Login', 'action' => 'new']);
+$router->add('allquestions', ['controller' => 'AllQuestions', 'action' => 'index']);
+$router->add('questions', ['controller' => 'Questions', 'action' => 'index']);
+$router->add('answers', ['controller' => 'Answers', 'action' => 'index']);
 // route to items index page
-$router->add('items', ['controller' => 'Items', 'action' => 'index']);
 $router->add('logout', ['controller' => 'Login', 'action' => 'destroy']);
 // regexp to match token
 $router->add('password/reset/{token:[\da-f]+}', ['controller' => 'Password', 'action' => 'reset']);
-
+$router->add('signup/activate/{token:[\da-f]+}', ['controller' => 'Signup', 'action' => 'activate']);
 $router->add('{controller}/{action}');
 
 $router->dispatch($_SERVER['QUERY_STRING']);

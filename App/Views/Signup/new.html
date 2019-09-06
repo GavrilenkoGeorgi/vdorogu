@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+
 {% block title %}Sign up{% endblock %}
+
 {% block main %}
 
 {% block footer %}
@@ -24,6 +26,7 @@
           minlength: 6,
           validPassword: true
         },
+        birthDate: 'required',
         terms: {
           required: true
         }
@@ -153,7 +156,14 @@
       <!-- Birthday -->
       <div class="form-group row">
         <label for="birthDate">Date of birth</label>
-          <input class="form-control" type="date" value="1989-08-19" id="birthDate">
+          <input
+            class="form-control"
+            type="date"
+            value="{{ user.birth_date }}"
+            id="birthDate"
+            name="birthDate"
+            required
+          >
       </div>
       <!-- Vehicle -->
       <fieldset class="form-group row">
@@ -196,8 +206,8 @@
           id="inputCarName"
           name="carName"
           value="{{ user.carName }}"
-          disabled
           placeholder="Ford, Subaru, Renault"
+          {% if user.car == 1 %} disabled="false" {% else %} disabled="disabled" {% endif %}
         >
       </div>
       <!-- Terms agreement -->
