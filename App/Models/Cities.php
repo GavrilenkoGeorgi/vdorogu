@@ -5,7 +5,7 @@ namespace App\Models;
 use PDO;
 
 /**
- * Cities controller
+ * Cities model
  */
 class Cities extends \Core\Model {
   /**

@@ -21,7 +21,7 @@
               </h6>
               <p class="card-text">{{ question.body }}</p>
               {% if current_user %}
-              <a href="#" class="card-link">Answer</a>
+              <a href="answers?id={{ question.id }}" class="card-link">Answer</a>
               <a href="#" class="card-link">Delete</a>
               {% endif %}
             </div>
