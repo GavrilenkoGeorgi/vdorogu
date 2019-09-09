@@ -6,28 +6,74 @@
 
 <section class="container">
   <article class="row justify-content-between">
-      <div class="col-sm-12">
-        <h1>All questions!</h1>
-        <a href="questions">Ask one.</a>
-      </div>
-      {% for question in allQuestions %}
-        <div class="col-sm-12 col-md-6 p-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ question.subject }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">
-                {{ question.name }}
-                {{ question.last_name }}
-              </h6>
-              <p class="card-text">{{ question.body }}</p>
-              {% if current_user %}
-              <a href="answers?id={{ question.id }}" class="card-link">Answer</a>
-              <a href="#" class="card-link">Delete</a>
-              {% endif %}
-            </div>
-          </div>
+    <!-- New questions -->
+    {% if questions %}
+    <div class="col-sm-12">
+      <h1>New questions.</h1>
+      <a href="questions">Ask one!</a>
+    </div>
+    {% for question in questions %}
+    <!-- Card -->
+    <div class="col-sm-12 col-md-6 p-3">
+      <div class="card">
+        <div class="card-body">
+          <!-- Question text-->
+          <h5 class="card-title">{{ question.subject }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            {{ question.name }}
+            {{ question.last_name }}
+          </h6>
+          <p class="card-text">{{ question.body }}</p>
+          {% if current_user %}
+          <a href="answers?id={{ question.id }}" class="card-link">Answer</a>
+          <a href="#" class="card-link">Delete</a>
+          {% endif %}
         </div>
-      {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- if answers -->
+    <div class="col-sm-12">
+      <h1>Already answered.</h1>
+    </div>
+    <!-- Answered questions -->
+    {% for post in posts %}
+    <!-- Card -->
+    <div class="col-sm-12 col-md-6 p-3">
+      <div class="card">
+        <div class="card-body">
+          {% for item in post %}
+          {% if loop.index == 1 %}
+          <!-- Question text-->
+          <h5 class="card-title">{{ item.subject }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            {{ item.name }}
+            {{ item.last_name }}
+          </h6>
+          <p class="card-text">
+            {{ item.body }}
+          </p>
+          {% else %}
+          <!-- Answer text -->
+          <h6 class="card-title">{{ item.subject }}</h5>
+          <h7 class="card-subtitle mb-2 text-muted">
+            {{ item.name }}
+            {{ item.last_name }}
+          </h7>
+          <p class="card-text">
+            {{ item.body }}
+          </p>
+          {% endif %}
+        {% endfor %}
+        {% if current_user %}
+        <a href="answers?id={{ post|first['question_id'] }}" class="card-link">Answer</a>
+        <a href="#" class="card-link">Delete</a>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </article>
 </section>
 {% endblock %}

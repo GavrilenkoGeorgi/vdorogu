@@ -3,11 +3,7 @@
 namespace App\Models;
 
 use PDO;
-// use \Core\View;
 use \App\Auth;
-// use \App\Flash;
-// use \App\Models\User;
-
 
 /**
  * Question model
@@ -75,13 +71,34 @@ class Question extends \Core\Model {
    * @return mixed All current questions object, null otherwise
    */
   public static function getAll() {
-    $sql = 'SELECT
-              questions.id, created_at, subject,
+    $sql = 'SELECT DISTINCT qna.question_id,
+              questions.subject,
+              questions.body,
+              users.name,
+              users.last_name
+            FROM qna
+            JOIN questions ON questions.id = qna.question_id
+            JOIN users ON users.id = questions.author_id;';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll();
+  }
+  /**
+   * Get all unanswered questions
+   *
+   * @return mixed All unanswered questions object, null otherwise
+   */
+  public static function getAllUnanswered() {
+    $sql = 'SELECT questions.id,
+              created_at, subject,
               body, answered,
               name, last_name
             FROM questions
             INNER JOIN users
-            ON questions.author_id = users.id;';
+            ON questions.author_id = users.id
+            WHERE answered = false;';
     $db = static::getDB();
     $stmt = $db->prepare($sql);
     $stmt->execute();
@@ -111,10 +128,8 @@ class Question extends \Core\Model {
    * @return boolean True of set, false otherwise
    */
   public static function setAnswered($id) {
-    // $sql = 'UPDATE questions SET answered = :answered'
     $db = static::getDB();
     $sql = "UPDATE questions SET answered = :answered WHERE id = :id";
-    // $stmt = $db->prepare("UPDATE questions SET answered = :answered WHERE id = :id");
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':answered', true, PDO::PARAM_BOOL);
     $stmt->bindValue(':id', $id, PDO::PARAM_STR);
