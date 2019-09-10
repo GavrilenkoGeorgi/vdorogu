@@ -43,7 +43,9 @@ class Answer extends \Core\Model {
    * @return array Array of answers
    */
   public static function getAll() {
-    $sql = 'SELECT answers.for_id,
+    $sql = 'SELECT answers.id,
+                  answers.author_id,
+                  answers.for_id,
                   answers.subject,
                   answers.body,
                   users.name,
@@ -100,5 +102,17 @@ class Answer extends \Core\Model {
       $sql->bindParam(':answerId', $answerId, PDO::PARAM_INT);
       $sql->bindParam(':questionId', $questionId, PDO::PARAM_INT);
       return $sql->execute();
+  }
+  /**
+   * Delete answer
+   * 
+   * @return boolean True if deleted, false otherwise
+   */
+  public static function delete($id) {
+    $db = static::getDB(); //?
+    $sql = $db->prepare("DELETE FROM answers
+                         WHERE id = :id");
+    $sql->bindParam(':id', $id, PDO::PARAM_INT);
+    return $sql->execute();
   }
 }

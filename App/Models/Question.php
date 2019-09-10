@@ -66,12 +66,28 @@ class Question extends \Core\Model {
     return false;
   }
   /**
+   * Delete existing question
+   * 
+   * @return boolean True if deleted, false othervise
+   */
+  public static function delete($id) {
+    $sql = 'DELETE FROM questions WHERE id = :id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+    $stmt->execute();
+    return true;
+  }
+  /**
    * Get all questions
    *
    * @return mixed All current questions object, null otherwise
    */
   public static function getAll() {
     $sql = 'SELECT DISTINCT qna.question_id,
+              questions.author_id,
               questions.subject,
               questions.body,
               users.name,
@@ -92,6 +108,7 @@ class Question extends \Core\Model {
    */
   public static function getAllUnanswered() {
     $sql = 'SELECT questions.id,
+              questions.author_id,
               created_at, subject,
               body, answered,
               name, last_name
