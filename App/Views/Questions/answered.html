@@ -1,10 +1,10 @@
+<div class="card-columns px-3">
 {% for post in posts %}
-<!-- Card -->
-<div class="col-sm-12 col-md-6 p-3">
-  <div class="card">
-    <div class="card-body">
-      {% for item in post %}
-      {% if loop.index == 1 %}
+  <div class="card border">
+    {% for item in post %}
+    <!-- Card -->
+    {% if loop.index == 1 %}
+    <div class="card-body bg-light">
       <!-- Question -->
       <h5 class="card-title">
         {{ item.subject }}
@@ -40,7 +40,7 @@
         <h6 class="card-title">
           {{ item.subject }}
         </h5>
-        <h7 class="card-subtitle mb-2 text-muted">
+        <h7 class="card-subtitle mb-2 text-success">
           {{ item.name }}
           {{ item.last_name }}
         </h7>
@@ -63,6 +63,6 @@
       </div>
       {% endif %}
     {% endfor %}
-    </div>
-  </div>
+  </div><!-- Card border -->
 {% endfor %}
+</div><!-- Card columns -->
