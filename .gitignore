@@ -4,3 +4,4 @@ public/.env
 public/.env.local
 public/.env.prod
 public/js/recaptchaDemo.js
+node_modules

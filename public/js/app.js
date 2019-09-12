@@ -1,11 +1,11 @@
 /**
  * Add jQuery Validation plugin method for a valid password
- * 
+ *
  * Valid password contain at least one letter and one number
  */
 $.validator.addMethod('validPassword',
-  function(value, element, param) {
-    if (value != '') {
+  function (value, element, param) {
+    if (value !== '') {
       if (value.match(/.*[a-z]+.*/i) == null) {
         return false
       }
@@ -16,4 +16,14 @@ $.validator.addMethod('validPassword',
     return true
   },
   'Must contain at least one letter and one number'
-);
+)
+/**
+ * Confirm profile delete
+ */
+function confirmProfileDelete (id) {
+  if (confirm('Do your really want to delete your account?')) {
+    window.location.href = 'intern.php?delete=true&id=' + id
+  } else {
+    window.location.href = 'intern.php?act=account'
+  }
+}

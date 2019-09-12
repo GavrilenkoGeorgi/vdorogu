@@ -1,0 +1,36 @@
+<!-- Unanswered questions -->
+<div class="card-columns px-3">
+{% for question in questions %}
+<!-- Card -->
+
+  <div class="card">
+    <div class="card-body">
+      <!-- Question text-->
+      <h5 class="card-title">{{ question.subject }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">
+        {{ question.name }}
+        {{ question.last_name }}
+      </h6>
+      <p class="card-text">{{ question.body }}</p>
+      {% if current_user %}
+      <div class="row px-3 justify-content-between">
+        <!-- Answer question -->
+        <form method="post" action="answers?id={{ question.id }}">
+          <button type="submit" class="btn btn-sm btn-outline-primary">
+            Answer
+          </button>
+        </form>
+        {% if current_user.id == question.author_id %}
+        <!-- Delete question -->
+        <form method="post" action="questions/delete?id={{ question.id }}">
+          <button class="btn btn-sm btn-outline-danger">
+            Delete
+          </button>
+        </form>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>

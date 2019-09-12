@@ -46,4 +46,18 @@ class Questions extends Authenticated {
       ]);
     }
   }
+  /**
+   * Delete question
+   * 
+   * @return boolean True if added, false otherwise
+   */
+  public function deleteAction() {
+    $id = $_GET['id'];
+    if (Question::delete($id)) {
+      Flash::addMessage('Question deleted.');
+    } else {
+      Flash::addMessage('Question was not deleted.');
+    }
+    $this->redirect('/allquestions');
+  }
 }

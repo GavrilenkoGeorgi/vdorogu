@@ -46,7 +46,7 @@ class Profile extends Authenticated {
    * @return void
    */
   public function updateAction() {
-    $user = $this->user; //?
+    // $user = $this->user; //? What's this?
     if ($this->user->updateProfile($_POST)) {
       Flash::addMessage('Changes saved.');
       $this->redirect('/profile/show');
@@ -54,6 +54,22 @@ class Profile extends Authenticated {
       View::renderTemplate('Profile/edit.html', [
         'user' => $this->user
       ]);
+    }
+  }
+  /**
+   * Delete user profile
+   * 
+   * @return boolean True if deleted, false otherwise
+   */
+  public function deleteAction() {
+    echo 'deleting user profile with id: ';
+    echo $this->user->id;
+    if ($this->user->deleteProfile($this->user->id)) {
+      Flash::addMessage('Profile deleted.');
+      $this->redirect('/');
+    } else {
+      Flash::addMessage('Something went wrong while deleting your profile, try again later.');
+      $this->redirect('/profile/show');
     }
   }
 }

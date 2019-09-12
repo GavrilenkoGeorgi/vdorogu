@@ -56,4 +56,18 @@ class Answers extends Authenticated {
       ]);
     }
   }
+  /**
+   * Delete answer
+   * 
+   * @return boolean True if added, false otherwise
+   */
+  public function deleteAction() {
+    $id = $_GET['id'];
+    if (Answer::delete($id)) {
+      Flash::addMessage('Answer deleted.');
+    } else {
+      Flash::addMessage('Answer was not deleted.');
+    }
+    $this->redirect('/allquestions');
+  }
 }

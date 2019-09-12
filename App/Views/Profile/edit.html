@@ -8,7 +8,7 @@
 <script src="/public/js/app.js"></script>
 
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     const userId = '{{ user.id }}'
     /**
      * Validate the form
@@ -23,8 +23,8 @@
           remote: {
             url: '/account/validate-email',
             data: { // to pass to the remote method
-              ignore_id: function() {
-                return userId;
+              ignore_id: function () {
+                return userId
               }
             }
           }
@@ -33,7 +33,7 @@
           minlength: 6,
           validPassword: true
         },
-        birthDate: 'required',
+        birthDate: 'required'
       },
       messages: {
         email: {
@@ -45,6 +45,8 @@
 </script>
 
 {% endblock %}
+<section class="container-fluid">
+
 <h1 class="text-center">Edit profile</h1>
 
 <div class="container py-2">
@@ -229,11 +231,6 @@
     </div>
   </div>
 </div>
-  {{ user.name }}
-  {{ user.lastName }}
-  {{ user.email }}
-  {{ user.gender }}
-  {{ user.birth_date }}
-  {{ user.car }}
-  {{ user.car_name }}
+  
+</section>
 {% endblock %}
