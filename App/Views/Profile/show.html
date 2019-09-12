@@ -3,28 +3,84 @@
 {% block title %}Profile{% endblock %}
 
 {% block main %}
-<h1 class="text-center">Profile</h1>
-<div class="container py-2">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8 col-xl-6">
-      <dl class="row">
-        <dt class="col-sm-3">Name</dt>
-        <dd class="col-sm-9">{{ user.name }}</dd>
-        <dt class="col-sm-3">Last Name</dt>
-        <dd class="col-sm-9">{{ user.last_name }}</dd>
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">{{ user.email }}</dd>
-        <dt class="col-sm-3">Date of birth</dt>
-        <dd class="col-sm-9">{{ user.birth_date }}</dd>
-        <dt class="col-sm-3">Gender</dt>
-        <dd class="col-sm-9">{{ user.gender }}</dd>
-        <dt class="col-sm-3">Car</dt>
-        <dd class="col-sm-9">{{ user.car }}</dd>
-        <dt class="col-sm-3">Car make</dt>
-        <dd class="col-sm-9">{{ user.car_name }}</dd>
-      </dl>
-      <a href="/profile/edit">Edit</a>
+<section class="container-fluid">
+  <article class="row justify-content-center">
+    <div class="col-12 py-3">
+      <h1 class="text-center">Profile</h1>
+      <!-- Delete question style="border: 1px solid red" -->
     </div>
-  </div>
-</div>
+    <div class="col-12 col-md-5 border p-3 mb-3">
+      <div class="row">
+        <div class="col-4">
+          Name
+        </div>
+        <div class="col-8">
+          {{ user.name }}
+        </div>
+        <div class="col-4">
+          Last name
+        </div>
+        <div class="col-8">
+          {{ user.last_name }}
+        </div>
+        <div class="col-4">
+          Email
+        </div>
+        <div class="col-8">
+          {{ user.email }}
+        </div>
+        <div class="col-4">
+          Date of birth
+        </div>
+        <div class="col-8 align-self-center">
+          {{ user.birth_date }}
+        </div>
+        <div class="col-4">
+          Gender
+        </div>
+        {% if user.gender == 'male' %}
+        <div class="col-8">
+          👨
+        </div>
+        {% elseif user.gender == 'female' %}
+        <div class="col-8">
+          👩
+        </div>
+        {% else %}
+        <div class="col-8">
+          ⚧️
+        </div>
+        {% endif %}
+        {% if user.car == 1 %}
+        <div class="col-4">
+          Car
+        </div>
+        <div class="col-8">
+          🚗
+        </div>
+        <div class="col-4">
+          Model
+        </div>
+        <div class="col-8">
+          {{ user.car_name }} <!-- car name?? -->
+        </div>
+        {% endif %}
+      </div> <!-- !st Row -->
+      <div class="row justify-content-between px-3 pt-3">
+        <form method="post" action="/profile/edit">
+          <button class="btn btn-sm btn-primary">Edit profile</button>
+        </form>
+        <!-- Button trigger modal -->
+        <button type="submit" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDeleteModal">
+          Delete profile
+        </button>
+        {% include 'Profile/modal.html' %}
+      </div>
+    </div><!-- Column -->
+
+    <div class="col-12 col-md-5 border p-3 mb-3">
+    <!-- Routes are here --> Routes list
+    </div>
+  </article>
+</section>
 {% endblock %}

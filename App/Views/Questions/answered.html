@@ -1,6 +1,6 @@
 <div class="card-columns px-3">
 {% for post in posts %}
-  <div class="card border">
+  <div class="card">
     {% for item in post %}
     <!-- Card -->
     {% if loop.index == 1 %}
@@ -18,51 +18,51 @@
         {{ item.body }}
       </p>
       {% if current_user %}
-        <!-- Answer question -->
-        <div class="row px-3 justify-content-between">
-          <form method="post" action="answers?id={{ post|first['question_id'] }}">
-            <button type="submit" class="btn btn-sm btn-outline-primary">
-              Answer
-            </button>
-          </form>
+      <!-- Answer question -->
+      <div class="row px-3 justify-content-between">
+        <form method="post" action="answers?id={{ post|first['question_id'] }}">
+          <button type="submit" class="btn btn-sm btn-outline-primary">
+            Answer
+          </button>
+        </form>
+        {% if current_user.id == item.author_id %}
+        <!-- Delete question -->
+        <form method="post" action="questions/delete?id={{ post|first['question_id'] }}">
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+        {% endif %}
+      </div>
+    {% endif %}
+    </div>
+    {% else %}
+    <!-- Answer -->
+    <div class="card-body">
+      <h6 class="card-title">
+        {{ item.subject }}
+      </h6>
+      <h7 class="card-subtitle mb-2 text-success">
+        {{ item.name }}
+        {{ item.last_name }}
+      </h7>
+      <!-- Answer text -->
+      <div class="row justify-content-between align-items-end">
+        <div class="col-8">
+          <p class="card-text">
+            {{ item.body }}
+          </p>
+        </div>
+        <div class="col-4 text-right">
           {% if current_user.id == item.author_id %}
-          <!-- Delete question -->
-          <form method="post" action="questions/delete?id={{ post|first['question_id'] }}">
-            <button class="btn btn-sm btn-outline-danger">Delete</button>
+          <!-- Delete answer button -->
+          <form method="post" action="answers/delete?id={{ item.id }}">
+            <button class="btn btn-sm btn-light">Delete</button>
           </form>
           {% endif %}
         </div>
       </div>
-      {% endif %}
-      {% else %}
-      <!-- Answer -->
-      <div class="card-body">
-        <h6 class="card-title">
-          {{ item.subject }}
-        </h5>
-        <h7 class="card-subtitle mb-2 text-success">
-          {{ item.name }}
-          {{ item.last_name }}
-        </h7>
-        <!-- Answer text -->
-        <div class="row justify-content-between align-items-end">
-          <div class="col-8">
-            <p class="card-text">
-              {{ item.body }}
-            </p>
-          </div>
-          <div class="col-4 text-right">
-            {% if current_user.id == item.author_id %}
-            <!-- Delete answer button -->
-            <form method="post" action="answers/delete?id={{ item.id }}">
-              <button class="btn btn-sm btn-light">Delete</button>
-            </form>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-      {% endif %}
+    </div>
+    {% endif %}
     {% endfor %}
-  </div><!-- Card border -->
+  </div><!-- Card -->
 {% endfor %}
 </div><!-- Card columns -->

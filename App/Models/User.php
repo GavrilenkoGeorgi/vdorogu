@@ -420,7 +420,7 @@ class User extends \Core\Model {
     $stmt->execute();
   }
   /**
-   * Update the users's profile
+   * Update the users profile
    * 
    * @param array $data Data from the edit profile form
    * 
@@ -491,5 +491,21 @@ class User extends \Core\Model {
       return $stmt->execute();;
     }
     return false;
+  }
+  /**
+   * Delete the users profile
+   * 
+   * @param integer $id User id whose profile is about to be deleted
+   * 
+   * @return boolean True if profile was deleted, false otherwise
+   */
+  public function deleteProfile($id) {
+    $sql = 'DELETE FROM users
+            WHERE id = :id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    return $stmt->execute();
   }
 }
