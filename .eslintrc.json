@@ -1,9 +1,10 @@
 {
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "jquery": true
     },
-    "extends": "standard",
+    "extends": ["eslint:recommended", "standard"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"

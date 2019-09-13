@@ -1,0 +1,67 @@
+<!-- Create route form -->
+<div class="container">
+  <div class="row">
+    <div class="col-12 pb-3">
+      <h5>Find routes or passengers</h5>
+      <form method="post"
+        id="findRouteForm"
+        action="/routes/find"
+      >
+        <!-- Route origin -->
+        <div class="form-group">
+          <label for="routeOrigin">Звідки:</label>
+          <select
+            class="custom-select"
+            id="routeOrigin"
+            name="routeOrigin"
+            required
+          >
+            <option selected value=''>Виберіть</option>
+            {% for city in cities %}
+            <option value="{{ city.city }} {{ city.county }} {{ city.province }}">
+              {{ city.city }} {{ city.county }} {{ city.province }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Route destination -->
+        <div class="form-group">
+          <label for="routeDestination">Куди:</label>
+          <select class="custom-select" id="routeDestination" name="routeDestination">
+              <option selected value=''>Виберіть</option>
+              {% for city in cities %}
+              <option value="{{ city.city }} {{ city.county }} {{ city.province }}">
+                {{ city.city }} {{ city.county }} {{ city.province }}
+              </option>
+              {% endfor %}
+          </select>
+        </div>
+        <!-- Route departure date -->
+        <div class="form-group">
+          <label for="departureDate">Виберіть дату:</label>
+          <input
+            class="form-control"
+            type="date"
+            value=""
+            id="departureDate"
+            name="departureDate"
+          >
+        </div>
+        <!-- Buttons -->
+        <div class="row justify-content-between px-3">
+          <button type="button"
+            onclick="location.href = '/routes';"
+            class="btn btn-outline-success"
+          >
+            View all
+          </button>
+          <button type="submit"
+            class="btn btn-primary"
+          >
+            Find
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

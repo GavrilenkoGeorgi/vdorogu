@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}All routes list{% endblock %}
+
+{% block main %}
+<section class="container-fluid">
+  <article class="row justify-content-center">
+    <div class="col-12 border">
+      <h1 class="text-center">All routes available:</h1>
+    </div>
+    {% for route in routes %}
+    <div class="col-12 border">
+      <div class="row">
+        <div class="col-2">
+          {{ route.driver_id }}
+        </div>
+        <div class="col-5">
+          {{ route.origin }}
+        </div>
+        <div class="col-5">
+          {{ route.destination }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </article>
+</section>
+<!-- List of routes style="border: 1px solid red" -->
+{% endblock %}

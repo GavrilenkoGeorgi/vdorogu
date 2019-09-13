@@ -6,6 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "eslint": "^6.3.0",
+    "eslint-config-jquery": "^2.0.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-html": "^6.0.0",

@@ -7,7 +7,6 @@
   <article class="row justify-content-center">
     <div class="col-12 py-3">
       <h1 class="text-center">Profile</h1>
-      <!-- Delete question style="border: 1px solid red" -->
     </div>
     <div class="col-12 col-md-5 border p-3 mb-3">
       <div class="row">
@@ -65,21 +64,62 @@
           {{ user.car_name }} <!-- car name?? -->
         </div>
         {% endif %}
-      </div> <!-- !st Row -->
+      </div> <!-- 1st Row -->
       <div class="row justify-content-between px-3 pt-3">
         <form method="post" action="/profile/edit">
-          <button class="btn btn-sm btn-primary">Edit profile</button>
+          <button type="submit"
+            class="btn btn-sm btn-primary"
+          >
+            Edit profile
+          </button>
         </form>
         <!-- Button trigger modal -->
-        <button type="submit" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDeleteModal">
+        <button type="button"
+          class="btn btn-sm btn-outline-danger"
+          data-toggle="modal"
+          data-target="#confirmDeleteModal"
+        >
           Delete profile
         </button>
         {% include 'Profile/modal.html' %}
       </div>
-    </div><!-- Column -->
+    </div><!-- Profile display column -->
 
-    <div class="col-12 col-md-5 border p-3 mb-3">
-    <!-- Routes are here --> Routes list
+    <div class="col-12 col-md-7 col-xl-6 border py-0 mb-3">
+    <!-- Routes are here -->
+    {% for route in routes %}
+      <div class="row border py-1">
+        <div class="col-3 align-self-center">
+          {{ route.departure|date('Y-m-d') }}
+        </div>
+        <div class="col-3 align-self-center">
+          {% set origin = route.origin|split(' ') %}
+          {{ origin|first }}
+        </div>
+        <div class="col-3 align-self-center">
+          {% set destination = route.destination|split(' ') %}
+          {{ destination|first }}
+        </div>
+        <div class="col-3 d-flex align-items-center justify-content-center">
+          <a tabindex="0" role="button"
+            class="btn btn-sm btn-outline-primary popover-dismiss mr-2"
+            data-toggle="popover"
+            data-trigger="focus"
+            title="Bobby Hill to Paris, Texas"
+            data-content="Departs {{ route.departure|date('Y-m-d') }} from Austin to Paris with three passengers."
+          >
+            Info
+          </a>
+          <form method="post" action="/routes/delete?id={{ route.id }}">
+            <button type="submit"
+              class="btn btn-sm btn-outline-danger"
+            >
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
     </div>
   </article>
 </section>
