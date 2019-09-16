@@ -27,10 +27,12 @@ class Profile extends Authenticated {
    * @return void
    */
   public function showAction() {
-    $userRoutes = Route::getUserRoutes($this->user->id);
+    $driverUserRoutes = Route::driverUserRoutes($this->user->id);
+    $passengerUserRoutes = Route::passengerUserRoutes($this->user->id);
     View::renderTemplate('Profile/show.html', [
       'user' => $this->user,
-      'routes' => $userRoutes
+      'routes' => $driverUserRoutes,
+      'passenger_routes' => $passengerUserRoutes
     ]);
   }
   /**

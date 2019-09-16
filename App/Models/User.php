@@ -151,7 +151,6 @@ class User extends \Core\Model {
     if ($this->car == '1' && isset($this->carName) && $this->carName == '') {
       $this->errors[] = 'You forgot the make of your car';
     }
-
   }
   /**
   * See if email exists (it supposed to be unique)

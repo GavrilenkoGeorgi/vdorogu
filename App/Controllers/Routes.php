@@ -32,7 +32,7 @@ class Routes extends Authenticated {
     ]);
   }
   /**
-   * Create route
+   * Create route new route as a driver
    * 
    * @return void
    */
@@ -47,7 +47,8 @@ class Routes extends Authenticated {
     }
   }
   /**
-   * Find route
+   * Find route by origin and destination
+   * Form action in the main page
    * 
    * @return void
    */
@@ -70,10 +71,6 @@ class Routes extends Authenticated {
    * @return void
    */
   public function deleteAction() {
-    // $route = new Route($_POST);
-    // echo 'Deleting';
-    // echo $_GET['id'];
-    // var_dump($_GET);
     if (Route::delete($_GET['id'])) {
       Flash::addMessage('Route deleted.');
       $this->redirect('/profile/show');
@@ -81,5 +78,61 @@ class Routes extends Authenticated {
       Flash::addMessage('Something went wrong while deleting your rooute, try again later.');
       $this->redirect('/profile/show');
     }
+  }
+  /**
+   * View trip details and confirm
+   * adding user to passengers list
+   * 
+   * @return void
+   */
+  public function rideAction() {
+    $route = Route::getById($_GET['id']);
+    View::renderTemplate('Routes/ride.html', [
+      'route' => $route
+    ]);
+  }
+  /**
+   * Remove passenger from route
+   * 
+   * @return void
+   */
+  public function removePassengerAction() {
+    $routeId = $_GET['routeId'];
+    $passengerId = $this->user->id;
+    if(Route::removePassenger($routeId, $passengerId)) {
+      Flash::addMessage('You canceled this trip.');
+      $this->redirect('/profile/show');
+    } else {
+      Flash::addMessage('Something went wrong, try again later.');
+      $this->redirect('/profile/show');
+    }
+  }
+  /**
+   * Add passenger to the route
+   * 
+   * @return void
+   */
+  public function addPaxAction() {
+    $routeId = $_GET['routeId'];
+    $passengerId = $this->user->id;
+    // user can't have two trips in one day
+    // more date checking needed
+    $routesThisDay = Route::passengerRoutesThisDate($routeId, $passengerId);
+    // check if route have enough places left
+    $emptySeats = Route::getEmptySeats($routeId, $passengerId);
+    // check if user is not the driver of this route
+    $userIsDriver = Route::userIsDriver($routeId, $passengerId);
+
+    if (!$userIsDriver) {
+      Flash::addMessage('You\'re the driver.');
+    } else if ($emptySeats == 0) {
+      Flash::addMessage('No seats left.');
+    } else if (!empty($routesThisDay)) {
+      Flash::addMessage('Sorry, right now you can\'t take two trips in one day.');
+    } else {
+      Route::addPax($routeId, $passengerId);
+      Flash::addMessage('Passenger added.');
+    }
+    $this->redirect('/routes');
   }
 }
