@@ -59,7 +59,7 @@ class Answers extends Authenticated {
   /**
    * Delete answer
    * 
-   * @return boolean True if added, false otherwise
+   * @return void
    */
   public function deleteAction() {
     $id = $_GET['id'];

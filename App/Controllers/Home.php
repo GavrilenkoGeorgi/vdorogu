@@ -13,6 +13,14 @@ use \App\Auth;
  */
 class Home extends \Core\Controller {
   /**
+   * Before filter - called before each action method
+   * 
+   * @return void
+   */
+  protected function before() {
+    $this->user = Auth::getUser();
+  }
+  /**
   * Show the index page with the cities list
   *
   * @return void

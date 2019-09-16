@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Controllers;
+
+use \Core\View;
+use \App\Auth;
+use \App\Flash;
+use \App\Models\Route;
+
+/**
+ * User travel routes controller
+ */
+class Routes extends Authenticated {
+  /**
+   * Before filter - called before each action method
+   * 
+   * @return void
+   */
+  protected function before() {
+    parent::before();
+    $this->user = Auth::getUser();
+  }
+  /**
+   * Index action
+   * 
+   * @return void
+   */
+  public function indexAction() {
+    $allRoutes = Route::getAll();
+    View::renderTemplate('Routes/index.html', [
+      'routes' => $allRoutes
+    ]);
+  }
+  /**
+   * Create route new route as a driver
+   * 
+   * @return void
+   */
+  public function createAction() {
+    $route = new Route($_POST);
+    if ($route->create()) {
+      Flash::addMessage('Route added.');
+      $this->redirect('/routes');
+    } else {
+      Flash::addMessage('Route was not added.');
+      $this->redirect('/');
+    }
+  }
+  /**
+   * Find route by origin and destination
+   * Form action in the main page
+   * 
+   * @return void
+   */
+  public function findAction() {
+    $routes = new Route($_POST);
+    $list = $routes->find();
+    if ($list) {
+      Flash::addMessage('Routes found: ');
+      View::renderTemplate('Routes/index.html', [
+        'routes' => $list
+      ]);
+    } else {
+      Flash::addMessage('Not a single route found.');
+      $this->redirect('/');
+    }
+  }
+  /**
+   * Delete route
+   * 
+   * @return void
+   */
+  public function deleteAction() {
+    if (Route::delete($_GET['id'])) {
+      Flash::addMessage('Route deleted.');
+      $this->redirect('/profile/show');
+    } else {
+      Flash::addMessage('Something went wrong while deleting your rooute, try again later.');
+      $this->redirect('/profile/show');
+    }
+  }
+  /**
+   * View trip details and confirm
+   * adding user to passengers list
+   * 
+   * @return void
+   */
+  public function rideAction() {
+    $route = Route::getById($_GET['id']);
+    View::renderTemplate('Routes/ride.html', [
+      'route' => $route
+    ]);
+  }
+  /**
+   * Remove passenger from route
+   * 
+   * @return void
+   */
+  public function removePassengerAction() {
+    $routeId = $_GET['routeId'];
+    $passengerId = $this->user->id;
+    if(Route::removePassenger($routeId, $passengerId)) {
+      Flash::addMessage('You canceled this trip.');
+      $this->redirect('/profile/show');
+    } else {
+      Flash::addMessage('Something went wrong, try again later.');
+      $this->redirect('/profile/show');
+    }
+  }
+  /**
+   * Add passenger to the route
+   * 
+   * @return void
+   */
+  public function addPaxAction() {
+    $routeId = $_GET['routeId'];
+    $passengerId = $this->user->id;
+    // user can't have two trips in one day
+    // more date checking needed
+    $routesThisDay = Route::passengerRoutesThisDate($routeId, $passengerId);
+    // check if route have enough places left
+    $emptySeats = Route::getEmptySeats($routeId, $passengerId);
+    // check if user is not the driver of this route
+    $userIsDriver = Route::userIsDriver($routeId, $passengerId);
+
+    if (!$userIsDriver) {
+      Flash::addMessage('You\'re the driver.');
+    } else if ($emptySeats == 0) {
+      Flash::addMessage('No seats left.');
+    } else if (!empty($routesThisDay)) {
+      Flash::addMessage('Sorry, right now you can\'t take two trips in one day.');
+    } else {
+      Route::addPax($routeId, $passengerId);
+      Flash::addMessage('Passenger added.');
+    }
+    $this->redirect('/routes');
+  }
+}

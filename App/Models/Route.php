@@ -1,0 +1,390 @@
+<?php
+
+namespace App\Models;
+
+use PDO;
+use DateTime;
+use \App\Auth;
+use Exception;
+
+/**
+ * Route model
+ *
+ * PHP version 7.0
+ */
+class Route extends \Core\Model {
+  /**
+   * Error messages
+   * 
+   * @var array
+   */
+  public $errors = [];
+  /**
+   * Class constructor
+   * @param array $data Initial property values
+   * 
+   * @return void
+   */
+  public function __construct($data = []) {
+    foreach ($data as $key => $value) {
+      $this->$key = $value;
+    };
+  }
+  /**
+   * Create route as a driver
+   * 
+   * @return boolean True if created, false otherwise
+   */
+  public function create() {
+    $this->validate();
+    $this->user = Auth::getUser();
+
+    if (empty($this->errors)) {
+      $created_at = date("Y-m-d H:i:s");
+
+      $sql = 'INSERT INTO routes (origin, destination, created_at, departure, driver_id, pax_capacity)
+              VALUES (:origin, :destination, :created_at, :departure, :driver_id, :pax_capacity)';
+      $db = static::getDB();
+      $stmt = $db->prepare($sql);
+
+      $stmt->bindValue(':origin', $this->routeOrigin, PDO::PARAM_STR);
+      $stmt->bindValue(':destination', $this->routeDestination, PDO::PARAM_STR);
+      $stmt->bindValue(':created_at', $created_at, PDO::PARAM_STR);
+      $stmt->bindValue(':departure', $this->departureDate, PDO::PARAM_STR);
+      $stmt->bindValue(':driver_id', $this->user->id, PDO::PARAM_INT);
+      $stmt->bindValue(':pax_capacity', $this->paxCapacity, PDO::PARAM_INT);
+
+      return $stmt->execute();
+    }
+    return false;
+  }
+  /**
+   * Get all current routes
+   * 
+   * @return mixed All available routes
+   */
+  public static function getAll() {
+
+    $sql = 'SELECT routes.id,
+                driver_id,
+                created_at,
+                origin,
+                destination,
+                departure,
+                pax_capacity,
+                pax_list_id,
+                name,
+                last_name,
+           (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied_seats
+            FROM mvclogin.routes
+            INNER JOIN mvclogin.users
+            ON routes.driver_id = users.id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+    
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+  /**
+   * Get all driver user routes by user id
+   * 
+   * @param integer $id Id of the user whose routes are needed
+   * 
+   * @return mixed User routes object
+   */
+  public static function driverUserRoutes($id) {
+    $sql = 'SELECT routes.id,
+                  driver_id,
+                  created_at,
+                  origin,
+                  destination,
+                  departure,
+                  pax_capacity,
+                  pax_list_id,
+                  name,
+                  last_name
+              FROM mvclogin.routes
+              INNER JOIN mvclogin.users
+              ON routes.driver_id = users.id WHERE driver_id = :id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+  /**
+   * Get all passenger user routes by user id
+   * 
+   * @param integer $id Id of the user whose routes are needed
+   * 
+   * @return mixed User routes object
+   */
+  public static function passengerUserRoutes($id) {
+    $sql = 'SELECT routes.id,
+                  departure,
+                  origin, destination,
+                  name as driver_name,
+                  last_name as driver_last_name
+            FROM pax_list
+            JOIN routes ON routes.id = pax_list.route_id
+            JOIN users as drivers ON drivers.id = routes.driver_id
+            WHERE passenger_id = :id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+  /**
+   * Delete user created route
+   * 
+   * @param integer $id Id of the route to delete
+   * 
+   * @return boolean True if deleted, false otherwise
+   */
+  public static function delete($id) {
+    $sql = 'DELETE FROM routes
+            WHERE id = :id';
+
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    return $stmt->execute();
+  }
+  /**
+   * Find route by origin and destination
+   * 
+   * @return boolean True if found, false otherwise
+   */
+  public function find() {
+    // Validate!
+    $sql = 'SELECT * FROM routes
+            WHERE origin = :origin
+            AND destination = :destination';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':origin', $this->routeOrigin, PDO::PARAM_STR);
+    $stmt->bindValue(':destination', $this->routeDestination, PDO::PARAM_STR);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+  /**
+   * Get route by id
+   * 
+   * @param integer $id Route id
+   * 
+   * @return mixed Route object or false if not found
+   */
+  public static function getById($id) {
+    $sql = 'SELECT routes.id,
+        driver_id,
+        created_at,
+        origin,
+        destination,
+        departure,
+        pax_capacity,
+        pax_list_id,
+        name,
+        last_name
+    FROM mvclogin.routes
+    INNER JOIN mvclogin.users
+    ON routes.driver_id = users.id
+    WHERE routes.id = :id';
+    $db = static::getDb();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+    return $stmt->fetch();
+  }
+  /**
+   * Check if the dates are not overlapping
+   * Same date for now will suffice
+   * 
+   * @param integer $routeId, $passId Route and passenger id
+   * 
+   * @return mixed Routes array if there
+   */
+  public static function passengerRoutesThisDate($routeId, $passengerId) {
+    // get current route date and check if there are
+    // any records with the same date for current user
+    // in user routes
+    $date = Route::getDate($routeId);
+
+    if ($date) {
+      $sql = 'SELECT passenger_id, route_id, departure, routes.id
+              FROM pax_list
+              INNER JOIN routes
+              ON route_id = routes.id
+              WHERE departure = :departure
+              AND passenger_id = :passenger_id';
+      $db = static::getDB();
+      $stmt = $db->prepare($sql);
+
+      $stmt->bindValue(':departure', $date['departure'], PDO::PARAM_STR);
+      $stmt->bindValue(':passenger_id', $passengerId, PDO::PARAM_INT);
+
+      $stmt->execute();
+      return $stmt->fetchAll();
+    }
+  }
+  /**
+   * Get route date
+   * 
+   * @param integer $routeId Route id to query
+   * 
+   * @return string Route date with given id
+   */
+  public static function getDate($routeId) {
+    $sql = 'SELECT departure
+            FROM routes
+            WHERE id = :id';
+    $db= static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $routeId, PDO::PARAM_INT);
+
+    $stmt->execute();
+    return $stmt->fetch();
+  }
+  /**
+   * Check if it's not the driver acting as a passenger
+   * 
+   * @param integer $route_id, $passId Route and passenger id
+   * 
+   * @return boolean True if ok, false orherwise
+   */
+  public static function userIsDriver($routeId, $passId) {
+    $sql = 'SELECT driver_id
+            FROM routes
+            WHERE id = :route_id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':route_id', $routeId, PDO::PARAM_INT);
+    $stmt->execute();
+    $driverId = $stmt->fetch();
+
+    if (strcmp($driverId['driver_id'], $passId)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /**
+   * Check if seats are availale
+   * 
+   * @param integer $route_id, $passenger_id Route and passenger id
+   * 
+   * @return mixed Integer i.e. how many seats are available, false otherwise
+   */
+  public static function getEmptySeats($routeId, $passId) {
+
+    $sql = 'SELECT pax_capacity
+            FROM routes
+            WHERE id = :routeId';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':routeId', $routeId, PDO::PARAM_INT);
+
+    // current route capacity
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $routePaxCapacity = $stmt->fetch();
+    $routePaxCapacity = intval($routePaxCapacity['pax_capacity']);
+
+    // count current pax amount for this route if any
+    $sql = 'SELECT COUNT(route_id)
+            FROM pax_list
+            WHERE route_id = :routeId';
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':routeId', $routeId, PDO::PARAM_INT);
+
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    $currentPaxAmount = $stmt->fetch();
+    $currentPaxAmount = intval($currentPaxAmount['COUNT(route_id)']);
+
+    // get vacant seats
+    if (($routePaxCapacity - $currentPaxAmount) == 0) {
+      return 0; // no seats left
+    } else {
+      // how many seats left
+      return $routePaxCapacity - $currentPaxAmount;
+    }
+  }
+  /** 
+   * Add passenger to the route
+   * 
+   * @param integer $routeId, $passengerId Route and passenger ids
+   * 
+   * @return boolean True if added, false otherwise
+  */
+  public static function addPax($routeId, $passengerId) {
+    $sql = 'INSERT INTO pax_list (route_id, passenger_id)
+            VALUES (:route_id, :passenger_id)';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':route_id', $routeId, PDO::PARAM_INT);
+    $stmt->bindValue(':passenger_id', $passengerId, PDO::PARAM_INT);
+
+    return $stmt->execute();
+  }
+  /**
+   * Remove passenger from the route
+   * 
+   * @param integer $routeId, $passengerId Route and passenger ids
+   * 
+   * @return boolean True if removed, false otherwise
+   */
+  public static function removePassenger($routeId, $passengerId) {
+    $sql = 'DELETE FROM pax_list
+            WHERE route_id = :route_id
+            AND passenger_id = :passenger_id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':route_id', $routeId, PDO::PARAM_INT);
+    $stmt->bindValue(':passenger_id', $passengerId, PDO::PARAM_INT);
+
+    return $stmt->execute();
+  }
+  /**
+  * Validate current property values, adding validation error messages
+  * to the errors array property
+  *
+  * @return void
+  */
+  public function validate() {
+    // Origin
+    if ($this->routeOrigin == '') {
+      $this->errors[] = 'Origin is required';
+    }
+    // Destination
+    if ($this->routeDestination == '') {
+      $this->errors[] = 'Destination is required';
+    }
+    // Birth date
+    $date = DateTime::createFromFormat("Y-m-d", $this->departureDate);
+    $validDate = $date !== false && !array_sum($date::getLastErrors());
+    if (!$validDate) {
+      $this->errors[] = 'Check your departure date';
+    }
+  }
+}

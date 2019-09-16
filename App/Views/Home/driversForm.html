@@ -2,11 +2,11 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <form method="post" id="formDriverSearch" action="/findroutes/driversearch">
+      <form method="post" id="formDriverSearch" action="/routes/create">
         <!-- Driver departure -->
         <div class="form-group">
           <label for="driverDeparture">Звідки:</label>
-          <select class="form-control" id="driverDeparture">
+          <select class="form-control" id="driverDeparture" name="driverDeparture">
             <option>Виберіть</option>
             {% for city in cities %}
             <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
@@ -16,7 +16,7 @@
         <!-- Driver destination -->
         <div class="form-group">
           <label for="driverDestination">Куди:</label>
-          <select class="form-control" id="driverDestination">
+          <select class="form-control" id="driverDestination" name="driverDestination">
               <option>Виберіть</option>
               {% for city in cities %}
               <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
@@ -28,7 +28,7 @@
             <input
               class="form-control"
               type="date"
-              value=""
+              value="1972-07-13"
               id="driverDate"
               name="driverDate"
               required

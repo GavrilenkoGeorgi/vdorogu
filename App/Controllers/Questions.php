@@ -33,7 +33,7 @@ class Questions extends Authenticated {
   /**
    * Add question
    * 
-   * @return boolean True if added, false otherwise
+   * @return void
    */
   public function addAction() {
     $question = new Question($_POST);
@@ -49,7 +49,7 @@ class Questions extends Authenticated {
   /**
    * Delete question
    * 
-   * @return boolean True if added, false otherwise
+   * @return void
    */
   public function deleteAction() {
     $id = $_GET['id'];

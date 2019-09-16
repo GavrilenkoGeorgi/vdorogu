@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}All routes list{% endblock %}
+
+{% block main %}
+<section class="container-fluid">
+  <article class="row justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center">All routes available:</h1>
+    </div>
+    {% for route in routes %}
+    <div class="col-12 col-xl-10 py-3">
+      <div class="row border">
+        <div class="col-2">
+          {{ route.departure|date('d-m-Y') }}<br />
+          <small>{{ route.name }} {{ route.last_name }}</small>
+        </div>
+        <div class="col-3 align-self-center">
+          {{ route.origin }}
+        </div>
+        <div class="col-3 align-self-center">
+          {{ route.destination }}
+        </div>
+        <div class="col-2 align-self-center text-center">
+          {% set freeSeats = route.pax_capacity - route.occupied_seats %}
+          <small>
+            Seats left: {{ freeSeats}} of {{ route.pax_capacity }}
+          </small>
+        </div>
+        {% set origin = route.origin|split(' ') %}
+        {% set destination = route.destination|split(' ') %}
+        <div class="col-2 d-flex align-items-center justify-content-end">
+          <a tabindex="0" role="button"
+            class="btn btn-sm btn-outline-primary popover-dismiss"
+            data-toggle="popover"
+            data-trigger="focus"
+            title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
+            data-content="Departs at {{ route.departure|date('d-m-Y') }}
+              from {{ origin|first }} to {{ destination|first }}
+              with {{ route.pax_capacity }} passenger(s)."
+          >
+            Info
+          </a>
+          <form method="post" action="/routes/ride?id={{ route.id }}">
+            <button type="submit"
+              class="btn btn-sm btn-outline-success ml-2"
+            >
+              Ride
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </article>
+</section>
+<!-- List of routes style="border: 1px solid red" -->
+{% endblock %}

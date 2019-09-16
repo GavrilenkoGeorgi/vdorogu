@@ -24,6 +24,10 @@ body {
   margin-bottom: 60px;
 }
 
+.route-row:nth-child(odd) {
+  background-color: whitesmoke;
+}
+
 .footer {
   position: absolute;
   bottom: 0;

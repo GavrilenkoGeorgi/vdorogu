@@ -5,6 +5,7 @@ namespace App\Controllers;
 use \Core\View;
 use \App\Auth;
 use \App\Flash;
+use \App\Models\Route;
 
 /**
  * Profile controller
@@ -26,8 +27,12 @@ class Profile extends Authenticated {
    * @return void
    */
   public function showAction() {
+    $driverUserRoutes = Route::driverUserRoutes($this->user->id);
+    $passengerUserRoutes = Route::passengerUserRoutes($this->user->id);
     View::renderTemplate('Profile/show.html', [
-      'user' => $this->user
+      'user' => $this->user,
+      'routes' => $driverUserRoutes,
+      'passenger_routes' => $passengerUserRoutes
     ]);
   }
   /**
@@ -46,7 +51,6 @@ class Profile extends Authenticated {
    * @return void
    */
   public function updateAction() {
-    // $user = $this->user; //? What's this?
     if ($this->user->updateProfile($_POST)) {
       Flash::addMessage('Changes saved.');
       $this->redirect('/profile/show');
@@ -59,11 +63,9 @@ class Profile extends Authenticated {
   /**
    * Delete user profile
    * 
-   * @return boolean True if deleted, false otherwise
+   * @return void
    */
   public function deleteAction() {
-    echo 'deleting user profile with id: ';
-    echo $this->user->id;
     if ($this->user->deleteProfile($this->user->id)) {
       Flash::addMessage('Profile deleted.');
       $this->redirect('/');

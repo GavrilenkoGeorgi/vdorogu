@@ -11,62 +11,21 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Допомога водіям та пасажирам Vdorogu</h4>
-          Ми пропонуєми місце, де водії та пасажири зможуть знайти один одного для здійснення спільної поїздки. На нашому сайті з пасажирів ніяка додаткова плата не знімається.
+          Ми пропонуєми місце, де водії та пасажири зможуть знайти один одного
+          для здійснення спільної поїздки. На нашому сайті з пасажирів ніяка
+          додаткова плата не знімається.
         </div>
+        {% include 'Home/createRouteForm.html' %}
       </div>
     </div>
     <div class="col-sm-12 col-md-5">
-      <div class="accordion" id="routeFinderContainer">
-        <div class="card">
-          <div class="card-header" id="driversHeading">
-            <h2 class="mb-0">
-              <button
-                class="btn btn-link text-left"
-                type="button"
-                data-toggle="collapse"
-                data-target="#driverFormCollapse"
-                aria-expanded="true"
-                aria-controls="driverFormCollapse"
-              >
-                Пошук водіїв, що збираються їхати в потрібному напрямку
-              </button>
-            </h2>
-          </div>
-          <div id="driverFormCollapse"
-            class="collapse show"
-            aria-labelledby="driversHeading"
-            data-parent="#routeFinderContainer"
-          >
-            <div class="card-body">
-              {% include 'Home/driversForm.html' %}
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Route finder</h4>
+            Passengers can search for available routes, drivers
+            for passengers requests.
         </div>
-        <div class="card">
-          <div class="card-header" id="paxHeading">
-            <h2 class="mb-0">
-              <button
-                class="btn btn-link collapsed text-left"
-                type="button"
-                data-toggle="collapse"
-                data-target="#paxFormCollapse"
-                aria-expanded="false"
-                aria-controls="paxFormCollapse"
-              >
-                Пошук пасажирів, що збираються їхати в потрібному напрямку
-              </button>
-            </h2>
-          </div>
-          <div id="paxFormCollapse"
-            class="collapse"
-            aria-labelledby="paxHeading"
-            data-parent="#routeFinderContainer"
-          >
-            <div class="card-body">
-              {% include 'Home/paxForm.html' %}
-            </div>
-          </div>
-        </div>
+        {% include 'Home/findRouteForm.html' %}
       </div>
     </div>
   </article>

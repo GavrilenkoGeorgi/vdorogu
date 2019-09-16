@@ -1,0 +1,71 @@
+<!-- Create route form -->
+<div class="container">
+  <div class="row">
+    <div class="col-12 pb-3">
+      <h5>Create your route, {{ current_user.name }}</h5>
+      <form method="post" id="createRouteForm" action="/routes/create">
+        <!-- Route origin -->
+        <div class="form-group">
+          <label for="routeOrigin">Звідки:</label>
+          <select class="custom-select" id="routeOrigin" name="routeOrigin">
+            <option selected value=''>Виберіть</option>
+            {% for city in cities %}
+            <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Route destination -->
+        <div class="form-group">
+          <label for="routeDestination">Куди:</label>
+          <select class="custom-select" id="routeDestination" name="routeDestination">
+            <option selected value=''>Виберіть</option>
+            {% for city in cities %}
+            <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Route departure date -->
+        <div class="form-group">
+          <label for="departureDate">Виберіть дату:</label>
+          <input
+            class="form-control"
+            type="date"
+            value="1972-06-13"
+            id="departureDate"
+            name="departureDate"
+            required
+          >
+        </div>
+        <!-- Route passengers amount -->
+        <div class="form-group">
+          <label for="paxCapacity">How many seats are available?</label>
+          <select
+            class="custom-select"
+            id="paxCapacity"
+            name="paxCapacity"
+            aria-describedby="paxCapacityHelp"
+            {% if current_user.car == 0 %}
+              disabled
+            {% endif %}
+          >
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+          {% if current_user.car == 0 %}
+          <small id="paxCapacityHelp" class="form-text text-muted">
+            You don't have a car, so obviously you can't haul someone.
+          </small>
+          {% endif %}
+        </div>
+        <!-- Button -->
+        <button type="submit"
+          class="btn btn-primary"
+        >
+          Create route
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
