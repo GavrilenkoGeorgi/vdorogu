@@ -6,104 +6,43 @@
 <section class="container-fluid">
   <article class="row justify-content-center">
     <div class="col-12">
-      <h1 class="text-center">Your chosen route:</h1>
+      <h1 class="text-center font-weight-light text-primary">Your chosen route:</h1>
     </div>
-    <div class="col-12 col-xl-10 py-3">
+    <!-- Route info -->
+    <div class="col-12 col-xl-10">
       <div class="row justify-content-center py-3">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-sm-9 col-md-6 border rounded border-secondary py-2">
           You want to take a ride from: <strong>{{ route.origin }}</strong><br />
           to <strong>{{ route.destination }}</strong><br />
           at <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
           with the <strong>{{ route.name }} {{ route.last_name }}</strong> as a driver.<br />
-          There are <strong>{{ route.pax_capacity }}</strong> seats !left!.
+          There are <strong>{{ route.pax_capacity }}</strong> seats overall and
+          <strong>{{ route.pax_capacity - passengers|length }}</strong> vacant.
         </div>
       </div>
-        <div class="row justify-content-center">
-        <div class="col-12 col-md-6">
-          <!--a tabindex="0" role="button"
-            class="btn btn-sm btn-outline-primary popover-dismiss"
-            data-toggle="popover"
-            data-trigger="focus"
-            title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
-            data-content="Departs at {{ route.departure|date('d-m-Y') }}
-              from {{ origin|first }} to {{ destination|first }}
-              with {{ route.pax_capacity }} passenger(s)."
-          >
-            Info
-          </a-->
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-9 col-md-6">
           <form method="post" action="/routes/addPax?routeId={{ route.id }}">
             <!-- Route passengers amount -->
             <div class="form-group row">
-              <!--div class="col-12">
-              <label for="paxAmount">How many passengers?</label>
-                <select
-                  class="custom-select"
-                  id="paxAmount"
-                  name="paxAmount"
-                  aria-describedby="paxAmountHelp"
-                >
-                  {% for count in range (1, route.pax_capacity) %}
-                    <option>{{ count }}</option>
-                  {% endfor %}
-                </select>
-                <small id="paxAmountHelp" class="form-text text-muted">
-                  Enter passengers amount.
-                </small>
-              </div-->
               <div class="col-12 d-flex align-items-center justify-content-end">
-                  <button type="submit"
-                  class="btn btn-primary ml-2"
+                <button type="submit"
+                  class="btn btn-success ml-2"
                 >
                   Confirm
                 </button>
                 <a role="button"
                   class="btn btn-secondary ml-2 text-white"
-                  href="/routes"
+                  href="/profile/show"
                 >
                   Cancel
                 </a>
               </div>
-              </div>
+            </div>
           </form>
         </div>
-        <!--div class="col-2">
-          {{ route.departure|date('d-m-Y') }}<br />
-          <small>{{ route.name }} {{ route.last_name }}</small>
-        </div>
-        <div class="col-3 align-self-center">
-          {{ route.origin }}
-        </div>
-        <div class="col-3 align-self-center">
-          {{ route.destination }}
-        </div>
-        <div class="col-1 align-self-center text-center">
-          Seats left: {{ route.pax_capacity }}<br />
-        </div>
-        {% set origin = route.origin|split(' ') %}
-        {% set destination = route.destination|split(' ') %}
-        <div class="col-3 d-flex align-items-center justify-content-end">
-          <a tabindex="0" role="button"
-            class="btn btn-sm btn-outline-primary popover-dismiss"
-            data-toggle="popover"
-            data-trigger="focus"
-            title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
-            data-content="Departs at {{ route.departure|date('d-m-Y') }}
-              from {{ origin|first }} to {{ destination|first }}
-              with {{ route.pax_capacity }} passenger(s)."
-          >
-            Info
-          </a>
-          <form method="post" action="/routes/ride?id={{ route.id }}">
-            <button type="submit"
-              class="btn btn-sm btn-outline-success ml-2"
-            >
-              Ride
-            </button>
-          </form>
-        </div-->
       </div>
     </div>
   </article>
 </section>
-<!-- List of routes style="border: 1px solid red" -->
 {% endblock %}

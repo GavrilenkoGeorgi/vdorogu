@@ -24,7 +24,7 @@ body {
   margin-bottom: 60px;
 }
 
-.route-row:nth-child(odd) {
+.row-highlight:nth-child(even) {
   background-color: whitesmoke;
 }
 

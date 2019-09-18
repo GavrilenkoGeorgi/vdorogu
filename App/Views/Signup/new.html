@@ -8,7 +8,7 @@
 <script src="/public/js/app.js"></script>
 
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     /**
      * Validate the form
      */
@@ -45,10 +45,10 @@
 
 {% endblock %}
 <section>
-  <h1 class="text-center">Sign up</h1>
+  <h1 class="text-center text-primary font-weight-light">Sign up</h1>
 
   <div class="container py-2">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center px-3">
       <div class="col-12 col-md-8 col-lg-6 col-xl-4">
         <!-- Errors if any -->
         {% if user.errors is not empty %}
@@ -139,15 +139,15 @@
       <fieldset class="form-group row">
         <legend class="col-form-label col-sm-2 pl-0">Gender</legend>
         <div class="col-sm-10 pl-0">
-          <div class="form-check form-check-inline">
-            <input class="form-check-input radio-inline" type="radio" name="gender" id="genderMale" value="male" checked>
-            <label class="form-check-label" for="genderMale">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input class="custom-control-input" type="radio" name="gender" id="genderMale" value="male" checked>
+            <label class="custom-control-label" for="genderMale">
               Male
             </label>
           </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input radio-inline" type="radio" name="gender" id="genderFemale" value="female">
-            <label class="form-check-label" for="genderFemale">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input class="custom-control-input" type="radio" name="gender" id="genderFemale" value="female">
+            <label class="custom-control-label" for="genderFemale">
               Female
             </label>
           </div>
@@ -169,9 +169,9 @@
       <fieldset class="form-group row">
         <legend class="col-form-label col-sm-2 pl-0">Vehicle</legend>
         <div class="col-sm-10 pl-0">
-          <div class="form-check form-check-inline">
+          <div class="custom-control custom-radio custom-control-inline">
             <input 
-              class="form-check-input radio-inline"
+              class="custom-control-input"
               type="radio"
               name="car"
               id="noCar"
@@ -179,20 +179,20 @@
               checked
               onclick="toggleCarNameField()"
             >
-            <label class="form-check-label" for="nocar">
+            <label class="custom-control-label" for="noCar">
               No
             </label>
           </div>
-          <div class="form-check form-check-inline">
+          <div class="custom-control custom-radio custom-control-inline">
             <input
-              class="form-check-input radio-inline"
+              class="custom-control-input"
               type="radio"
               name="car"
               id="car"
               value="1"
               onclick="toggleCarNameField()"
             >
-            <label class="form-check-label" for="car">
+            <label class="custom-control-label" for="car">
               Yes
             </label>
           </div>

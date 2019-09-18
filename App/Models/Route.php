@@ -87,6 +87,28 @@ class Route extends \Core\Model {
     return $stmt->fetchAll();
   }
   /**
+   * Get passengers list for the route with given id
+   * 
+   * @param integer $routeId Route id
+  */
+  public static function getRoutePassengers($id) {
+    $sql = 'SELECT name,
+                  last_name
+            FROM pax_list
+            INNER JOIN users ON pax_list.passenger_id = users.id
+            WHERE pax_list.route_id = :id';
+
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+
+  /**
    * Get all driver user routes by user id
    * 
    * @param integer $id Id of the user whose routes are needed
@@ -103,7 +125,7 @@ class Route extends \Core\Model {
                   pax_capacity,
                   pax_list_id,
                   name,
-                  last_name
+                  last_name, (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
               FROM mvclogin.routes
               INNER JOIN mvclogin.users
               ON routes.driver_id = users.id WHERE driver_id = :id';
@@ -127,8 +149,9 @@ class Route extends \Core\Model {
     $sql = 'SELECT routes.id,
                   departure,
                   origin, destination,
+                  pax_capacity,
                   name as driver_name,
-                  last_name as driver_last_name
+                  last_name as driver_last_name, (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
             FROM pax_list
             JOIN routes ON routes.id = pax_list.route_id
             JOIN users as drivers ON drivers.id = routes.driver_id

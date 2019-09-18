@@ -3,7 +3,8 @@
 namespace Core;
 
 use App\Auth;
-// use App\Config;
+use Twig\Extensions\IntlExtension;
+use Locale;
 /**
  * View
  *
@@ -54,11 +55,12 @@ class View {
     static $twig = null;
 
     if ($twig === null) {
+      Locale::setDefault('uk-UA'); //?
       $loader = new \Twig_Loader_Filesystem(dirname(__DIR__) . '/App/Views');
       $twig = new \Twig_Environment($loader);
-      $twig->addGlobal('session', $_SESSION); // remove this
-      // $twig->addGlobal('is_logged_in', \App\Auth::isLoggedIn());
+      $twig->addExtension(new IntlExtension());
       $twig->addGlobal('current_user', \App\Auth::getUser());
+      $twig->addGlobal('session', $_SESSION); // Flash messages
       $twig->addGlobal('flash_messages', \App\Flash::getMessages());
     }
 

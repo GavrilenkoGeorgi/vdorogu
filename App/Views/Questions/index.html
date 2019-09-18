@@ -5,19 +5,13 @@
 {% block main %}
 
 <section class="container-fluid">
-  <article class="row">
+  <article class="row justify-content-center px-3">
     <!-- New questions -->
-    <div class="col-12">
-      <div class="row align-items-center pb-3">
-        <div class="col-12 col-sm-4">
-          <h1 class="pr-3">New questions.</h1>
-        </div>
-        <div class="col-12 col-sm-8">
-          <form method="post" action="questions">
-            <button type="submit" class="btn btn-success">Ask one!</button>
-          </form>
-        </div>
-      </div>
+    <div class="col-12 col-sm-10 col-md-8 py-3 text-center">
+      <h1 class="text-primary font-weight-light ">New questions.</h1>
+      <form method="post" action="questions">
+        <button type="submit" class="btn btn-success">Ask one!</button>
+      </form>
     </div>
     {% if questions %}
     {% include 'Questions/unanswered.html' %}
@@ -25,7 +19,7 @@
     {% if posts %}
     <!-- Answered questions -->
     <div class="col-12 pb-3">
-      <h1>Already answered.</h1>
+      <h1 class="text-center text-primary font-weight-light">Already answered.</h1>
     </div>
     {% include 'Questions/answered.html' %}
     {% endif %}
