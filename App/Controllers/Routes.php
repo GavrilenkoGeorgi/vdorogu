@@ -82,13 +82,28 @@ class Routes extends Authenticated {
   /**
    * View trip details and confirm
    * adding user to passengers list
-   * 
+   *
    * @return void
    */
   public function rideAction() {
-    $route = Route::getById($_GET['id']);
+    $route = Route::getById($_GET['routeId']);
+    $passengersList = Route::getRoutePassengers($_GET['routeId']);
     View::renderTemplate('Routes/ride.html', [
-      'route' => $route
+      'route' => $route,
+      'passengers' => $passengersList
+    ]);
+  }
+  /**
+   * View route details
+   *
+   * @return void
+   */
+  public function detailsAction() {
+    $route = Route::getById($_GET['routeId']);
+    $passengersList = Route::getRoutePassengers($_GET['routeId']);
+    View::renderTemplate('Routes/details.html', [
+      'route' => $route,
+      'passengers' => $passengersList
     ]);
   }
   /**
@@ -128,6 +143,7 @@ class Routes extends Authenticated {
     } else if ($emptySeats == 0) {
       Flash::addMessage('No seats left.');
     } else if (!empty($routesThisDay)) {
+      // if not empty
       Flash::addMessage('Sorry, right now you can\'t take two trips in one day.');
     } else {
       Route::addPax($routeId, $passengerId);

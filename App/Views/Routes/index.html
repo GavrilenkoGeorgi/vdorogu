@@ -4,50 +4,78 @@
 
 {% block main %}
 <section class="container-fluid">
-  <article class="row justify-content-center">
+  <article class="row justify-content-center px-2">
     <div class="col-12">
-      <h1 class="text-center">All routes available:</h1>
+      <h1 class="text-center text-primary font-weight-light">Timetable:</h1>
+    </div>
+    <div class="col-12 col-lg-9 col-xl-7 py-2">
+      <div class="row">
+        <div class="col-4 col-md-2">
+          Дата
+        </div>
+        <div class="col-4 col-md-3">
+          Звідки
+        </div>
+        <div class="col-4 col-md-3">
+          Куди
+        </div>
+      </div>
     </div>
     {% for route in routes %}
-    <div class="col-12 col-xl-10 py-3">
-      <div class="row border">
-        <div class="col-2">
+    {% set origin = route.origin|split(' ') %}
+    {% set destination = route.destination|split(' ') %}
+    <div class="col-12 col-lg-9 col-xl-7 py-2">
+      <div class="row py-2 border rounded {{ current_user.id == route.driver_id ? 'border-success' }}">
+        <!-- Departure and driver -->
+        <div class="col-4 col-sm-4 col-md-2">
           {{ route.departure|date('d-m-Y') }}<br />
-          <small>{{ route.name }} {{ route.last_name }}</small>
-        </div>
-        <div class="col-3 align-self-center">
-          {{ route.origin }}
-        </div>
-        <div class="col-3 align-self-center">
-          {{ route.destination }}
-        </div>
-        <div class="col-2 align-self-center text-center">
-          {% set freeSeats = route.pax_capacity - route.occupied_seats %}
-          <small>
-            Seats left: {{ freeSeats}} of {{ route.pax_capacity }}
+          <small
+           class="{{ current_user.id == route.driver_id ? 'text-success' }}">
+            {{ route.name }} {{ route.last_name }}
           </small>
         </div>
-        {% set origin = route.origin|split(' ') %}
-        {% set destination = route.destination|split(' ') %}
-        <div class="col-2 d-flex align-items-center justify-content-end">
-          <a tabindex="0" role="button"
-            class="btn btn-sm btn-outline-primary popover-dismiss"
-            data-toggle="popover"
-            data-trigger="focus"
-            title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
-            data-content="Departs at {{ route.departure|date('d-m-Y') }}
-              from {{ origin|first }} to {{ destination|first }}
-              with {{ route.pax_capacity }} passenger(s)."
-          >
-            Info
-          </a>
-          <form method="post" action="/routes/ride?id={{ route.id }}">
+        <!-- Origin -->
+        <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
+          {{ origin|first }}
+        </div>
+        <!-- Destination -->
+        <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
+          {{ destination|first }}
+        </div>
+        <!-- Seats -->
+        <div class="col-6 col-sm-6 col-md-2 align-self-center text-right">
+          {% set freeSeats = route.pax_capacity - route.occupied_seats %}
+          {% if freeSeats == 0 %}
+          <small class="text-muted">No seats left</small>
+          {% else %}
+          <small>
+            Seats left: {{ freeSeats }} of {{ route.pax_capacity }}
+          </small>
+          {% endif %}
+        </div>
+        <!-- Buttons -->
+        <div class="col-6 col-sm-6 col-md-2 d-flex align-items-center justify-content-end">
+          {% if freeSeats > 0 and current_user.id != route.driver_id %}
+          <form method="post" action="/routes/ride?routeId={{ route.id }}">
             <button type="submit"
-              class="btn btn-sm btn-outline-success ml-2"
+              class="btn btn-sm btn-outline-success"
             >
               Ride
             </button>
           </form>
+          {% endif %}
+          <a tabindex="0" role="button"
+            class="btn btn-sm btn-outline-primary popover-dismiss ml-1"
+            data-toggle="popover"
+            data-trigger="focus"
+            title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
+            data-content="Від'їжджає
+            {{ route.departure|localizeddate('long', 'none', locale) }}
+              від {{ route.origin }} до {{ route.destination }}
+              з {{ route.occupied_seats }}  пасажир{{ route.occupied_seats == 1 ? 'ом' : 'ами'}}."
+          >
+            info
+          </a>
         </div>
       </div>
     </div>

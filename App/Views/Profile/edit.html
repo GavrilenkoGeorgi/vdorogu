@@ -47,11 +47,11 @@
 {% endblock %}
 <section class="container-fluid">
 
-<h1 class="text-center">Edit profile</h1>
+<h1 class="text-center text-primary font-weight-light">Edit profile</h1>
 
 <div class="container py-2">
   <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6 col-xl-4">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
       <!-- Errors if any -->
       {% if user.errors is not empty %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -150,29 +150,29 @@
         <fieldset class="form-group row">
           <legend class="col-form-label col-sm-2 pl-0">Gender</legend>
           <div class="col-sm-10 pl-0">
-            <div class="form-check form-check-inline">
+            <div class="custom-control custom-radio custom-control-inline">
               <input
-                class="form-check-input radio-inline"
+                class="custom-control-input"
                 type="radio"
                 name="gender"
                 id="genderMale"
                 value="male"
                 checked
               >
-              <label class="form-check-label" for="genderMale">
+              <label class="custom-control-label" for="genderMale">
                 Male
               </label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="custom-control custom-radio custom-control-inline">
               <input
-                class="form-check-input radio-inline"
+                class="custom-control-input"
                 type="radio"
                 name="gender"
                 id="genderFemale"
                 value="female"
                 {% if user.gender == 'female' %} checked {% endif %}
               >
-              <label class="form-check-label" for="genderFemale">
+              <label class="custom-control-label" for="genderFemale">
                 Female
               </label>
             </div>
@@ -180,33 +180,34 @@
         </fieldset>
         <!-- Vehicle -->
         <fieldset class="form-group row">
-          <legend class="col-form-label col-sm-2 pl-0">Vehicle</legend>
+          <legend class="col-form-label col-sm-2 pl-0">
+            Car
+          </legend>
           <div class="col-sm-10 pl-0">
-            <div class="form-check form-check-inline">
-              <input 
-                class="form-check-input radio-inline"
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                class="custom-control-input"
                 type="radio"
                 name="car"
                 id="noCar"
                 value="0"
-                checked
                 onclick="toggleCarNameField()"
               >
-              <label class="form-check-label" for="nocar">
+              <label class="custom-control-label" for="noCar">
                 No
               </label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="custom-control custom-radio custom-control-inline">
               <input
-                class="form-check-input radio-inline"
+                class="custom-control-input"
                 type="radio"
                 name="car"
-                id="car"
+                id="hasCar"
                 value="1"
                 onclick="toggleCarNameField()"
                 {% if user.car %}checked{% endif %}
               >
-              <label class="form-check-label" for="car">
+              <label class="custom-control-label" for="hasCar">
                 Yes
               </label>
             </div>
@@ -225,8 +226,15 @@
           >
         </div>
         <!-- Save button -->
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/profile/show">Cancel</a>
+        <div class="form-group row justify-content-end">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <a role="button"
+              class="btn btn-secondary ml-2 text-white"
+              href="/profile/show"
+            >
+              Cancel
+            </a>
+        </div>
       </form>
     </div>
   </div>

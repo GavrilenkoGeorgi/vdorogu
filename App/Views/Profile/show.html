@@ -4,116 +4,117 @@
 
 {% block main %}
 <section class="container-fluid">
-  <article class="row justify-content-center">
-    <div class="col-12 py-3">
-      <h1 class="text-center">Profile</h1>
+  <article class="row justify-content-around p-3">
+    <div class="col-12">
+      <h1 class="text-center font-weight-light text-primary">Profile</h1>
     </div>
-    <div class="col-12 border p-3 mb-3">
+    <!-- Profile column -->
+    <div class="col-12 col-sm-4 col-xl-2">
+      <h4 class="py-2 text-center text-primary font-weight-light">
+        Sensitive data:
+      </h4>
       <div class="row">
-        <div class="col-4">
-          Name
+        <div class="col-12 text-primary">
+          Name:
         </div>
-        <div class="col-8">
-          {{ user.name }}
+        <div class="col-12 pb-2">
+          {% if user.gender == 'male' %}
+            👨
+          {% elseif user.gender == 'female' %}
+            👩
+          {% else %}
+            ⚧️
+          {% endif %}
+          {{ user.name }} {{ user.last_name }}
         </div>
-        <div class="col-4">
-          Last name
+        <div class="col-12 text-primary">
+          Email:
         </div>
-        <div class="col-8">
-          {{ user.last_name }}
+        <div class="col-12 pb-2">
+            📧 {{ user.email }}
         </div>
-        <div class="col-4">
-          Email
+        <div class="col-12 text-primary">
+          Date of birth:
         </div>
-        <div class="col-8">
-          {{ user.email }}
+        <div class="col-12 pb-2">
+          🎂 {{ user.birth_date|localizeddate('long', 'none', locale) }}
         </div>
-        <div class="col-4">
-          Date of birth
-        </div>
-        <div class="col-8 align-self-center">
-          {{ user.birth_date }}
-        </div>
-        <div class="col-4">
-          Gender
-        </div>
-        {% if user.gender == 'male' %}
-        <div class="col-8">
-          👨
-        </div>
-        {% elseif user.gender == 'female' %}
-        <div class="col-8">
-          👩
-        </div>
-        {% else %}
-        <div class="col-8">
-          ⚧️
-        </div>
-        {% endif %}
         {% if user.car == 1 %}
-        <div class="col-4">
-          Car
+        <div class="col-12 text-primary">
+          Car:
         </div>
-        <div class="col-8">
-          🚗
-        </div>
-        <div class="col-4">
-          Model
-        </div>
-        <div class="col-8">
-          {{ user.car_name }} <!-- car name?? -->
+        <div class="col-12 pb-2">
+          🚗 {{ user.car_name }}
         </div>
         {% endif %}
       </div> <!-- 1st Row -->
-      <div class="row justify-content-between px-3 pt-3">
+      <div class="row justify-content-end px-3 py-3">
         <form method="post" action="/profile/edit">
           <button type="submit"
             class="btn btn-sm btn-primary"
           >
-            Edit profile
+            Edit
           </button>
         </form>
         <!-- Button trigger modal -->
         <button type="button"
-          class="btn btn-sm btn-outline-danger"
+          class="btn btn-sm btn-outline-danger ml-2"
           data-toggle="modal"
           data-target="#confirmDeleteModal"
         >
-          Delete profile
+          Delete
         </button>
         {% include 'Profile/modal.html' %}
       </div>
     </div><!-- End of profile display column -->
+
+    <!-- Routes display column -->
+    <div class="col-12 col-sm-8 col-xl-6">
     {% if routes is not empty %}
-    <h4>Your routes as driver</h4>
     <!-- Driver routes -->
-    <div class="col-12 py-0 mb-3 border">
+      <h4 class="py-2 text-center text-primary font-weight-light">
+        Your routes as driver
+      </h4>
       {% for route in routes %}
-        <div class="row route-row py-1">
-          <div class="col-2 align-self-center">
-            <small>{{ route.departure|date('d-m-Y') }}</small>
+        <div class="row row-highlight py-2">
+          <!-- Departure -->
+          <div class="col-4 col-sm-2 py-2 align-self-center">
+            <small>{{ route.departure|localizeddate('long', 'none', locale) }}</small>
           </div>
-          <div class="col-3 align-self-center">
+          <!-- Origin -->
+          <div class="col-4 col-sm-2 px-0 py-2 align-self-center text-dark font-weight-bold">
             {% set origin = route.origin|split(' ') %}
             {{ origin|first }}
           </div>
-          <div class="col-3 align-self-center">
+          <!-- Destination -->
+          <div class="col-4 col-sm-3 px-0 py-2 align-self-center text-secondary font-weight-bold">
             {% set destination = route.destination|split(' ') %}
             {{ destination|first }}
           </div>
-          <div class="col-2 d-flex align-items-center justify-content-center">
+          <!-- Seats -->
+          {% set freeSeats = route.pax_capacity - route.occupied %}
+          <div class="col-6 col-sm-2 py-2 align-self-center">
+            <small>
+              <a href="/routes/details?routeId={{ route.id }}">
+                Seats: {{ freeSeats }} of {{ route.pax_capacity }}
+              </a>
+            </small>
+          </div>
+          <!-- Buttons -->
+          <div class="col-6 col-sm-3 py-2 px-0 pr-3 d-flex align-items-center justify-content-end">
             <a tabindex="0" role="button"
               class="btn btn-sm btn-outline-primary popover-dismiss mr-2"
               data-toggle="popover"
               data-trigger="focus"
               title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
-              data-content="Departs at {{ route.departure|date('Y-m-d') }}
-                from {{ route.origin }} to {{ route.destination }}
-                max {{ route.pax_capacity }} passenger(s)."
+              data-content="Від'їжджає
+              {{ route.departure|localizeddate('long', 'none', locale) }}
+                від {{ route.origin }} до {{ route.destination }}
+                з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
             >
               Info
             </a>
-            <form method="post" action="/routes/delete?id={{ route.id }}">
+            <form class="form-inline" method="post" action="/routes/delete?id={{ route.id }}">
               <button type="submit"
                 class="btn btn-sm btn-outline-danger"
               >
@@ -123,43 +124,53 @@
           </div>
         </div>
       {% endfor %}
-      </div>
       {% endif %}
       {% if passenger_routes is not empty %}
-      <h4>Your passenger routes</h4>
-<!-- Passenger routes -->
-      <div class="col-12 py-0 mb-3" style="border: 1px solid pink">
+      <!-- Passenger routes -->
+        <h4 class="py-2 text-center text-primary font-weight-light">Your passenger routes</h4>
         {% for route in passenger_routes %}
-          <div class="row route-row py-1">
-            <div class="col-2 align-self-center">
-              <small>{{ route.departure|date('d-m-Y') }}</small>
+          <div class="row row-highlight py-2">
+            <div class="col-4 col-sm-2 align-self-center">
+              <small>{{ route.departure|localizeddate('long', 'none', locale) }}</small>
             </div>
-            <div class="col-2 align-self-center">
-              <small>{{ route.driver_name }} {{ route.driver_last_name }}</small>
-              <br />
-              <small>Route id: {{ route.id }}</small>
-            </div>
-            <div class="col-3 align-self-center">
+            <!-- Origin -->
+            <div class="col-4 col-sm-2 px-0 py-2 align-self-center text-dark font-weight-bold">
               {% set origin = route.origin|split(' ') %}
               {{ origin|first }}
             </div>
-            <div class="col-3 align-self-center">
+            <!-- Destination -->
+            <div class="col-4 col-sm-3 px-0 py-2 align-self-center text-secondary font-weight-bold">
               {% set destination = route.destination|split(' ') %}
               {{ destination|first }}
             </div>
-            <div class="col-2 d-flex align-items-center justify-content-center">
+            <!-- Seats and drivers name -->
+            {% set freeSeats = route.pax_capacity - route.occupied %}
+            <div class="col-6 col-sm-2 py-2 align-self-center">
+              <small>
+                {{ route.driver_name }} {{ route.driver_last_name }}
+              </small>
+              <br />
+              <small>
+                <a href="/routes/details?routeId={{ route.id }}">
+                  Seats: {{ freeSeats }} of {{ route.pax_capacity }}
+                </a>
+              </small>
+            </div>
+            <!-- Buttons -->
+            <div class="col-6 col-sm-3 py-2 px-0 pr-3 d-flex align-items-center justify-content-end">
               <a tabindex="0" role="button"
                 class="btn btn-sm btn-outline-primary popover-dismiss mr-2"
                 data-toggle="popover"
                 data-trigger="focus"
-                title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
-                data-content="Departs at {{ route.departure|date('Y-m-d') }}
-                  from {{ route.origin }} to {{ route.destination }}
-                  with {{ route.pax_capacity }} passenger(s)."
+                title="{{ route.driver_name }} {{ route.driver_last_name }} to {{ destination|first }}"
+                data-content="Від'їжджає
+                  {{ route.departure|localizeddate('long', 'none', locale) }}
+                  від {{ route.origin }} до {{ route.destination }}
+                  з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
               >
                 Info
               </a>
-              <form method="post" action="/routes/removePassenger?routeId={{ route.id }}">
+              <form class="form-inline" method="post" action="/routes/removePassenger?routeId={{ route.id }}">
                 <button type="submit"
                   class="btn btn-sm btn-outline-danger"
                 >
@@ -169,8 +180,8 @@
             </div>
           </div>
         {% endfor %}
-        </div>
       {% endif %}
+      </div>
   </article>
 </section>
 {% endblock %}
