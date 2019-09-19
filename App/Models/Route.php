@@ -75,7 +75,7 @@ class Route extends \Core\Model {
                 pax_list_id,
                 name,
                 last_name,
-           (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied_seats
+           (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
             FROM mvclogin.routes
             INNER JOIN mvclogin.users
             ON routes.driver_id = users.id';
@@ -189,9 +189,20 @@ class Route extends \Core\Model {
    */
   public function find() {
     // Validate!
-    $sql = 'SELECT * FROM routes
-            WHERE origin = :origin
-            AND destination = :destination';
+    $sql = 'SELECT routes.id,
+                    driver_id,
+                    created_at,
+                    origin,
+                    destination,
+                    departure,
+                    pax_capacity,
+                    pax_list_id,
+                    name,
+                    last_name, (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
+      FROM mvclogin.routes
+      INNER JOIN mvclogin.users
+      ON routes.driver_id = users.id WHERE origin = :origin
+      AND destination = :destination';
     $db = static::getDB();
     $stmt = $db->prepare($sql);
 
