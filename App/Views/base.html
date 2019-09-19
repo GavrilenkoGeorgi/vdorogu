@@ -38,35 +38,37 @@
             id="navbarNavAltMarkup"
           >
             <div class="navbar-nav mr-auto">
-              {% if current_user %}
-                <a class="nav-item nav-link"
-                  href="/profile/show">Профіль користувача</a>
-                <a class="nav-item nav-link"
-                  href="/logout">Вийти</a>
-              {% else %}
-                <a class="nav-item nav-link"
-                  href="/login">Вхід</a>
-                <a class="nav-item nav-link"
+              {% if current_user is empty %}
+                <a class="nav-item nav-link pl-3"
                   href="/signup/new">Регістрація</a>
               {% endif %}
-              <a class="nav-item nav-link"
+              <a class="nav-item nav-link pl-3"
                 href="/rules">Правила використання сайту</a>
-              <a class="nav-item nav-link"
+              <a class="nav-item nav-link pl-3"
                 href="/allquestions">Запитання та відповіді</a>
             </div>
-            <span class="navbar-text">
+            <span class="navbar-text text-right">
               {% if current_user %}
-                <strong>Hi, {{ current_user.name }}!</strong>
+              <a class="nav-item nav-link d-sm-block d-lg-inline text-primary"
+                href="/profile/show"
+              >
+                Профіль користувача
+              </a>
+              <a class="nav-item nav-link d-sm-block d-lg-inline text-left"
+                  href="/logout">Вийти</a>
+              {% else %}
+                <a class="nav-item nav-link d-sm-block d-lg-inline text-primary"
+                href="/login">Вхід</a>
               {% endif %}
             </span>
           </div>
         </nav>
       </header>
       <!-- Main -->
-      <main class="col-12 py-1 px-0">
+      <main class="col-12 px-0">
         <!-- Flash messages -->
         {% for message in flash_messages %}
-        <div class="row justify-content-center">
+        <div class="row justify-content-center p-3">
           <div class="col-12 col-sm-10 col-md-8 col-lg-6 p-3">
             <div class="alert alert-{{ message.type }} alert-dismissible fade show">
               {{ message.body }}
