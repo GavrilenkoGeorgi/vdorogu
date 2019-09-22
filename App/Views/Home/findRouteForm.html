@@ -9,42 +9,39 @@
       >
         <!-- Route origin -->
         <div class="form-group">
-          <label for="routeOrigin">Звідки:</label>
-          <select
-            class="custom-select"
-            id="routeOrigin"
+          <label for="searchRouteOrigin">Звідки:</label>
+          <input
+            type="text"
             name="routeOrigin"
+            id="searchRouteOrigin"
+            list="searchRouteOriginList"
+            class="form-control"
             required
           >
-            <option selected value=''>Виберіть</option>
-            {% for city in cities %}
-            <option value="{{ city.city }} {{ city.county }} {{ city.province }}">
-              {{ city.city }} {{ city.county }} {{ city.province }}
-            </option>
-            {% endfor %}
-          </select>
+          <datalist id="searchRouteOriginList">
+          </datalist>
         </div>
         <!-- Route destination -->
         <div class="form-group">
           <label for="routeDestination">Куди:</label>
-          <select class="custom-select" id="routeDestination" name="routeDestination">
-              <option selected value=''>Виберіть</option>
-              {% for city in cities %}
-              <option value="{{ city.city }} {{ city.county }} {{ city.province }}">
-                {{ city.city }} {{ city.county }} {{ city.province }}
-              </option>
-              {% endfor %}
-          </select>
+          <input type="text"
+            name="routeDestination"
+            id="searchRouteDestination"
+            list="searchRouteDestinationList"
+            class="form-control"
+          >
+          <datalist id="searchRouteDestinationList">
+          </datalist>
         </div>
         <!-- Route departure date -->
         <div class="form-group">
-          <label for="departureDate">Виберіть дату:</label>
+          <label for="searchDepartureDate">Виберіть дату:</label>
           <input
             class="form-control"
             type="date"
             value=""
-            id="departureDate"
-            name="departureDate"
+            id="searchDepartureDate"
+            name="searchDepartureDate"
           >
         </div>
         <!-- Buttons -->

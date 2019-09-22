@@ -50,7 +50,7 @@ class Route extends \Core\Model {
       $stmt->bindValue(':origin', $this->routeOrigin, PDO::PARAM_STR);
       $stmt->bindValue(':destination', $this->routeDestination, PDO::PARAM_STR);
       $stmt->bindValue(':created_at', $created_at, PDO::PARAM_STR);
-      $stmt->bindValue(':departure', $this->departureDate, PDO::PARAM_STR);
+      $stmt->bindValue(':departure', $this->createDepartureDate, PDO::PARAM_STR);
       $stmt->bindValue(':driver_id', $this->user->id, PDO::PARAM_INT);
       $stmt->bindValue(':pax_capacity', $this->paxCapacity, PDO::PARAM_INT);
 
@@ -72,12 +72,11 @@ class Route extends \Core\Model {
                 destination,
                 departure,
                 pax_capacity,
-                pax_list_id,
                 name,
                 last_name,
-           (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
-            FROM mvclogin.routes
-            INNER JOIN mvclogin.users
+           (SELECT COUNT(route_id) FROM vdorogu_db.pax_list WHERE route_id = routes.id) AS occupied
+            FROM vdorogu_db.routes
+            INNER JOIN vdorogu_db.users
             ON routes.driver_id = users.id';
     $db = static::getDB();
     $stmt = $db->prepare($sql);
@@ -123,11 +122,10 @@ class Route extends \Core\Model {
                   destination,
                   departure,
                   pax_capacity,
-                  pax_list_id,
                   name,
-                  last_name, (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
-              FROM mvclogin.routes
-              INNER JOIN mvclogin.users
+                  last_name, (SELECT COUNT(route_id) FROM vdorogu_db.pax_list WHERE route_id = routes.id) AS occupied
+              FROM vdorogu_db.routes
+              INNER JOIN vdorogu_db.users
               ON routes.driver_id = users.id WHERE driver_id = :id';
     $db = static::getDB();
     $stmt = $db->prepare($sql);
@@ -151,7 +149,7 @@ class Route extends \Core\Model {
                   origin, destination,
                   pax_capacity,
                   name as driver_name,
-                  last_name as driver_last_name, (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
+                  last_name as driver_last_name, (SELECT COUNT(route_id) FROM vdorogu_db.pax_list WHERE route_id = routes.id) AS occupied
             FROM pax_list
             JOIN routes ON routes.id = pax_list.route_id
             JOIN users as drivers ON drivers.id = routes.driver_id
@@ -188,30 +186,42 @@ class Route extends \Core\Model {
    * @return boolean True if found, false otherwise
    */
   public function find() {
-    // Validate!
-    $sql = 'SELECT routes.id,
-                    driver_id,
-                    created_at,
-                    origin,
-                    destination,
-                    departure,
-                    pax_capacity,
-                    pax_list_id,
-                    name,
-                    last_name, (SELECT COUNT(route_id) FROM mvclogin.pax_list WHERE route_id = routes.id) AS occupied
-      FROM mvclogin.routes
-      INNER JOIN mvclogin.users
-      ON routes.driver_id = users.id WHERE origin = :origin
-      AND destination = :destination';
-    $db = static::getDB();
-    $stmt = $db->prepare($sql);
+    $this->validate();
+    if (empty($this->errors)) {
+      $sql = 'SELECT routes.id,
+                      driver_id,
+                      created_at,
+                      origin,
+                      destination,
+                      departure,
+                      pax_capacity,
+                      name,
+                      last_name, (SELECT COUNT(route_id) FROM vdorogu_db.pax_list WHERE route_id = routes.id) AS occupied
+        FROM vdorogu_db.routes
+        INNER JOIN vdorogu_db.users
+        ON routes.driver_id = users.id
+        WHERE origin = :origin';
+        if (!empty($this->routeDestination)) {
+          $sql .= ' AND destination = :destination';
+        }
+        if (!empty($this->searchDepartureDate)) {
+          $sql .= ' AND departure = :departure';
+        }
+      $db = static::getDB();
+      $stmt = $db->prepare($sql);
 
-    $stmt->bindValue(':origin', $this->routeOrigin, PDO::PARAM_STR);
-    $stmt->bindValue(':destination', $this->routeDestination, PDO::PARAM_STR);
-    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+      $stmt->bindValue(':origin', $this->routeOrigin, PDO::PARAM_STR);
+      if (!empty($this->routeDestination)) {
+        $stmt->bindValue(':destination', $this->routeDestination, PDO::PARAM_STR);
+      }
+      if (!empty($this->searchDepartureDate)) {
+        $stmt->bindValue(':departure', $this->searchDepartureDate, PDO::PARAM_STR);
+      }
+      $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 
-    $stmt->execute();
-    return $stmt->fetchAll();
+      $stmt->execute();
+      return $stmt->fetchAll();
+    } return false;
   }
   /**
    * Get route by id
@@ -228,11 +238,10 @@ class Route extends \Core\Model {
         destination,
         departure,
         pax_capacity,
-        pax_list_id,
         name,
         last_name
-    FROM mvclogin.routes
-    INNER JOIN mvclogin.users
+    FROM vdorogu_db.routes
+    INNER JOIN vdorogu_db.users
     ON routes.driver_id = users.id
     WHERE routes.id = :id';
     $db = static::getDb();
@@ -407,18 +416,15 @@ class Route extends \Core\Model {
   */
   public function validate() {
     // Origin
-    if ($this->routeOrigin == '') {
+    if (empty($this->routeOrigin)) {
       $this->errors[] = 'Origin is required';
     }
-    // Destination
-    if ($this->routeDestination == '') {
-      $this->errors[] = 'Destination is required';
-    }
-    // Birth date
-    $date = DateTime::createFromFormat("Y-m-d", $this->departureDate);
+    // Departure date
+    /*
+    $date = DateTime::createFromFormat("Y-m-d", $this->departure);
     $validDate = $date !== false && !array_sum($date::getLastErrors());
     if (!$validDate) {
       $this->errors[] = 'Check your departure date';
-    }
+    }*/
   }
 }
