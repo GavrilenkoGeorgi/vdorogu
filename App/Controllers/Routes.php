@@ -38,6 +38,7 @@ class Routes extends Authenticated {
    */
   public function createAction() {
     $route = new Route($_POST);
+    var_dump($_POST);
     if ($route->create()) {
       Flash::addMessage('Route added.');
       $this->redirect('/routes');
@@ -53,9 +54,9 @@ class Routes extends Authenticated {
    * @return void
    */
   public function findAction() {
-    $routes = new Route($_POST);
-    $list = $routes->find();
-    if ($list) {
+    $route = new Route($_POST);
+    $list = $route->find();
+    if (!empty($list)) {
       Flash::addMessage('Routes found: ');
       View::renderTemplate('Routes/index.html', [
         'routes' => $list

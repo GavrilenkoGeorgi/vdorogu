@@ -5,7 +5,7 @@
 {% block main %}
 <section class="container-fluid">
   <article class="row justify-content-center px-2">
-    <div class="col-12">
+    <div class="col-12 py-3">
       <h1 class="text-center text-primary font-weight-light">Timetable:</h1>
     </div>
     <div class="col-12 col-lg-9 col-xl-7 py-2">
@@ -44,7 +44,7 @@
         </div>
         <!-- Seats -->
         <div class="col-6 col-sm-6 col-md-2 align-self-center text-right">
-          {% set freeSeats = route.pax_capacity - route.occupied_seats %}
+          {% set freeSeats = route.pax_capacity - route.occupied %}
           {% if freeSeats == 0 %}
           <small class="text-muted">No seats left</small>
           {% else %}
@@ -72,7 +72,7 @@
             data-content="Від'їжджає
             {{ route.departure|localizeddate('long', 'none', locale) }}
               від {{ route.origin }} до {{ route.destination }}
-              з {{ route.occupied_seats }}  пасажир{{ route.occupied_seats == 1 ? 'ом' : 'ами'}}."
+              з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
           >
             info
           </a>

@@ -2,37 +2,48 @@
 <div class="container">
   <div class="row">
     <div class="col-12 pb-3">
+      {% if current_user %}
       <h5>Create your route, {{ current_user.name }}</h5>
-      <form method="post" id="createRouteForm" action="/routes/create">
+      {% endif %}
+      <form method="post"
+        id="createRouteForm"
+        action="/routes/create"
+      >
         <!-- Route origin -->
         <div class="form-group">
           <label for="routeOrigin">Звідки:</label>
-          <select class="custom-select" id="routeOrigin" name="routeOrigin">
-            <option selected value=''>Виберіть</option>
-            {% for city in cities %}
-            <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
-            {% endfor %}
-          </select>
+          <input
+            type="text"
+            name="routeOrigin"
+            id="createRouteOrigin"
+            list="createRouteOriginList"
+            class="form-control"
+          >
+          <datalist id="createRouteOriginList">
+          </datalist>
         </div>
         <!-- Route destination -->
         <div class="form-group">
           <label for="routeDestination">Куди:</label>
-          <select class="custom-select" id="routeDestination" name="routeDestination">
-            <option selected value=''>Виберіть</option>
-            {% for city in cities %}
-            <option>{{ city.city }} {{ city.county }} {{ city.province }}</option>
-            {% endfor %}
-          </select>
+          <input
+            type="text"
+            name="routeDestination"
+            id="createRouteDestination"
+            list="createRouteDestinationList"
+            class="form-control"
+          >
+          <datalist id="createRouteDestinationList">
+          </datalist>
         </div>
         <!-- Route departure date -->
         <div class="form-group">
-          <label for="departureDate">Виберіть дату:</label>
+          <label for="createDepartureDate">Виберіть дату:</label>
           <input
             class="form-control"
             type="date"
-            value="1972-06-13"
-            id="departureDate"
-            name="departureDate"
+            value=""
+            id="createDepartureDate"
+            name="createDepartureDate"
             required
           >
         </div>
@@ -60,7 +71,11 @@
           {% endif %}
         </div>
         <!-- Button -->
-        <button type="submit"
+        <button
+          type="submit"
+          {% if current_user.car == 0 %}
+          disabled
+          {% endif %}
           class="btn btn-primary"
         >
           Create route

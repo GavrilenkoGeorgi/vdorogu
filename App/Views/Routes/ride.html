@@ -9,9 +9,9 @@
       <h1 class="text-center font-weight-light text-primary">Your chosen route:</h1>
     </div>
     <!-- Route info -->
-    <div class="col-12 col-xl-10">
-      <div class="row justify-content-center py-3">
-        <div class="col-12 col-sm-9 col-md-6 border rounded border-secondary py-2">
+    <div class="col-12 col-md-10">
+      <div class="row justify-content-center p-3">
+        <div class="col-12 col-sm-9 col-md-6 border rounded border-success py-2">
           You want to take a ride from: <strong>{{ route.origin }}</strong><br />
           to <strong>{{ route.destination }}</strong><br />
           at <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
@@ -33,7 +33,7 @@
                 </button>
                 <a role="button"
                   class="btn btn-secondary ml-2 text-white"
-                  href="/profile/show"
+                  href="/routes"
                 >
                   Cancel
                 </a>
