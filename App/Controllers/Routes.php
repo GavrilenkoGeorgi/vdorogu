@@ -38,13 +38,18 @@ class Routes extends Authenticated {
    */
   public function createAction() {
     $route = new Route($_POST);
-    var_dump($_POST);
     if ($route->create()) {
       Flash::addMessage('Route added.');
       $this->redirect('/routes');
     } else {
-      Flash::addMessage('Route was not added.');
-      $this->redirect('/');
+      $errors = '';
+      foreach ($route->errors as $value) {
+        $errors .= $value . ' ';
+      }
+      Flash::addMessage($errors, 'danger');
+      View::renderTemplate('Home/index.html', [
+        'createRouteData' => $route
+      ]);
     }
   }
   /**
@@ -61,9 +66,20 @@ class Routes extends Authenticated {
       View::renderTemplate('Routes/index.html', [
         'routes' => $list
       ]);
+    } else if (!empty($route->errors)) {
+      $errors = '';
+      foreach ($route->errors as $value) {
+        $errors .= $value . ' ';
+      }
+      Flash::addMessage($errors, 'danger');
+      View::renderTemplate('Home/index.html', [
+        'searchRouteData' => $route
+      ]);
     } else {
       Flash::addMessage('Not a single route found.');
-      $this->redirect('/');
+      View::renderTemplate('Home/index.html', [
+        'searchRouteData' => $route
+      ]);
     }
   }
   /**
@@ -76,7 +92,7 @@ class Routes extends Authenticated {
       Flash::addMessage('Route deleted.');
       $this->redirect('/profile/show');
     } else {
-      Flash::addMessage('Something went wrong while deleting your rooute, try again later.');
+      Flash::addMessage('Something went wrong while deleting your route, try again later.');
       $this->redirect('/profile/show');
     }
   }

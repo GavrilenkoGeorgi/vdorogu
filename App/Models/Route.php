@@ -18,7 +18,7 @@ class Route extends \Core\Model {
    * 
    * @var array
    */
-  public $errors = [];
+  public $errors = array();
   /**
    * Class constructor
    * @param array $data Initial property values
@@ -29,6 +29,74 @@ class Route extends \Core\Model {
     foreach ($data as $key => $value) {
       $this->$key = $value;
     };
+  }
+  /**
+  * Validate current property values, adding validation error messages
+  * to the errors array property
+  *
+  * @return void
+  */
+  public function validate() {
+    $this->errors = []; // ?
+
+    // Origin
+    if (empty($this->routeOrigin) || !is_string($this->routeOrigin)) {
+      $this->errors[] = 'Origin is required.';
+    } else if (strlen($this->routeOrigin) > 245) {
+      $this->errors[] = 'Check your origin input.';
+    }
+
+    // $val = trim(htmlspecialchars($val));
+    // Destination
+    if (empty($this->routeDestination) || !is_string($this->routeDestination)) {
+      $this->errors[] = 'Destination is required.';
+    } else if (strlen($this->routeDestination) > 245) {
+      $this->errors[] = 'Check your destination input.';
+    }
+
+    // Pax capacity
+    if (empty($this->paxCapacity) || $this->paxCapacity > 5) {
+      $this->errors[] = 'Passengers.';
+    }
+
+    // Create departure date
+    if (isset($this->createDepartureDate)) {
+      $date = DateTime::createFromFormat("Y-m-d", $this->createDepartureDate);
+    }
+    $validDate = $date !== false && !array_sum($date::getLastErrors());
+    if (!$validDate) {
+      $this->errors[] = 'Check your departure date.';
+    }
+  }
+  /**
+  * Validate search route values, adding validation error messages
+  * to the errors array property
+  *
+  * @return void
+  */
+  public function validateSearchRoute() {
+    $this->errors = []; // ?
+
+    // Origin
+    if (empty($this->routeOrigin) || !is_string($this->routeOrigin)) {
+      $this->errors[] = 'Origin is required.';
+    } else if (strlen($this->routeOrigin) > 245) {
+      $this->errors[] = 'Check your origin input.';
+    }
+
+    // Destination
+    if (!empty($this->routeOrigin) && strlen($this->routeDestination) > 245) {
+      $this->errors[] = 'Check your destination input.';
+    }
+
+    // Search departure date
+    if (!empty($this->searchDepartureDate)) {
+      $date = DateTime::createFromFormat("Y-m-d", $this->searchDepartureDate);
+      $validDate = $date !== false && !array_sum($date::getLastErrors());
+      if (!$validDate) {
+        $this->errors[] = 'Check your departure date.';
+      }
+    }
   }
   /**
    * Create route as a driver
@@ -186,7 +254,7 @@ class Route extends \Core\Model {
    * @return boolean True if found, false otherwise
    */
   public function find() {
-    $this->validate();
+    $this->validateSearchRoute();
     if (empty($this->errors)) {
       $sql = 'SELECT routes.id,
                       driver_id,
@@ -407,24 +475,5 @@ class Route extends \Core\Model {
     $stmt->bindValue(':passenger_id', $passengerId, PDO::PARAM_INT);
 
     return $stmt->execute();
-  }
-  /**
-  * Validate current property values, adding validation error messages
-  * to the errors array property
-  *
-  * @return void
-  */
-  public function validate() {
-    // Origin
-    if (empty($this->routeOrigin)) {
-      $this->errors[] = 'Origin is required';
-    }
-    // Departure date
-    /*
-    $date = DateTime::createFromFormat("Y-m-d", $this->departure);
-    $validDate = $date !== false && !array_sum($date::getLastErrors());
-    if (!$validDate) {
-      $this->errors[] = 'Check your departure date';
-    }*/
   }
 }

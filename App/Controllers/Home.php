@@ -26,11 +26,6 @@ class Home extends \Core\Controller {
   * @return void
   */
   public function indexAction() {
-    // get cities for search form
-    $cities = new Cities();
-    $citiesList = $cities->getAllCities();
-    View::renderTemplate('Home/index.html', [
-      'cities' => $citiesList
-    ]);
+    View::renderTemplate('Home/index.html');
   }
 }

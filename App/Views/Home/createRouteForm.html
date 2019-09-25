@@ -1,26 +1,35 @@
+<script type="text/javascript" src="/public/js/formValidation.js"></script>
 <!-- Create route form -->
 <div class="container">
   <div class="row">
     <div class="col-12 pb-3">
       {% if current_user %}
-      <h5>Create your route, {{ current_user.name }}</h5>
+      <h5 class="text-primary font-weight-light">Создайте свой маршрут, {{ current_user.name }}</h5>
       {% endif %}
       <form method="post"
         id="createRouteForm"
         action="/routes/create"
+        class="needs-validation"
       >
         <!-- Route origin -->
-        <div class="form-group">
+        <div class="form-group has-success">
           <label for="routeOrigin">Звідки:</label>
           <input
             type="text"
             name="routeOrigin"
             id="createRouteOrigin"
             list="createRouteOriginList"
-            class="form-control"
+            class="form-control form-control-success"
+            required
+            {% if createRouteData is not empty %}
+              value="{{ createRouteData.routeOrigin }}"
+            {% endif %}
           >
           <datalist id="createRouteOriginList">
           </datalist>
+          <div class="valid-feedback">
+            Виглядає добре!
+          </div>
         </div>
         <!-- Route destination -->
         <div class="form-group">
@@ -31,45 +40,56 @@
             id="createRouteDestination"
             list="createRouteDestinationList"
             class="form-control"
+            required
+            {% if createRouteData is not empty %}
+              value="{{ createRouteData.routeDestination }}"
+            {% endif %}
           >
           <datalist id="createRouteDestinationList">
           </datalist>
+          <div class="valid-feedback">
+            Це може спрацювати.
+          </div>
         </div>
         <!-- Route departure date -->
         <div class="form-group">
           <label for="createDepartureDate">Виберіть дату:</label>
           <input
-            class="form-control"
-            type="date"
-            value=""
             id="createDepartureDate"
             name="createDepartureDate"
+            type="date"
             required
+            class="form-control"
+            {% if createRouteData is not empty %}
+              value="{{ createRouteData.createDepartureDate }}"
+            {% else %}
+              value=""
+            {% endif %}
           >
         </div>
         <!-- Route passengers amount -->
         <div class="form-group">
-          <label for="paxCapacity">How many seats are available?</label>
-          <select
-            class="custom-select"
-            id="paxCapacity"
-            name="paxCapacity"
-            aria-describedby="paxCapacityHelp"
+            <label for="paxCapacity">Скільки місць доступні?</label>
+            <input
+              type="text"
+              name="paxCapacity"
+              id="paxCapacity"
+              class="form-control"
+              required
+              {% if createRouteData is not empty %}
+                value="{{ createRouteData.paxCapacity }}"
+              {% endif %}
+              aria-describedby="paxCapacityHelp"
+              {% if current_user.car == 0 %}
+                disabled
+              {% endif %}
+            >
             {% if current_user.car == 0 %}
-              disabled
+            <small id="paxCapacityHelp" class="form-text text-muted">
+              У вас немає машини, тому, очевидно, ви не можете когось перевезти.
+            </small>
             {% endif %}
-          >
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-          </select>
-          {% if current_user.car == 0 %}
-          <small id="paxCapacityHelp" class="form-text text-muted">
-            You don't have a car, so obviously you can't haul someone.
-          </small>
-          {% endif %}
-        </div>
+          </div>
         <!-- Button -->
         <button
           type="submit"
@@ -78,7 +98,7 @@
           {% endif %}
           class="btn btn-primary"
         >
-          Create route
+          Створити маршрут
         </button>
       </form>
     </div>

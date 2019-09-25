@@ -24,6 +24,17 @@ body {
   margin-bottom: 60px;
 }
 
+.descr-text {
+  text-indent: 1em;
+  font-size: 1.3em;
+}
+
+.error {
+  color: red;
+  padding-top: .5em;
+  margin-bottom: 0;
+}
+
 .row-highlight:nth-child(even) {
   background-color: whitesmoke;
 }
