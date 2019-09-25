@@ -1,6 +1,5 @@
 # "Vdorogu"
-Car sharing service.
-Work in progress.
+Car sharing service. Work in progress. Live demo [vdorogu.rf.gd](http://vdorogu.rf.gd)
 ### Built using PHP, MySQL, JQuery, Twig and Bootstrap 4.
 It uses PHP MVC application design pattern that separates the application data and business logic (model) from the presentation (view).
 Currently implemented features:
