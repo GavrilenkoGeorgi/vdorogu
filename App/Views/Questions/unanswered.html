@@ -17,14 +17,14 @@
         <!-- Answer question -->
         <form method="post" action="answers?id={{ question.id }}">
           <button type="submit" class="btn btn-sm btn-outline-primary">
-            Answer
+              Відповісти
           </button>
         </form>
         {% if current_user.id == question.author_id %}
         <!-- Delete question -->
         <form method="post" action="questions/delete?id={{ question.id }}">
           <button class="btn btn-sm btn-outline-danger">
-            Delete
+              Видалити
           </button>
         </form>
         {% endif %}

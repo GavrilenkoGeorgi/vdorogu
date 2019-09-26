@@ -6,17 +6,17 @@
 <section class="container-fluid">
   <article class="row justify-content-center">
     <div class="col-12">
-      <h1 class="text-center">Your chosen route:</h1>
+      <h1 class="text-center py-3 text-primary font-weight-light">Обраний маршрут:</h1>
     </div>
     <div class="col-12 col-xl-10 py-3">
       <div class="row justify-content-center py-3">
         <div class="col-12 col-md-6">
-          You want to take a ride from: <strong>{{ route.origin }}</strong><br />
-          to <strong>{{ route.destination }}</strong><br />
-          at <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
-          with the <strong>{{ route.name }} {{ route.last_name }}</strong> as a driver.<br />
-          There are <strong>{{ route.pax_capacity }}</strong> seats overall and
-          <strong>{{ route.pax_capacity - passengers|length }}</strong> vacant.
+          Ви хочете виїхати з: <strong>{{ route.origin }}</strong><br />
+          до <strong>{{ route.destination }}</strong><br />
+          в <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
+          з <strong>{{ route.name }} {{ route.last_name }}</strong> в якості водія.<br />
+          Існує <strong>{{ route.pax_capacity }}</strong> місця в цілому із
+          <strong>{{ route.pax_capacity - passengers|length }}</strong> вакантних.
         </div>
         <ul>
           {% for passenger in passengers %}
@@ -32,7 +32,7 @@
             class="btn btn-secondary ml-2 text-white"
             href="/profile/show"
           >
-            Back
+            Назад
           </a>
         </div>
       </div>

@@ -44,6 +44,7 @@
           name="email"
           value="{{ user.email }}"
           required
+          autofocus
           class="form-control"
           aria-describedby="emailHelp"
           placeholder="Це буде ваше ім’я для входу"
@@ -53,7 +54,7 @@
           Виглядає добре!
         </div>
       </div>
-      <!-- Password input pattern="[a-zA-Z0-9-]+{6,}"-->
+      <!-- Password -->
       <div class="form-group">
         <label for="inputPassword">Пароль</label>
         <input
@@ -87,7 +88,6 @@
           name="name"
           value="{{ user.name }}"
           required
-          autofocus
           class="form-control"
           placeholder="Ваше ім'я"
         >
@@ -104,7 +104,6 @@
           type="text"
           value="{{ user.lastName }}"
           required
-          autofocus
           class="form-control"
           placeholder="Та прізвище"
         >

@@ -34,10 +34,10 @@ class Login extends \Core\Controller {
     $remember_me = isset($_POST['remember_me']);
 
     $errors = [];
-    // get recaptcha score
+    // get recaptcha score ???
     $score = User::getRecaptchaScore($_POST['recaptcha_response']);
     if ($score < 0.3) {
-      $errors[] = 'Recaptcha score is too low ' . $score;
+      $errors[] = 'Оцінка Recaptcha занадто низька ' . $score;
     }
     $user = User::authenticate($_POST['email'], $_POST['password']);
     // if user exists and score is high enough
@@ -49,8 +49,8 @@ class Login extends \Core\Controller {
       // either user misspelled credentials or/and
       // score is too low, add another error
       // and render the login page
-      Flash::addMessage('Please, check your credentials', Flash::WARNING);
-      $errors[] = 'Please, check your credentials';
+      // Flash::addMessage('Перевірте свої дані', Flash::WARNING);
+      $errors[] = 'Перевірте свої дані';
       View::renderTemplate('Login/new.html', [
         'email' => $_POST['email'],
         'errors' => $errors, // remove this

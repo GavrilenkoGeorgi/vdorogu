@@ -128,9 +128,6 @@ $(document).ready(function () {
       birthDate: 'required',
       carName: 'required',
       terms: 'required'
-      /* {
-        required: true
-      } */
     },
     messages: {
       email: {
@@ -159,6 +156,26 @@ $(document).ready(function () {
       },
       terms: {
         required: 'Ви згодні?'
+      }
+    }
+  })
+  /**
+   * Validate login form
+   */
+  $('#loginForm').validate({
+    rules: {
+      email: {
+        required: true,
+        email: true
+      },
+      password: {
+        required: true
+      },
+      messages: {
+        email: {
+          required: 'Це поле є обов\'язковим.',
+          email: 'Bad email'
+        }
       }
     }
   })

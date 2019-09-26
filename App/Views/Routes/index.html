@@ -36,11 +36,17 @@
         </div>
         <!-- Origin -->
         <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
-          {{ origin|first }}
+          {% set city = origin|slice(0,2) %}
+          {% set county = origin[3:] %}
+          {{ city|join(' ') }}
+          {{ county|join(' ')}}
         </div>
         <!-- Destination -->
         <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
-          {{ destination|first }}
+          {% set city = destination|slice(0,2) %}
+          {% set county = destination[3:] %}
+          {{ city|join(' ') }}
+          {{ county|join(' ')}}
         </div>
         <!-- Seats -->
         <div class="col-6 col-sm-6 col-md-2 align-self-center text-right">
@@ -49,7 +55,11 @@
           <small class="text-muted">Місць не залишилося.</small>
           {% else %}
           <small>
-            Вільні місця: <span class="text-primary font-weight-bold">{{ freeSeats }}</span> з {{ route.pax_capacity }}
+            Вільні місця:<br />
+              <span class="text-primary font-weight-bold">
+                {{ freeSeats }}
+              </span>
+              з {{ route.pax_capacity }}
           </small>
           {% endif %}
         </div>
@@ -60,7 +70,7 @@
             <button type="submit"
               class="btn btn-sm btn-outline-success"
             >
-              Ride
+              Го
             </button>
           </form>
           {% endif %}
@@ -74,7 +84,7 @@
               від {{ route.origin }} до {{ route.destination }}
               з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
           >
-            info
+            Інфо
           </a>
         </div>
       </div>

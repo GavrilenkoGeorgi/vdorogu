@@ -1,5 +1,5 @@
-Password reset
+Відновити пароль
 
-Please click the following link to reset your password:
+Будь ласка, перейдіть за цим посиланням, щоб скинути пароль:
 
 {{ url }}

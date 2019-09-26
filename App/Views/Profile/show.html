@@ -6,16 +6,16 @@
 <section class="container-fluid">
   <article class="row justify-content-around p-3">
     <div class="col-12">
-      <h1 class="text-center font-weight-light text-primary">Profile</h1>
+      <h1 class="text-center font-weight-light text-primary">Профіль користувача</h1>
     </div>
     <!-- Profile column -->
     <div class="col-12 col-sm-4 col-xl-2">
       <h4 class="py-2 text-center text-primary font-weight-light">
-        Sensitive data:
+        Чутливі дані:
       </h4>
       <div class="row">
         <div class="col-12 text-primary">
-          Name:
+          Ім'я:
         </div>
         <div class="col-12 pb-2">
           {% if user.gender == 'male' %}
@@ -28,20 +28,20 @@
           {{ user.name }} {{ user.last_name }}
         </div>
         <div class="col-12 text-primary">
-          Email:
+          Електронна пошта:
         </div>
         <div class="col-12 pb-2">
             📧 {{ user.email }}
         </div>
         <div class="col-12 text-primary">
-          Date of birth:
+          Дата народження:
         </div>
         <div class="col-12 pb-2">
           🎂 {{ user.birth_date|localizeddate('long', 'none', locale) }}
         </div>
         {% if user.car == 1 %}
         <div class="col-12 text-primary">
-          Car:
+          Транспортний засіб:
         </div>
         <div class="col-12 pb-2">
           🚗 {{ user.car_name }}
@@ -53,7 +53,7 @@
           <button type="submit"
             class="btn btn-sm btn-primary"
           >
-            Edit
+            Редагувати
           </button>
         </form>
         <!-- Button trigger modal -->
@@ -61,11 +61,19 @@
           class="btn btn-sm btn-outline-danger ml-2"
           data-toggle="modal"
           data-target="#confirmDeleteModal"
+          {% if current_user.id == '1' %}
+            disabled
+          {% endif %}
         >
-          Delete
+          Видалити
         </button>
         {% include 'Profile/modal.html' %}
       </div>
+      {% if current_user.id == '1' %}
+        <div class="p-2 border border-danger rounded text-danger text-center">
+          Ви не можете видалити цей демонстраційний профіль
+        </div>
+      {% endif %}
     </div><!-- End of profile display column -->
 
     <!-- Routes display column -->
@@ -73,7 +81,7 @@
     {% if routes is not empty %}
     <!-- Driver routes -->
       <h4 class="py-2 text-center text-primary font-weight-light">
-        Your routes as driver
+        Ваші маршрути як водія
       </h4>
       {% for route in routes %}
         <div class="row row-highlight py-2">
@@ -81,22 +89,24 @@
           <div class="col-4 col-sm-2 py-2 align-self-center">
             <small>{{ route.departure|localizeddate('long', 'none', locale) }}</small>
           </div>
-          <!-- Origin -->
+          <!-- Origin {{ county|join(' ')}}-->
           <div class="col-4 col-sm-2 px-0 py-2 align-self-center text-dark font-weight-bold">
-            {% set origin = route.origin|split(' ') %}
-            {{ origin|first }}
+            {% set shortOrigin = route.origin|split(' ') %}
+            {% set city = shortOrigin|slice(0,2) %}
+            {{ city|join(' ') }}
           </div>
           <!-- Destination -->
           <div class="col-4 col-sm-3 px-0 py-2 align-self-center text-secondary font-weight-bold">
-            {% set destination = route.destination|split(' ') %}
-            {{ destination|first }}
+            {% set shortDestination = route.destination|split(' ') %}
+            {% set city = shortDestination|slice(0,2) %}
+            {{ city|join(' ') }}
           </div>
           <!-- Seats -->
           {% set freeSeats = route.pax_capacity - route.occupied %}
           <div class="col-6 col-sm-2 py-2 align-self-center">
             <small>
               <a href="/routes/details?routeId={{ route.id }}">
-                Seats: {{ freeSeats }} of {{ route.pax_capacity }}
+                Місць: {{ freeSeats }} з {{ route.pax_capacity }}
               </a>
             </small>
           </div>
@@ -112,13 +122,13 @@
                 від {{ route.origin }} до {{ route.destination }}
                 з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
             >
-              Info
+              Деталі
             </a>
             <form class="form-inline" method="post" action="/routes/delete?id={{ route.id }}">
               <button type="submit"
                 class="btn btn-sm btn-outline-danger"
               >
-                Delete
+                Видалити
               </button>
             </form>
           </div>
@@ -127,7 +137,9 @@
       {% endif %}
       {% if passenger_routes is not empty %}
       <!-- Passenger routes -->
-        <h4 class="py-2 text-center text-primary font-weight-light">Your passenger routes</h4>
+        <h4 class="py-2 text-center text-primary font-weight-light">
+          Ваші пасажирські маршрути
+        </h4>
         {% for route in passenger_routes %}
           <div class="row row-highlight py-2">
             <div class="col-4 col-sm-2 align-self-center">
@@ -151,8 +163,10 @@
               </small>
               <br />
               <small>
-                <a href="/routes/details?routeId={{ route.id }}">
-                  Seats: {{ freeSeats }} of {{ route.pax_capacity }}
+                <a href="/routes/details?routeId={{ route.id }}"
+                  title="Список пасажирів!"
+                >
+                  Місць: {{ freeSeats }} з {{ route.pax_capacity }}
                 </a>
               </small>
             </div>
@@ -168,13 +182,13 @@
                   від {{ route.origin }} до {{ route.destination }}
                   з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
               >
-                Info
+                Деталі
               </a>
               <form class="form-inline" method="post" action="/routes/removePassenger?routeId={{ route.id }}">
                 <button type="submit"
                   class="btn btn-sm btn-outline-danger"
                 >
-                  Delete
+                  Видалити
                 </button>
               </form>
             </div>

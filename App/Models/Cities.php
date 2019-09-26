@@ -48,7 +48,13 @@ class Cities extends \Core\Model {
     $result = array();
 
     while($location = $stmt->fetch(PDO::FETCH_OBJ)) {
-      array_push($result, $location->city .' '. $location->province .' '. $location->county . ' обл.');
+
+      if (!empty($location->province)) {
+        $textDescr = $location->city .' '. $location->province .' '. $location->county . ' обл.';
+      } else {
+        $textDescr = $location->city;
+      }
+      array_push($result, $textDescr);
     }
     return $result;
   }

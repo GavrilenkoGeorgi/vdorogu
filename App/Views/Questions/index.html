@@ -8,9 +8,9 @@
   <article class="row justify-content-center px-3">
     <!-- New questions -->
     <div class="col-12 py-3 text-center">
-      <h1 class="text-primary font-weight-light ">New questions.</h1>
+      <h1 class="text-primary font-weight-light ">Нові запитання.</h1>
       <form class="py-3" method="post" action="questions">
-        <button type="submit" class="btn btn-success">Ask one!</button>
+        <button type="submit" class="btn btn-success">Задайте ще одне!</button>
       </form>
     </div>
     {% if questions %}
@@ -19,7 +19,7 @@
     {% if posts %}
     <!-- Answered questions -->
     <div class="col-12 py-3">
-      <h1 class="text-center text-primary font-weight-light">Already answered.</h1>
+      <h1 class="text-center text-primary font-weight-light">Питання, на які вже відповіли.</h1>
     </div>
     {% include 'Questions/answered.html' %}
     {% endif %}
