@@ -5,6 +5,8 @@ namespace App\Models;
 use PDO;
 use DateTime;
 use \App\Auth;
+use \App\Mailer;
+use \Core\View;
 use Exception;
 
 /**
@@ -475,5 +477,23 @@ class Route extends \Core\Model {
     $stmt->bindValue(':passenger_id', $passengerId, PDO::PARAM_INT);
 
     return $stmt->execute();
+  }
+  /**
+   * Send route instructions in an email to the user
+   * 
+   * @return void
+   */
+  public static function sendPassengerNotification($email, $data) {
+    // $url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
+    $url = 'Hi!';
+    // $email = '???';
+
+    // var_dump($this);
+    var_dump($data);
+    var_dump($email);
+    // echo 'sending email';
+    $text = View::getTemplate('Routes/notify_pass.txt', $data = (array) $data);
+    $html = View::getTemplate('Routes/notify_pass.html', $data = (array) $data);
+    Mailer::send($email, 'Passenger added', $text, $html);
   }
 }

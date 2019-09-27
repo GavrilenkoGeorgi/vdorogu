@@ -156,15 +156,19 @@ class Routes extends Authenticated {
     $userIsDriver = Route::userIsDriver($routeId, $passengerId);
 
     if (!$userIsDriver) {
-      Flash::addMessage('You\'re the driver.');
+      Flash::addMessage('Ви водій.');
     } else if ($emptySeats == 0) {
-      Flash::addMessage('No seats left.');
+      Flash::addMessage('Місць не залишилося.');
     } else if (!empty($routesThisDay)) {
-      // if not empty
-      Flash::addMessage('Sorry, right now you can\'t take two trips in one day.');
+      // if it is the same date
+      Flash::addMessage('Вибачте, але зараз ви не можете здійснити дві поїздки за один день.');
     } else {
       Route::addPax($routeId, $passengerId);
-      Flash::addMessage('Passenger added.');
+      // Email stuff
+      $route = Route::getById($_GET['routeId']);
+      Route::sendPassengerNotification($this->user->email, $route);
+      // Confirmation
+      Flash::addMessage('Пасажира додано.');
     }
     $this->redirect('/routes');
   }
