@@ -9,7 +9,7 @@
       <h1 class="text-center text-primary font-weight-light">Розклад:</h1>
     </div>
     <div class="col-12 col-lg-9 col-xl-7 py-2">
-      <div class="row">
+      <div class="row text-primary">
         <div class="col-4 col-md-2">
           Дата
         </div>
@@ -35,14 +35,14 @@
           </small>
         </div>
         <!-- Origin -->
-        <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
+        <div class="overflow-hidden col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
           {% set city = origin|slice(0,2) %}
           {% set county = origin[3:] %}
           {{ city|join(' ') }}
           {{ county|join(' ')}}
         </div>
         <!-- Destination -->
-        <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
+        <div class="overflow-hidden col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
           {% set city = destination|slice(0,2) %}
           {% set county = destination[3:] %}
           {{ city|join(' ') }}
@@ -54,6 +54,9 @@
           {% if freeSeats == 0 %}
           <small class="text-muted">Місць не залишилося.</small>
           {% else %}
+          <a href="/routes/details?routeId={{ route.id }}"
+            title="Список пасажирів!"
+          >
           <small>
             Вільні місця:<br />
               <span class="text-primary font-weight-bold">
@@ -61,6 +64,7 @@
               </span>
               з {{ route.pax_capacity }}
           </small>
+          </a>
           {% endif %}
         </div>
         <!-- Buttons -->

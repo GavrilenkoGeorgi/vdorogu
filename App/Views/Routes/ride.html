@@ -9,39 +9,31 @@
       <h1 class="py-3 text-center font-weight-light text-primary">Обраний маршрут:</h1>
     </div>
     <!-- Route info -->
-    <div class="col-12 col-md-10">
-      <div class="row justify-content-center p-3">
-        <div class="col-12 col-sm-9 col-md-6 border rounded border-success py-2">
-          Ви хочете виїхати з: <strong>{{ route.origin }}</strong><br />
-          до <strong>{{ route.destination }}</strong><br />
-          в <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
-          з <strong>{{ route.name }} {{ route.last_name }}</strong> в якості водія.<br />
-          Існує <strong>{{ route.pax_capacity }}</strong> місця в цілому із
-          <strong>{{ route.pax_capacity - passengers|length }}</strong> вакантних.
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+      Ви хочете виїхати з: <strong>{{ route.origin }}</strong><br />
+      до <strong>{{ route.destination }}</strong><br />
+      в <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
+      з <strong>{{ route.name }} {{ route.last_name }}</strong> в якості водія.<br />
+      Існує <strong>{{ route.pax_capacity }}</strong> місця в цілому із
+      <strong>{{ route.pax_capacity - passengers|length }}</strong> вакантних.
+    </div>
+    <div class="pt-3 col-12 text-center">
+      <form method="post" action="/routes/addPax?routeId={{ route.id }}">
+        <!-- Route passengers amount -->
+        <div class="form-group">
+          <button type="submit"
+            class="btn btn-success ml-2"
+          >
+            Підтвердіть
+          </button>
+          <a role="button"
+            class="btn btn-secondary ml-2 text-white"
+            href="/routes"
+          >
+            Скасувати
+          </a>
         </div>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-12 col-sm-9 col-md-6">
-          <form method="post" action="/routes/addPax?routeId={{ route.id }}">
-            <!-- Route passengers amount -->
-            <div class="form-group row">
-              <div class="col-12 d-flex align-items-center justify-content-end">
-                <button type="submit"
-                  class="btn btn-success ml-2"
-                >
-                  Підтвердіть
-                </button>
-                <a role="button"
-                  class="btn btn-secondary ml-2 text-white"
-                  href="/routes"
-                >
-                  Скасувати
-                </a>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
+      </form>
     </div>
   </article>
 </section>
