@@ -38,9 +38,10 @@ class Mailer {
       $mail->Port       = 587;                            // TCP port to connect to
 
       // Recipients
-      $mail->setFrom('gavrilenko.georgi@gmail.com', 'Vdorogu mailer');
+      // $mail->setFrom('gavrilenko.georgi@gmail.com', 'Vdorogu mailer.');
+      $mail->setFrom('mailer@vdorogu.rf.gd', 'Mailer Vdorogu.rf.gd');
       $mail->addAddress($to);
-      // $mail->addReplyTo('info@example.com', 'Information');
+      $mail->addReplyTo('info@vdorogu.rf.gd', 'Information');
       // $mail->addCC('cc@example.com');
       // $mail->addBCC('bcc@example.com');
 

@@ -1,5 +1,5 @@
-Account activation
+Активація облікового запису
 
-Thank you for signing up. Please click the following link to activate your account:
+Дякуємо, що зареєструвались. Будь ласка, натисніть таке посилання, щоб активувати свій аккаунт:
 
 {{ url }}

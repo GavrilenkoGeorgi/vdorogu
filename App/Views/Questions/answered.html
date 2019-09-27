@@ -22,13 +22,13 @@
       <div class="row px-3 justify-content-between">
         <form method="post" action="answers?id={{ post|first['question_id'] }}">
           <button type="submit" class="btn btn-sm btn-outline-primary">
-            Answer
+            Відповісти
           </button>
         </form>
         {% if current_user.id == item.author_id %}
         <!-- Delete question -->
         <form method="post" action="questions/delete?id={{ post|first['question_id'] }}">
-          <button class="btn btn-sm btn-outline-danger">Delete</button>
+          <button class="btn btn-sm btn-outline-danger">Видалити</button>
         </form>
         {% endif %}
       </div>
@@ -55,7 +55,7 @@
           {% if current_user.id == item.author_id %}
           <!-- Delete answer button -->
           <form method="post" action="answers/delete?id={{ item.id }}">
-            <button class="btn btn-sm btn-light">Delete</button>
+            <button class="btn btn-sm btn-light">Видалити</button>
           </form>
           {% endif %}
         </div>

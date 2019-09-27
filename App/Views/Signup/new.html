@@ -5,47 +5,10 @@
 {% block main %}
 
 {% block footer %}
-<script src="/public/js/app.js"></script>
-
-<script>
-  $(document).ready(function () {
-    /**
-     * Validate the form
-     */
-    $('#formSignup').validate({
-      rules: {
-        name: 'required',
-        lastName: 'required',
-        email: {
-          required: true,
-          email: true,
-          remote: '/account/validate-email'
-        },
-        password: {
-          required: true,
-          minlength: 6,
-          validPassword: true
-        },
-        birthDate: 'required',
-        terms: {
-          required: true
-        }
-      },
-      messages: {
-        email: {
-          remote: 'Email already taken'
-        },
-        terms: {
-          required: 'Do you agree?'
-        }
-      }
-    })
-  })
-</script>
-
+<script src="/public/js/formValidation.js"></script>
 {% endblock %}
 <section>
-  <h1 class="text-center text-primary font-weight-light py-3">Sign up</h1>
+  <h1 class="text-center text-primary font-weight-light py-3">Зареєструватися</h1>
 
   <div class="container pb-3">
     <div class="row justify-content-center px-3">
@@ -53,7 +16,7 @@
         <!-- Errors if any -->
         {% if user.errors is not empty %}
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-          <strong>Please review your input:</strong>
+          <strong>Перегляньте свої дані:</strong>
           <ul>
           {% for error in user.errors %}
             <li>{{ error }}</li>
@@ -67,39 +30,46 @@
     </div>
     {% endif %}
     <!-- Form -->
-    <form method="post" id="formSignup" action="/signup/create">
+    <form method="post"
+      id="formSignup"
+      action="/signup/create"
+      class="needs-validation"
+      >
       <!-- email -->
-      <div class="form-group row">
-        <label for="inputEmail">Email address</label>
+      <div class="form-group">
+        <label for="inputEmail">Адреса електронної пошти</label>
         <input
           id="inputEmail"
           type="email"
           name="email"
           value="{{ user.email }}"
           required
+          autofocus
           class="form-control"
           aria-describedby="emailHelp"
-          placeholder="Enter email"
+          placeholder="Це буде ваше ім’я для входу"
           autocomplete="username email"
         >
-        <small id="emailHelp" class="form-text text-muted">This will be your login name.</small>
+        <div class="valid-feedback">
+          Виглядає добре!
+        </div>
       </div>
-      <!-- Password input -->
-      <div class="form-group row">
-        <label for="inputPassword">Password</label>
+      <!-- Password -->
+      <div class="form-group">
+        <label for="inputPassword">Пароль</label>
         <input
           id="inputPassword"
           type="password"
           name="password"
           required
+          pattern="^.*(?=.{1,6})(?=.*\d)(?=.*[a-zA-Z]).*$"
           class="form-control"
-          placeholder="Password"
           autocomplete="new-password"
-          title="Minimum 6 chars, at least one letter and number"
+          title="Продовжуйте пробувати..."
         >
       </div>
       <!-- Show password checkbox -->
-      <div class="form-group row custom-control custom-checkbox">
+      <div class="form-group custom-control custom-checkbox">
         <input
           type="checkbox"
           onclick="togglePasswordVis()"
@@ -107,55 +77,86 @@
           id="signupPasswordCheckbox"
           name="signupPasswordCheckbox"
         />
-        <label class="custom-control-label" for="signupPasswordCheckbox">Show password</label>
+        <label class="custom-control-label" for="signupPasswordCheckbox">Показати пароль</label>
       </div>
       <!-- User name -->
-      <div class="form-group row">
-        <label for="inputName">Name</label>
+      <div class="form-group">
+        <label for="inputName">Ім'я</label>
         <input
+          type="text"
           id="inputName"
           name="name"
           value="{{ user.name }}"
           required
-          autofocus
           class="form-control"
-          placeholder="Your name here"
+          placeholder="Ваше ім'я"
         >
+        <div class="valid-feedback">
+          Looks good!
+        </div>
       </div>
       <!-- Last name -->
-      <div class="form-group row">
-        <label for="inputLastName">Last Name</label>
+      <div class="form-group">
+        <label for="inputLastName">Прізвище</label>
         <input
           id="inputLastName"
           name="lastName"
+          type="text"
           value="{{ user.lastName }}"
           required
-          autofocus
           class="form-control"
-          placeholder="Your last name"
+          placeholder="Та прізвище"
         >
       </div>
       <!-- Gender -->
-      <fieldset class="form-group row">
-        <legend class="col-form-label col-sm-2 pl-0">Gender</legend>
+      <fieldset class="form-group mb-0">
+        <legend class="col-form-label col-sm-2 pl-0">Стать</legend>
         <div class="col-sm-10 pl-0">
-          <div class="custom-control custom-radio custom-control-inline">
-            <input class="custom-control-input" type="radio" name="gender" id="genderMale" value="male" checked>
+          <div class="py-1 custom-control custom-radio custom-control-inline">
+            <input
+              class="custom-control-input"
+              type="radio"
+              name="gender"
+              id="genderMale"
+              value="male"
+              required
+            >
             <label class="custom-control-label" for="genderMale">
-              Male
+              👨 Чоловіча
             </label>
           </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input class="custom-control-input" type="radio" name="gender" id="genderFemale" value="female">
+          <div class="py-1 custom-control custom-radio custom-control-inline">
+            <input
+              class="custom-control-input"
+              type="radio"
+              name="gender"
+              id="genderFemale"
+              value="female"
+              required
+            >
             <label class="custom-control-label" for="genderFemale">
-              Female
+              👩 Жіноча
+            </label>
+          </div>
+          <div class="py-1 custom-control custom-radio custom-control-inline">
+            <input
+              class="custom-control-input"
+              type="radio"
+              name="gender"
+              id="genderTrans"
+              value="trans"
+              required
+            >
+            <label class="custom-control-label" for="genderTrans">
+              ⚧️ Transgender
             </label>
           </div>
         </div>
+        <label id="gender-error" class="error" for="gender"></label>
       </fieldset>
       <!-- Birthday -->
-      <div class="form-group row">
-        <label for="birthDate">Date of birth</label>
+      <div class="form-group">
+        <label for="birthDate">Дата народження</label>
           <input
             class="form-control"
             type="date"
@@ -166,8 +167,8 @@
           >
       </div>
       <!-- Vehicle -->
-      <fieldset class="form-group row">
-        <legend class="col-form-label col-sm-2 pl-0">Vehicle</legend>
+      <fieldset class="form-group">
+        <legend class="col-form-label col-10 pl-0">Транспортний засіб</legend>
         <div class="col-sm-10 pl-0">
           <div class="custom-control custom-radio custom-control-inline">
             <input 
@@ -180,7 +181,7 @@
               onclick="toggleCarNameField()"
             >
             <label class="custom-control-label" for="noCar">
-              No
+              Немає
             </label>
           </div>
           <div class="custom-control custom-radio custom-control-inline">
@@ -193,35 +194,43 @@
               onclick="toggleCarNameField()"
             >
             <label class="custom-control-label" for="car">
-              Yes
+              Так
             </label>
           </div>
         </div>
       </fieldset>
       <!-- Vehicle name -->
-      <div class="form-group row">
-        <label for="inputCarName">Car name</label>
+      <div class="form-group">
+        <label for="inputCarName">Марка автомобіля</label>
         <input
-          class="form-control"
+          type="text"
           id="inputCarName"
           name="carName"
-          value="{{ user.carName }}"
-          placeholder="Ford, Subaru, Renault"
-          {% if user.car == 1 %} disabled="false" {% else %} disabled="disabled" {% endif %}
+          class="form-control"
+          {% if user.car == 1 %}
+            disabled="false"
+            value="{{ user.carName }}"
+          {% else %}
+            disabled="disabled"
+          {% endif %}
         >
       </div>
       <!-- Terms agreement -->
-      <div class="form-group row custom-control custom-checkbox">
+      <div class="form-group custom-control custom-checkbox">
         <input
           type="checkbox"
           class="custom-control-input"
           id="terms"
-          name="terms">
-        <label class="custom-control-label" for="terms">I agree to the <a href="#">terms and conditions</a>.</label>
+          name="terms"
+          required
+        >
+        <label class="custom-control-label" for="terms">
+          Я погоджуюся з <a href="/rules">умовами використання</a> сайту.
+        </label><br />
         <label id="terms-error" class="error" for="terms"></label>
       </div>
       <!-- Signup button -->
-      <button type="submit" class="btn btn-primary">Sign up</button>
+      <button type="submit" class="btn btn-primary">Зареєструватися</button>
     </form>
   </div>
 </section>

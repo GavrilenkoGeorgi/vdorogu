@@ -55,7 +55,8 @@ class View {
     static $twig = null;
 
     if ($twig === null) {
-      Locale::setDefault('uk-UA'); //?
+      // Locale::setDefault('uk-UA'); //?
+      Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
       $loader = new \Twig_Loader_Filesystem(dirname(__DIR__) . '/App/Views');
       $twig = new \Twig_Environment($loader);
       $twig->addExtension(new IntlExtension());

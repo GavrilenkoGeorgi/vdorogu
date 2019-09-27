@@ -6,10 +6,10 @@
 <section class="container-fluid">
   <article class="row justify-content-center px-2">
     <div class="col-12 py-3">
-      <h1 class="text-center text-primary font-weight-light">Timetable:</h1>
+      <h1 class="text-center text-primary font-weight-light">Розклад:</h1>
     </div>
     <div class="col-12 col-lg-9 col-xl-7 py-2">
-      <div class="row">
+      <div class="row text-primary">
         <div class="col-4 col-md-2">
           Дата
         </div>
@@ -35,22 +35,36 @@
           </small>
         </div>
         <!-- Origin -->
-        <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
-          {{ origin|first }}
+        <div class="overflow-hidden col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
+          {% set city = origin|slice(0,2) %}
+          {% set county = origin[3:] %}
+          {{ city|join(' ') }}
+          {{ county|join(' ')}}
         </div>
         <!-- Destination -->
-        <div class="col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
-          {{ destination|first }}
+        <div class="overflow-hidden col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
+          {% set city = destination|slice(0,2) %}
+          {% set county = destination[3:] %}
+          {{ city|join(' ') }}
+          {{ county|join(' ')}}
         </div>
         <!-- Seats -->
         <div class="col-6 col-sm-6 col-md-2 align-self-center text-right">
           {% set freeSeats = route.pax_capacity - route.occupied %}
           {% if freeSeats == 0 %}
-          <small class="text-muted">No seats left</small>
+          <small class="text-muted">Місць не залишилося.</small>
           {% else %}
+          <a href="/routes/details?routeId={{ route.id }}"
+            title="Список пасажирів!"
+          >
           <small>
-            Seats left: {{ freeSeats }} of {{ route.pax_capacity }}
+            Вільні місця:<br />
+              <span class="text-primary font-weight-bold">
+                {{ freeSeats }}
+              </span>
+              з {{ route.pax_capacity }}
           </small>
+          </a>
           {% endif %}
         </div>
         <!-- Buttons -->
@@ -60,7 +74,7 @@
             <button type="submit"
               class="btn btn-sm btn-outline-success"
             >
-              Ride
+              Го
             </button>
           </form>
           {% endif %}
@@ -74,7 +88,7 @@
               від {{ route.origin }} до {{ route.destination }}
               з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
           >
-            info
+            Інфо
           </a>
         </div>
       </div>

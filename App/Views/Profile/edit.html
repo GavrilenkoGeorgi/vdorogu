@@ -15,8 +15,17 @@
      */
     $('#formProfile').validate({
       rules: {
-        name: 'required',
-        lastName: 'required',
+        name: {
+          required: true,
+          maxlength: 12
+        },
+        lastName: {
+          required: true,
+          maxlength: 12
+        },
+        carName: {
+          maxlength: 12
+        },
         email: {
           required: true,
           email: true,
@@ -37,7 +46,7 @@
       },
       messages: {
         email: {
-          remote: 'Email already taken'
+          remote: 'E-mail вже зайнято'
         }
       }
     })
@@ -47,7 +56,7 @@
 {% endblock %}
 <section class="container-fluid">
 
-<h1 class="text-center text-primary font-weight-light">Edit profile</h1>
+<h1 class="py-3 text-center text-primary font-weight-light">Редагувати профіль</h1>
 
 <div class="container py-2">
   <div class="row justify-content-center">
@@ -69,8 +78,8 @@
     <!-- Form -->
       <form method="post" id="formProfile" action="/profile/update">
         <!-- Name -->
-        <div class="form-group row">
-          <label for="inputName">Name</label>
+        <div class="form-group">
+          <label for="inputName">Ім'я</label>
           <input
             id="inputName"
             name="name"
@@ -82,8 +91,8 @@
           >
         </div>
         <!-- Last name -->
-        <div class="form-group row">
-          <label for="inputName">Name</label>
+        <div class="form-group">
+          <label for="inputName">Прізвище</label>
           <input
             id="inputLastName"
             name="lastName"
@@ -95,8 +104,8 @@
           >
         </div>
         <!-- Email -->
-        <div class="form-group row">
-          <label for="inputEmail">Email address</label>
+        <div class="form-group">
+          <label for="inputEmail">Адреса електронної пошти</label>
           <input
             id="inputEmail"
             type="email"
@@ -107,11 +116,21 @@
             aria-describedby="emailHelp"
             placeholder="Enter email"
             autocomplete="username email"
+            {% if user.id == 1 %}
+              disabled
+            {% endif %}
           >
+          {% if user.id == 1 %}
+          <small id="passwordHelp"
+            class="form-text text-muted"
+          >
+            Ви не можете цього зробити для цього користувача.
+          </small>
+          {% endif %}
         </div>
         <!-- Password -->
-        <div class="form-group row">
-          <label for="inputPassword">Password</label>
+        <div class="form-group">
+          <label for="inputPassword">Пароль</label>
           <input
             id="inputPassword"
             type="password"
@@ -119,13 +138,20 @@
             class="form-control"
             placeholder="Password"
             autocomplete="new-password"
-            title="Minimum 6 chars, at least one letter and number"
+            title="Мінімум 6 символів, принаймні одна літера та цифра."
             aria-describedby="passwordHelp"
+            {% if user.id == 1 %}
+              disabled
+            {% endif %}
           >
-          <small id="passwordHelp" class="form-text text-muted">Leave blank to keep current password.</small>
+          {% if user.id == 1 %}
+          <small id="passwordHelp" class="form-text text-muted">Будь ласка, не змінюйте демо-пароль.</small>
+          {% else %}
+          <small id="passwordHelp" class="form-text text-muted">Залиште порожнє, щоб зберегти поточний пароль.</small>
+          {% endif %}
         </div>
         <!-- Show password checkbox -->
-        <div class="form-group row custom-control custom-checkbox">
+        <div class="form-group custom-control custom-checkbox">
           <input
             type="checkbox"
             onclick="togglePasswordVis()"
@@ -133,11 +159,11 @@
             id="signupPasswordCheckbox"
             name="signupPasswordCheckbox"
           />
-          <label class="custom-control-label" for="signupPasswordCheckbox">Show password</label>
+          <label class="custom-control-label" for="signupPasswordCheckbox">Показати пароль</label>
         </div>
         <!-- Birthday -->
-        <div class="form-group row">
-          <label for="birthDate">Date of birth</label>
+        <div class="form-group">
+          <label for="birthDate">Дата народження</label>
             <input
               class="form-control"
               type="date"
@@ -147,41 +173,58 @@
             >
         </div>
         <!-- Gender -->
-        <fieldset class="form-group row">
-          <legend class="col-form-label col-sm-2 pl-0">Gender</legend>
+        <fieldset class="form-group mb-0">
+          <legend class="col-form-label col-sm-2 pl-0">Стать</legend>
           <div class="col-sm-10 pl-0">
-            <div class="custom-control custom-radio custom-control-inline">
+            <div class="py-1 custom-control custom-radio custom-control-inline">
               <input
                 class="custom-control-input"
                 type="radio"
                 name="gender"
                 id="genderMale"
                 value="male"
-                checked
+                required
+                {% if user.gender == 'male' %} checked {% endif %}
               >
               <label class="custom-control-label" for="genderMale">
-                Male
+                👨 Чоловіча
               </label>
             </div>
-            <div class="custom-control custom-radio custom-control-inline">
+            <div class="py-1 custom-control custom-radio custom-control-inline">
               <input
                 class="custom-control-input"
                 type="radio"
                 name="gender"
                 id="genderFemale"
                 value="female"
+                required
                 {% if user.gender == 'female' %} checked {% endif %}
               >
               <label class="custom-control-label" for="genderFemale">
-                Female
+                👩 Жіноча
+              </label>
+            </div>
+            <div class="py-1 custom-control custom-radio custom-control-inline">
+              <input
+                class="custom-control-input"
+                type="radio"
+                name="gender"
+                id="genderTrans"
+                value="trans"
+                required
+                {% if user.gender == 'trans' %} checked {% endif %}
+              >
+              <label class="custom-control-label" for="genderTrans">
+                ⚧️ Transgender
               </label>
             </div>
           </div>
+          <label id="gender-error" class="error" for="gender"></label>
         </fieldset>
         <!-- Vehicle -->
-        <fieldset class="form-group row">
+        <fieldset class="form-group">
           <legend class="col-form-label col-sm-2 pl-0">
-            Car
+            Авто
           </legend>
           <div class="col-sm-10 pl-0">
             <div class="custom-control custom-radio custom-control-inline">
@@ -194,7 +237,7 @@
                 onclick="toggleCarNameField()"
               >
               <label class="custom-control-label" for="noCar">
-                No
+                Ні
               </label>
             </div>
             <div class="custom-control custom-radio custom-control-inline">
@@ -208,14 +251,14 @@
                 {% if user.car %}checked{% endif %}
               >
               <label class="custom-control-label" for="hasCar">
-                Yes
+                Так
               </label>
             </div>
           </div>
         </fieldset>
         <!-- Vehicle name -->
-        <div class="form-group row">
-          <label for="inputCarName">Car name</label>
+        <div class="form-group">
+          <label for="inputCarName">Марка авто</label>
           <input
             class="form-control"
             id="inputCarName"
@@ -226,14 +269,18 @@
           >
         </div>
         <!-- Save button -->
-        <div class="form-group row justify-content-end">
-          <button type="submit" class="btn btn-primary">Save</button>
+        <div class="form-group justify-content-end">
+          <button type="submit"
+            class="btn btn-primary"
+          >
+            Зберегти
+          </button>
           <a role="button"
-              class="btn btn-secondary ml-2 text-white"
-              href="/profile/show"
-            >
-              Cancel
-            </a>
+            class="btn btn-secondary ml-2 text-white"
+            href="/profile/show"
+          >
+            Скасувати
+          </a>
         </div>
       </form>
     </div>

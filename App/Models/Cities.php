@@ -9,7 +9,7 @@ use PDO;
  */
 class Cities extends \Core\Model {
   /**
-   * Get cities list for the form
+   * Get cities list for the form (unused now, remove)
    * 
    * @return mixed
    */
@@ -35,20 +35,26 @@ class Cities extends \Core\Model {
    */
   public static function searchCity($search_param) {
     $sql = 'SELECT city, provinces.province, counties.county
-      FROM cities
-      JOIN provinces ON cities.province = provinces.id
-      JOIN counties ON provinces.county = counties.id
-      WHERE city LIKE :search_param';
+            FROM cities
+            LEFT JOIN provinces ON cities.province = provinces.id
+            LEFT JOIN counties ON provinces.county = counties.id
+            WHERE city LIKE :search_param ORDER BY city ASC';
 
     $db = static::getDB();
     $stmt = $db->prepare($sql);
 
-    $stmt->bindValue('search_param', $search_param.'%', PDO::PARAM_STR);
+    $stmt->bindValue('search_param', '%'.$search_param.'%', PDO::PARAM_STR);
     $stmt->execute();
     $result = array();
 
     while($location = $stmt->fetch(PDO::FETCH_OBJ)) {
-      array_push($result, $location->city .' '. $location->province .' '. $location->county);
+
+      if (!empty($location->province)) {
+        $textDescr = $location->city .' '. $location->province .' '. $location->county . ' обл.';
+      } else {
+        $textDescr = $location->city;
+      }
+      array_push($result, $textDescr);
     }
     return $result;
   }

@@ -1,0 +1,7 @@
+Вас було додано до списку пасажирів.
+
+Ви йдете до {{ destination }} з {{ name }} {{last_name}} в якості водія.
+Виїжджаєте з {{ origin }} -- {{ departure|localizeddate('long', 'none', locale) }}.
+
+Подивитися список пасажирів або скасувати поїздку ви можете в вашому профілі: http://vdorogu.rf.gd/profile/show
+

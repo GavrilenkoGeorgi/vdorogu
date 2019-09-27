@@ -4,38 +4,43 @@
 
 {% block main %}
 <section class="container-fluid">
-  <article class="row justify-content-center">
+  <article class="row px-3">
     <div class="col-12">
-      <h1 class="text-center">Your chosen route:</h1>
+      <h1 class="py-3 text-center text-primary font-weight-light">Обраний маршрут:</h1>
     </div>
-    <div class="col-12 col-xl-10 py-3">
-      <div class="row justify-content-center py-3">
-        <div class="col-12 col-md-6">
-          You want to take a ride from: <strong>{{ route.origin }}</strong><br />
-          to <strong>{{ route.destination }}</strong><br />
-          at <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
-          with the <strong>{{ route.name }} {{ route.last_name }}</strong> as a driver.<br />
-          There are <strong>{{ route.pax_capacity }}</strong> seats overall and
-          <strong>{{ route.pax_capacity - passengers|length }}</strong> vacant.
-        </div>
-        <ul>
-          {% for passenger in passengers %}
-          <li>
-            {{passenger.name}} {{passenger.last_name}}
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-        <div class="row justify-content-end">
-        <div class="col-12 col-md-6">
-            <a role="button"
-            class="btn btn-secondary ml-2 text-white"
-            href="/profile/show"
-          >
-            Back
-          </a>
-        </div>
-      </div>
+    <!-- Route data -->
+    <div class="p-3 col-12 col-md-6 col-lg-4 offset-lg-2">
+      <h6 class="text-primary">Деталі:</h6>
+      <p> Ви хочете виїхати з: <strong>{{ route.origin }}</strong><br />
+        до <strong>{{ route.destination }}</strong><br />
+        в <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
+        з <strong>{{ route.name }} {{ route.last_name }}</strong> в якості водія.<br />
+        Існує <strong>{{ route.pax_capacity }}</strong> місця в цілому із
+        <strong>{{ route.pax_capacity - passengers|length }}</strong> вакантних.
+      </p>
+    </div>
+    <div class="p-3 col-12 col-md-6 col-lg-4">
+      <h6 class="text-primary">Список пасажирів:</h6>
+      {% if passengers is not empty %}
+      <ul class="list-group">
+        {% for passenger in passengers %}
+        <li class="list-group-item">
+          {{passenger.name}} {{passenger.last_name}}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <small class="text-secondary">Немає пасажирів.</small>
+      {% endif %}
+    </div>
+    <div class="py-3 col-12 text-center">
+      <a role="button"
+        class="btn btn-secondary ml-2 text-white"
+        href="#"
+        onclick="history.back();"
+      >
+        Назад
+      </a>
     </div>
   </article>
 </section>

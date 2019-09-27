@@ -7,13 +7,22 @@
 </section>
 <section class="container-fluid">
   <article class="row justify-content-center">
+    <div class="col-12 py-3">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8">
+          <h1 class="card-title text-primary font-weight-light">Допомога водіям та пасажирам Vdorogu</h1>
+          <p class="descr-text">Ми пропонуєми місце, де водії та пасажири зможуть знайти один одного
+            для здійснення спільної поїздки. На нашому сайті з пасажирів ніяка
+            додаткова плата не знімається.
+          </p>
+        </div>
+      </div>
+    </div>
     <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4 py-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Допомога водіям та пасажирам Vdorogu</h4>
-          Ми пропонуєми місце, де водії та пасажири зможуть знайти один одного
-          для здійснення спільної поїздки. На нашому сайті з пасажирів ніяка
-          додаткова плата не знімається.
+          <h4 class="card-title text-primary">Створіти маршрут</h4>
+            Водії можуть оголосити свої майбутні маршрути. Доступно понад 17 тис. напрямків.
         </div>
         {% include 'Home/createRouteForm.html' %}
       </div>
@@ -21,9 +30,9 @@
     <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4 py-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Route finder</h4>
-            Passengers can search for available routes, drivers
-            for passengers requests.
+          <h4 class="card-title text-primary">Знайти маршрут</h4>
+            Пасажири можуть шукати наявні маршрути, водії &mdash;
+            запити пасажирів.
         </div>
         {% include 'Home/findRouteForm.html' %}
       </div>

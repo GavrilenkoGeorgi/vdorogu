@@ -3,28 +3,10 @@
 {% block main %}
 
 {% block footer %}
-<script src="/public/js/app.js"></script>
-
-<script>
-  $(document).ready(function () {
-    /**
-     * Validate the form
-     */
-    $('#formPassword').validate({
-      rules: {
-        password: {
-          required: true,
-          minlength: 6,
-          validPassword: true
-        }
-      }
-    })
-  })
-</script>
-
+<script src="/public/js/formValidation.js"></script>
 {% endblock %}
 
-<h1 class="text-center">Reset password</h1>
+<h1 class="text-center">Відновити пароль</h1>
 
 <div class="container py-2">
   <div class="row justify-content-center">
@@ -32,7 +14,7 @@
       <!-- Errors if any -->
       {% if user.errors is not empty %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Please review your input:</strong>
+        <strong>Перегляньте свої дані:</strong>
         <ul>
         {% for error in user.errors %}
           <li>{{ error }}</li>
@@ -50,7 +32,7 @@
         <input type="hidden" name="token" value="{{ token }}" />
 
         <div class="form-group">
-          <label for="inputPassword">Password</label>
+          <label for="inputPassword">Пароль</label>
           <input
             id="inputPassword"
             type="password"
@@ -62,7 +44,7 @@
             title="Minimum 6 chars, at least one letter and number"
           >
         </div>
-        <button type="submit" class="btn btn-primary">Reset password</button>
+        <button type="submit" class="btn btn-primary">Відновити пароль</button>
       </form>
     </div>
   </div>

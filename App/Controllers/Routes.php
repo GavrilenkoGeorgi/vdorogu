@@ -38,13 +38,18 @@ class Routes extends Authenticated {
    */
   public function createAction() {
     $route = new Route($_POST);
-    var_dump($_POST);
     if ($route->create()) {
       Flash::addMessage('Route added.');
       $this->redirect('/routes');
     } else {
-      Flash::addMessage('Route was not added.');
-      $this->redirect('/');
+      $errors = '';
+      foreach ($route->errors as $value) {
+        $errors .= $value . ' ';
+      }
+      Flash::addMessage($errors, 'danger');
+      View::renderTemplate('Home/index.html', [
+        'createRouteData' => $route
+      ]);
     }
   }
   /**
@@ -61,9 +66,20 @@ class Routes extends Authenticated {
       View::renderTemplate('Routes/index.html', [
         'routes' => $list
       ]);
+    } else if (!empty($route->errors)) {
+      $errors = '';
+      foreach ($route->errors as $value) {
+        $errors .= $value . ' ';
+      }
+      Flash::addMessage($errors, 'danger');
+      View::renderTemplate('Home/index.html', [
+        'searchRouteData' => $route
+      ]);
     } else {
       Flash::addMessage('Not a single route found.');
-      $this->redirect('/');
+      View::renderTemplate('Home/index.html', [
+        'searchRouteData' => $route
+      ]);
     }
   }
   /**
@@ -76,7 +92,7 @@ class Routes extends Authenticated {
       Flash::addMessage('Route deleted.');
       $this->redirect('/profile/show');
     } else {
-      Flash::addMessage('Something went wrong while deleting your rooute, try again later.');
+      Flash::addMessage('Something went wrong while deleting your route, try again later.');
       $this->redirect('/profile/show');
     }
   }
@@ -140,15 +156,19 @@ class Routes extends Authenticated {
     $userIsDriver = Route::userIsDriver($routeId, $passengerId);
 
     if (!$userIsDriver) {
-      Flash::addMessage('You\'re the driver.');
+      Flash::addMessage('Ви водій.');
     } else if ($emptySeats == 0) {
-      Flash::addMessage('No seats left.');
+      Flash::addMessage('Місць не залишилося.');
     } else if (!empty($routesThisDay)) {
-      // if not empty
-      Flash::addMessage('Sorry, right now you can\'t take two trips in one day.');
+      // if it is the same date
+      Flash::addMessage('Вибачте, але зараз ви не можете здійснити дві поїздки за один день.');
     } else {
       Route::addPax($routeId, $passengerId);
-      Flash::addMessage('Passenger added.');
+      // Email stuff
+      $route = Route::getById($_GET['routeId']);
+      Route::sendPassengerNotification($this->user->email, $route);
+      // Confirmation
+      Flash::addMessage('Пасажира додано.');
     }
     $this->redirect('/routes');
   }

@@ -6,7 +6,7 @@
     <meta name="description" content="Test assignment, php, twig, mysql, bootstrap"/>
     <title>Vdorogu</title>
     <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/public/favicon.ico?v=2" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="/public/css/main.css" type="text/css">
@@ -44,27 +44,27 @@
           >
             <div class="navbar-nav mr-auto">
               {% if current_user is empty %}
-                <a class="nav-item nav-link pl-3"
+                <a class="nav-item nav-link text-primary"
                   href="/signup/new">Регістрація</a>
               {% endif %}
-              <a class="nav-item nav-link pl-3"
-                href="/rules">Правила використання сайту</a>
-              <a class="nav-item nav-link pl-3"
-                href="/allquestions">Запитання та відповіді</a>
-                <a class="nav-item nav-link pl-3 text-success"
+              <a class="nav-item nav-link text-success"
                 href="/routes">Маршрути</a>
+              <a class="nav-item nav-link"
+                href="/rules">Правила використання сайту</a>
+              <a class="nav-item nav-link"
+                href="/allquestions">Запитання та відповіді</a>
             </div>
-            <span class="navbar-text text-right">
+            <span class="navbar-text">
               {% if current_user %}
-              <a class="nav-item nav-link d-sm-block d-lg-inline text-primary"
+              <a class="pl-0 nav-item nav-link d-sm-block d-lg-inline text-primary"
                 href="/profile/show"
               >
                 Профіль користувача {{ current_user.name }}
               </a>
-              <a class="nav-item nav-link d-sm-block d-lg-inline text-left"
+              <a class="pl-0 nav-item nav-link d-sm-block d-lg-inline"
                   href="/logout">Вийти</a>
               {% else %}
-                <a class="nav-item nav-link d-sm-block d-lg-inline text-primary"
+                <a class="pl-0 nav-item nav-link d-sm-block d-lg-inline text-primary"
                 href="/login">Вхід</a>
               {% endif %}
             </span>
@@ -72,18 +72,14 @@
         </nav>
       </header>
       <!-- Main -->
-      <main class="col-12 px-0">
+      <main class="col-12 px-0 pb-3">
         <!-- Flash messages -->
         {% for message in flash_messages %}
-        <div class="row justify-content-center p-3">
-          <div class="col-12 col-sm-10 col-md-8 col-lg-6 p-3">
-            <div class="alert alert-{{ message.type }} alert-dismissible fade show">
-              {{ message.body }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          </div>
+        <div class="alert alert-{{ message.type }} alert-dismissible fade show col-12 col-sm-8 offset-sm-2 mt-3">
+          {{ message.body }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         {% endfor %}
         {% block main %}
@@ -92,9 +88,12 @@
       <!-- Footer -->
       <footer class="footer">
         <div class="container">
-          <span class="text-muted">Знайди собі попутника Vdorogu!</span>
+          <div class="row justify-content-between">
+            <span class="text-muted">Знайди собі попутника Vdorogu! &copy; {{ "now"|date("Y") }}</span>
+            <a href="mailto:info@vdorogu.rf.gd">info@vdorogu.rf.gd</a>
+          </div>
         </div>
       </footer>
-    </div> <!-- Main row -->
+    </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
 
 <section class="container">
   <article class="row justify-content-center">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-sm-10 col-md-8">
       <!-- Errors if any -->
       {% if question.errors is not empty %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -18,23 +18,23 @@
         </button>
       </div>
       {% endif %}
-      <h1 class="text-center">Ask your question</h1>
+      <h1 class="text-center text-primary font-weight-light py-3">Задайте своє запитання</h1>
       <form method="post" id="addQuestion" action="/questions/add">
         <!-- Add question form -->
         <div class="form-group">
-          <label for="subject">Subject</label>
+          <label for="subject">Тема</label>
           <input
             type="text"
             class="form-control"
             id="subject"
             name="subject"
             value="{{ question.subject }}"
-            placeholder="Would be really helpful.."
+            placeholder="Було б дуже корисно..."
           >
         </div>
         <!-- Text input -->
         <div class="form-group">
-          <label for="body">And your question here:</label>
+          <label for="body">І ваше запитання тут:</label>
           <textarea
             class="form-control"
             id="body"
@@ -43,7 +43,7 @@
           >{{ question.body }}</textarea>
         </div>
         <!-- Button -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Надіслати</button>
       </form>
     </div>
   </article>

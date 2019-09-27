@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
+{% block title %}Login{% endblock %}
+
 {% block main %}
+
+{% block footer %}
+<script src="/public/js/formValidation.js"></script>
+{% endblock %}
+
 <h1 class="text-center text-primary font-weight-light py-3">Логін</h1>
 
 <div class="container py-2">
@@ -18,11 +25,15 @@
       </div>
       {% endif %}
       <!-- Form -->
-      <form method="post" action="/login/create">
+      <form method="post"
+        id="loginForm"
+        action="/login/create"
+        class="needs-validation"
+        >
         <div class="form-group">
-          <label for="inputEmail">Email address</label>
+          <label for="loginEmail">Адреса електронної пошти</label>
           <input
-            id="inputEmail"
+            id="loginEmail"
             type="email"
             name="email"
             class="form-control"
@@ -30,18 +41,22 @@
             placeholder="Email"
             value="{{ email }}"
             autocomplete="username email"
-            autofocus
+            required
           >
+          <div class="valid-feedback">
+            Виглядає добре!
+          </div>
         </div>
         <div class="form-group">
-          <label for="inputPassword">Password</label>
+          <label for="loginPassword">Пароль</label>
           <input
-            id="inputPassword"
+            id="loginPassword"
             type="password"
             name="password"
             class="form-control"
             placeholder="Password"
             autocomplete="current-password"
+            required
           >
         </div>
         <!-- Checkbox -->
@@ -53,10 +68,10 @@
             name="remember_me"
             {% if remember_me %} checked="checked" {% endif %}
           />
-          <label class="custom-control-label" for="remember_me">Remember me</label>
+          <label class="custom-control-label" for="remember_me">Запам'ятати мене на цьому комп'ютері.</label>
         </div>
-        <button id="loginBtn" type="submit" class="btn btn-primary" disabled>Log In</button>
-        <a class="pl-3" href="/password/forgot">Forgot password?</a>
+        <button id="loginBtn" type="submit" class="btn btn-primary" disabled>Увійти</button>
+        <a class="pl-3" href="/password/forgot">Забули пароль?</a>
         <!-- Recaptcha hidden input -->
         <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
       </form>
