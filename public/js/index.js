@@ -3,7 +3,8 @@
  *
  * @return void
  */
-function toggleCarNameField() {
+// eslint-disable-next-line no-unused-vars
+function toggleCarNameField () {
   const textField = document.getElementById('inputCarName')
   textField.disabled = !textField.disabled
   textField.required = !textField.required
@@ -13,7 +14,8 @@ function toggleCarNameField() {
  *
  * @return void
 */
-function togglePasswordVis() {
+// eslint-disable-next-line no-unused-vars
+function togglePasswordVis () {
   const passwordField = document.getElementById('inputPassword')
   if (passwordField.type === 'password') {
     passwordField.type = 'text'
@@ -30,11 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Parallax
   const image = document.getElementsByClassName('thumbnail')
+  // eslint-disable-next-line no-unused-vars
   const carImage = new simpleParallax(image, {
     delay: 2,
     transition: 'cubic-bezier(0,0,0,1)',
     orientation: 'right'
   })
+  // Auto hide alerts
+  window.setTimeout(function () {
+    $('.alert').fadeTo(500, 0).slideUp(500, function () {
+      $(this).remove()
+    })
+  }, 1500)
 })
 
 // Datalists for main page forms
