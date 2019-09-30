@@ -27,8 +27,10 @@ class Routes extends Authenticated {
    */
   public function indexAction() {
     $allRoutes = Route::getAll();
+    $userRoutesIds = Route::getUserRoutesIds($this->user->id);
     View::renderTemplate('Routes/index.html', [
-      'routes' => $allRoutes
+      'routes' => $allRoutes,
+      'user_routes_ids' => $userRoutesIds
     ]);
   }
   /**
@@ -103,10 +105,12 @@ class Routes extends Authenticated {
   public function deleteAction() {
     if (Route::delete($_GET['id'])) {
       Flash::addMessage('Route deleted.');
-      $this->redirect('/profile/show');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
     } else {
       Flash::addMessage('Something went wrong while deleting your route, try again later.');
-      $this->redirect('/profile/show');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
     }
   }
   /**
@@ -145,11 +149,13 @@ class Routes extends Authenticated {
     $routeId = $_GET['routeId'];
     $passengerId = $this->user->id;
     if(Route::removePassenger($routeId, $passengerId)) {
-      Flash::addMessage('You canceled this trip.');
-      $this->redirect('/profile/show');
+      Flash::addMessage('Ви скасували цю поїздку.');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
     } else {
-      Flash::addMessage('Something went wrong, try again later.');
-      $this->redirect('/profile/show');
+      Flash::addMessage('Щось пішло не так, спробуйте знову пізніше.');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
     }
   }
   /**

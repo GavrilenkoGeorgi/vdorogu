@@ -3,12 +3,18 @@
 {% block title %}All routes list{% endblock %}
 
 {% block main %}
+
+{% set ids_to_check = [] %}
+{% for id in user_routes_ids %}
+  {% set ids_to_check = ids_to_check|merge([id.route_id]) %}
+{% endfor %}
+
 <section class="container-fluid">
   <article class="row justify-content-center px-2">
-    <div class="col-12 py-3">
-      <h1 class="text-center text-primary font-weight-light">Розклад:</h1>
+    <div class="col-12">
+      <h1 class="py-3 text-center text-primary font-weight-light">Розклад:</h1>
     </div>
-    <div class="col-12 col-lg-9 col-xl-7 py-2">
+    <div class="col-12 col-xl-11">
       <div class="row text-primary">
         <div class="col-4 col-md-2">
           Дата
@@ -24,8 +30,11 @@
     {% for route in routes %}
     {% set origin = route.origin|split(' ') %}
     {% set destination = route.destination|split(' ') %}
-    <div class="col-12 col-lg-9 col-xl-7 py-2">
-      <div class="row py-2 border rounded {{ current_user.id == route.driver_id ? 'border-success' }}">
+    <div class="col-12 col-xl-11 py-2">
+      <div
+        class="row py-2 border rounded
+        {{ current_user.id == route.driver_id ? 'border-success' }}"
+      >
         <!-- Departure and driver -->
         <div class="col-4 col-sm-4 col-md-2">
           {{ route.departure|date('d-m-Y') }}<br />
@@ -69,7 +78,7 @@
         </div>
         <!-- Buttons -->
         <div class="col-6 col-sm-6 col-md-2 d-flex align-items-center justify-content-end">
-          {% if freeSeats > 0 and current_user.id != route.driver_id %}
+          {% if freeSeats > 0 and current_user.id != route.driver_id and route.id not in ids_to_check %}
           <form method="post" action="/routes/ride?routeId={{ route.id }}">
             <button type="submit"
               class="btn btn-sm btn-outline-success"
@@ -77,9 +86,17 @@
               Го
             </button>
           </form>
+          {% elseif route.id in ids_to_check %}
+          <form method="post" action="/routes/removePassenger?routeId={{ route.id }}">
+            <button type="submit"
+              class="ml-1 btn btn-sm btn-outline-danger"
+            >
+              Відмінити
+            </button>
+          </form>
           {% endif %}
           <a tabindex="0" role="button"
-            class="btn btn-sm btn-outline-primary popover-dismiss ml-1"
+            class="ml-1 btn btn-sm btn-outline-primary popover-dismiss"
             data-toggle="popover"
             data-trigger="focus"
             title="{{ route.name }} до {{ destination|join(' ') }}"
@@ -96,5 +113,4 @@
     {% endfor %}
   </article>
 </section>
-<!-- List of routes -->
 {% endblock %}
