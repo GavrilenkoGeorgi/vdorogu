@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}User routes{% endblock %}
+
+{% block main %}
+<section class="container">
+  <article class="row justify-content-center">
+    <div class="col-12">
+      <h1 class="py-3 text-center font-weight-light text-primary">Маршрути користувача</h1>
+    </div>
+    <!-- Routes display column -->
+    <div class="col-12 col-lg-10">
+    {% if routes is not empty %}
+    <!-- Driver routes -->
+      <h4 class="py-2 text-center text-primary font-weight-light">
+        Ваші маршрути як водія
+      </h4>
+      {% for route in routes %}
+        <div class="row row-highlight py-2">
+          <!-- Departure -->
+          <div class="col-4 col-md-2 py-2 align-self-center">
+            <small>{{ route.departure|localizeddate('long', 'none', locale) }}</small>
+          </div>
+          <!-- Origin -->
+          <div class="col-4 col-md-2 px-0 py-2 align-self-center text-dark font-weight-bold overflow-hidden">
+            {% set shortOrigin = route.origin|split(' ') %}
+            {% set city = shortOrigin|slice(0,2) %}
+            {{ city|join(' ') }}
+          </div>
+          <!-- Destination -->
+          <div class="col-4 col-md-3 px-0 py-2 align-self-center text-secondary font-weight-bold overflow-hidden">
+            {% set shortDestination = route.destination|split(' ') %}
+            {% set city = shortDestination|slice(0,2) %}
+            {{ city|join(' ') }}
+          </div>
+          <!-- Seats -->
+          {% set freeSeats = route.pax_capacity - route.occupied %}
+          <div class="col-6 col-md-2 py-2 align-self-center">
+            <small>
+              <a
+                href="/routes/details?routeId={{ route.id }}"
+                title="Список пасажирів!"
+              >
+                Місць: {{ freeSeats }} з {{ route.pax_capacity }}
+              </a>
+            </small>
+          </div>
+          <!-- Buttons -->
+          <div class="col-6 col-md-3 py-2 px-0 pr-3 d-flex align-items-center justify-content-end">
+            <a tabindex="0" role="button"
+              class="btn btn-sm btn-outline-primary popover-dismiss mr-2"
+              data-toggle="popover"
+              data-trigger="focus"
+              title="{{ route.name }} до {{ route.destination }}"
+              data-content="Від'їжджає
+              {{ route.departure|localizeddate('long', 'none', locale) }}
+                від {{ route.origin }} до {{ route.destination }}
+                з {{ route.occupied }} пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
+            >
+              Деталі
+            </a>
+            <form class="form-inline" method="post" action="/routes/delete?id={{ route.id }}">
+              <button type="submit"
+                class="btn btn-sm btn-outline-danger"
+              >
+                Видалити
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+      {% endif %}
+      {% if passenger_routes is not empty %}
+      <!-- Passenger routes -->
+        <h4 class="py-2 text-center text-primary font-weight-light">
+          Ваші пасажирські маршрути
+        </h4>
+        {% for route in passenger_routes %}
+          <div class="row row-highlight py-2">
+            <div class="col-4 col-md-2 align-self-center">
+              <small>{{ route.departure|localizeddate('long', 'none', locale) }}</small>
+            </div>
+            <!-- Origin -->
+            <div class="overflow-hidden col-4 col-md-2 px-0 py-2 align-self-center text-dark font-weight-bold">
+              {% set shortOrigin = route.origin|split(' ') %}
+              {% set city = shortOrigin|slice(0,2) %}
+              {{ city|join(' ') }}
+            </div>
+            <!-- Destination -->
+            <div class="overflow-hidden col-4 col-md-3 px-0 py-2 align-self-center text-secondary font-weight-bold">
+              {% set shortDestination = route.destination|split(' ') %}
+              {% set city = shortDestination|slice(0,2) %}
+              {{ city|join(' ') }}
+            </div>
+            <!-- Seats and drivers name -->
+            {% set freeSeats = route.pax_capacity - route.occupied %}
+            <div class="col-6 col-md-2 py-2 align-self-center">
+              <small>
+                {{ route.driver_name }} {{ route.driver_last_name }}
+              </small>
+              <br />
+              <small>
+                <a href="/routes/details?routeId={{ route.id }}"
+                  title="Список пасажирів!"
+                >
+                  Місць: {{ freeSeats }} з {{ route.pax_capacity }}
+                </a>
+              </small>
+            </div>
+            <!-- Buttons -->
+            <div class="col-6 col-md-3 py-2 px-0 pr-3 d-flex align-items-center justify-content-end">
+              <a tabindex="0" role="button"
+                class="btn btn-sm btn-outline-primary popover-dismiss mr-2"
+                data-toggle="popover"
+                data-trigger="focus"
+                title="{{ route.driver_name }} до {{ route.destination }}"
+                data-content="Від'їжджає
+                  {{ route.departure|localizeddate('long', 'none', locale) }}
+                  від {{ route.origin }} до {{ route.destination }}
+                  з {{ route.occupied }} пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
+              >
+                Деталі
+              </a>
+              <form class="form-inline" method="post" action="/routes/removePassenger?routeId={{ route.id }}">
+                <button type="submit"
+                  class="btn btn-sm btn-outline-danger"
+                >
+                  Видалити
+                </button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+      </div>
+  </article>
+</section>
+{% endblock %}

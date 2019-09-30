@@ -82,7 +82,7 @@
             class="btn btn-sm btn-outline-primary popover-dismiss ml-1"
             data-toggle="popover"
             data-trigger="focus"
-            title="{{ route.name }} {{ route.last_name }} to {{ destination|first }}"
+            title="{{ route.name }} до {{ destination|join(' ') }}"
             data-content="Від'їжджає
             {{ route.departure|localizeddate('long', 'none', locale) }}
               від {{ route.origin }} до {{ route.destination }}
@@ -96,5 +96,5 @@
     {% endfor %}
   </article>
 </section>
-<!-- List of routes style="border: 1px solid red" -->
+<!-- List of routes -->
 {% endblock %}

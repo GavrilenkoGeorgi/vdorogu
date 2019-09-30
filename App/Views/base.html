@@ -46,20 +46,23 @@
               {% if current_user is empty %}
                 <a class="nav-item nav-link text-primary"
                   href="/signup/new">Регістрація</a>
-              {% endif %}
+              {% else %}
               <a class="nav-item nav-link text-success"
-                href="/routes">Маршрути</a>
+                href="/routes/show">Маршрути користувача</a>
+              {% endif %}
               <a class="nav-item nav-link"
-                href="/rules">Правила використання сайту</a>
+                href="/routes">Всі маршрути</a>
               <a class="nav-item nav-link"
-                href="/allquestions">Запитання та відповіді</a>
+                href="/rules">Правила</a>
+              <a class="nav-item nav-link"
+                href="/allquestions">Питання та відповіді</a>
             </div>
             <span class="navbar-text">
               {% if current_user %}
               <a class="pl-0 nav-item nav-link d-sm-block d-lg-inline text-primary"
                 href="/profile/show"
               >
-                Профіль користувача {{ current_user.name }}
+                Профіль {{ current_user.name }}
               </a>
               <a class="pl-0 nav-item nav-link d-sm-block d-lg-inline"
                   href="/logout">Вийти</a>
@@ -86,13 +89,9 @@
         {% endblock %}
       </main>
       <!-- Footer -->
-      <footer class="footer">
-        <div class="container">
-          <div class="row justify-content-between">
-            <span class="text-muted">Знайди собі попутника Vdorogu! &copy; {{ "now"|date("Y") }}</span>
-            <a href="mailto:info@vdorogu.rf.gd">info@vdorogu.rf.gd</a>
-          </div>
-        </div>
+      <footer class="footer d-flex justify-content-around">
+        <span class="text-muted">Vdorogu! &copy; {{ "now"|date("Y") }}</span>
+        <a href="mailto:info@vdorogu.rf.gd">info@vdorogu.rf.gd</a>
       </footer>
     </div>
   </body>

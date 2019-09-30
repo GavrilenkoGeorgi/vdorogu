@@ -32,6 +32,19 @@ class Routes extends Authenticated {
     ]);
   }
   /**
+  * Show user routes
+  *
+  * @return void
+  */
+  public function showAction() {
+    $driverUserRoutes = Route::driverUserRoutes($this->user->id);
+    $passengerUserRoutes = Route::passengerUserRoutes($this->user->id);
+    View::renderTemplate('Routes/show.html', [
+      'routes' => $driverUserRoutes,
+      'passenger_routes' => $passengerUserRoutes
+    ]);
+  }
+  /**
    * Create route new route as a driver
    * 
    * @return void
