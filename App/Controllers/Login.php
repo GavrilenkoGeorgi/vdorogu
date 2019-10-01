@@ -43,7 +43,7 @@ class Login extends \Core\Controller {
     // if user exists and score is high enough
     if ($user && empty($user->errors) && $score >= 0.3) {
       Auth::Login($user, $remember_me);
-      Flash::addMessage('Login successful');
+      Flash::addMessage('Ви успішно ввійшли.');
       $this->redirect(Auth::getReturnToPage());
     } else if (!empty($user->errors)) {
       Flash::addMessage(join(' ', $user->errors), Flash::WARNING);
@@ -86,7 +86,7 @@ class Login extends \Core\Controller {
    * @return void
    */
   public function showLogoutMessageAction() {
-    Flash::addMessage('Logout successful');
+    Flash::addMessage('Вихід вдалий.');
     $this->redirect('/');
   }
 }

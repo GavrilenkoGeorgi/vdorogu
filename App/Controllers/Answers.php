@@ -45,7 +45,7 @@ class Answers extends Authenticated {
     if ($answer->add()) {
       // set question as answered
       Question::setAnswered($_POST['questionId']);
-      Flash::addMessage('Answer added.');
+      Flash::addMessage('Відповідь додано.');
       $this->redirect('/allquestions');
     } else {
       // with the help of hidden input field
@@ -64,9 +64,9 @@ class Answers extends Authenticated {
   public function deleteAction() {
     $id = $_GET['id'];
     if (Answer::delete($id)) {
-      Flash::addMessage('Answer deleted.');
+      Flash::addMessage('Відповідь видалено.', Flash::SUCCESS);
     } else {
-      Flash::addMessage('Answer was not deleted.');
+      Flash::addMessage('Відповідь не видалено.', Flash::WARNING);
     }
     $this->redirect('/allquestions');
   }

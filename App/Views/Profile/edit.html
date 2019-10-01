@@ -5,7 +5,7 @@
 {% block main %}
 
 {% block footer %}
-<script src="/public/js/app.js"></script>
+<script src="/public/js/formValidation.js"></script>
 
 <script>
   $(document).ready(function () {
@@ -54,13 +54,13 @@
 </script>
 
 {% endblock %}
-<section class="container-fluid">
+<section class="container">
 
 <h1 class="py-3 text-center text-primary font-weight-light">Редагувати профіль</h1>
 
-<div class="container py-2">
+<div class="container">
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+    <div class="px-0 col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
       <!-- Errors if any -->
       {% if user.errors is not empty %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -86,21 +86,21 @@
             value="{{ user.name }}"
             required
             class="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Your name here"
+            aria-describedby="inputName"
+            placeholder="Ваше ім'я"
           >
         </div>
         <!-- Last name -->
         <div class="form-group">
-          <label for="inputName">Прізвище</label>
+          <label for="inputLastName">Прізвище</label>
           <input
             id="inputLastName"
             name="lastName"
             value="{{ user.last_name }}"
             required
             class="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Your name here"
+            aria-describedby="inputLastName"
+            placeholder="Ваше прізвище тут"
           >
         </div>
         <!-- Email -->
@@ -113,7 +113,7 @@
             value="{{ user.email }}"
             required
             class="form-control"
-            aria-describedby="emailHelp"
+            aria-describedby="inputEmail"
             placeholder="Enter email"
             autocomplete="username email"
             {% if user.id == 1 %}
@@ -139,15 +139,15 @@
             placeholder="Password"
             autocomplete="new-password"
             title="Мінімум 6 символів, принаймні одна літера та цифра."
-            aria-describedby="passwordHelp"
+            aria-describedby="inputPassword"
             {% if user.id == 1 %}
               disabled
             {% endif %}
           >
           {% if user.id == 1 %}
-          <small id="passwordHelp" class="form-text text-muted">Будь ласка, не змінюйте демо-пароль.</small>
+          <small class="form-text text-muted">Будь ласка, не змінюйте демо-пароль.</small>
           {% else %}
-          <small id="passwordHelp" class="form-text text-muted">Залиште порожнє, щоб зберегти поточний пароль.</small>
+          <small id="inputPasswordHelp" class="form-text text-muted">Залиште порожнє, щоб зберегти поточний пароль.</small>
           {% endif %}
         </div>
         <!-- Show password checkbox -->
@@ -215,7 +215,7 @@
                 {% if user.gender == 'trans' %} checked {% endif %}
               >
               <label class="custom-control-label" for="genderTrans">
-                ⚧️ Transgender
+                ⚧️ Third gender
               </label>
             </div>
           </div>

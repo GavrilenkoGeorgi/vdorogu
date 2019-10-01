@@ -38,7 +38,7 @@
             type="email"
             name="email"
             class="form-control"
-            aria-describedby="emailHelp"
+            aria-describedby="loginEmail"
             placeholder="Email"
             value="{{ email }}"
             autocomplete="username email"
@@ -62,7 +62,10 @@
             >
             <div class="input-group-append">
               <span class="input-group-text" id="validationTooltipUsernamePrepend">
-                <a class="show-hide-password" href="">
+                  <a class="show-hide-password"
+                    href=""
+                    aria-label="Show hide password button"
+                  >
                   <i class="fa fa-eye-slash" aria-hidden="true">
                   </i>
                 </a>

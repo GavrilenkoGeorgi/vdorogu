@@ -11,13 +11,19 @@
       >
         <!-- Route origin -->
         <div class="form-group">
-          <label for="searchRouteOrigin">Звідки:</label>
+          <label for="searchRouteOrigin">
+            <span class="text-danger">
+              *
+            </span>
+            Звідки:
+          </label>
           <input
             type="text"
             name="routeOrigin"
             id="searchRouteOrigin"
             list="searchRouteOriginList"
             class="form-control"
+            aria-describedby="searchRouteOrigin"
             required
             {% if searchRouteData is not empty %}
               value="{{ searchRouteData.routeOrigin }}"
@@ -31,12 +37,14 @@
         </div>
         <!-- Route destination -->
         <div class="form-group">
-          <label for="routeDestination">Куди:</label>
+            <label for="searchRouteDestination">Куди:</label>
           <input type="text"
             name="routeDestination"
             id="searchRouteDestination"
             list="searchRouteDestinationList"
             class="form-control"
+            placeholder="За бажанням"
+            aria-describedby="searchRouteDestination"
             {% if searchRouteData is not empty %}
               value="{{ searchRouteData.routeDestination }}"
             {% endif %}

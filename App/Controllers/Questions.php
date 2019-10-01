@@ -38,7 +38,7 @@ class Questions extends Authenticated {
   public function addAction() {
     $question = new Question($_POST);
     if ($question->add()) {
-      Flash::addMessage('Question added.');
+      Flash::addMessage('Питання додано.', Flash::SUCCESS);
       $this->redirect('/allquestions');
     } else {
       View::renderTemplate('Questions/add.html', [
@@ -54,9 +54,9 @@ class Questions extends Authenticated {
   public function deleteAction() {
     $id = $_GET['id'];
     if (Question::delete($id)) {
-      Flash::addMessage('Question deleted.');
+      Flash::addMessage('Питання видалено.', Flash::SUCCESS);
     } else {
-      Flash::addMessage('Question was not deleted.');
+      Flash::addMessage('Питання не видалено.', Flash::WARNING);
     }
     $this->redirect('/allquestions');
   }

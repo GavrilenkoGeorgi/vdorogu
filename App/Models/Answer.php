@@ -34,7 +34,7 @@ class Answer extends \Core\Model {
   */
   public function validate() {
     if ($this->answer =='') {
-      $this->errors[] = 'Answer is required';
+      $this->errors[] = 'Потрібна відповідь.';
     }
   }
   /**

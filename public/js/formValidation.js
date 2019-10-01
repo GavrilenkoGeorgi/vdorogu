@@ -152,7 +152,7 @@ $(document).ready(function () {
         required: 'Перевірте це?'
       },
       carName: {
-        required: 'Golf GTI?'
+        required: 'Введіть назву виробника та модель вашого особистого транспортного засобу?'
       },
       terms: {
         required: 'Ви згодні?'
@@ -182,12 +182,68 @@ $(document).ready(function () {
       },
       password: {
         required: true
+      }
+    },
+    messages: {
+      email: {
+        required: 'Це поле є обов\'язковим.',
+        email: 'Неправильна електронна пошта.'
       },
-      messages: {
-        email: {
-          required: 'Це поле є обов\'язковим.',
-          email: 'Bad email'
-        }
+      password: {
+        required: 'Це поле є обов\'язковим.'
+      }
+    }
+  })
+  /**
+   * Validate the profile edit form
+   */
+  $('#formProfile').validate({
+    rules: {
+      name: {
+        required: true
+      },
+      lastName: 'required',
+      email: {
+        required: true,
+        email: true,
+        remote: '/account/validate-email'
+      },
+      password: {
+        required: true,
+        minlength: 6,
+        validPassword: true
+      },
+      birthDate: 'required',
+      carName: 'required',
+      terms: 'required'
+    },
+    messages: {
+      email: {
+        required: 'Це поле є обов\'язковим.',
+        remote: 'E-mail вже зайнято.',
+        minlength: '6'
+      },
+      password: {
+        required: 'Це поле є обов\'язковим.',
+        validPassword: 'Цифри та букви!'
+      },
+      name: {
+        required: 'Як вас звати.'
+      },
+      lastName: {
+        required: 'Ваше прізвище.'
+      },
+      gender: {
+        required: 'Ви повинні вирішити.'
+      },
+      birthDate: {
+        required: 'Перевірте це?'
+      },
+      carName: {
+        required: 'Введіть назву виробника та модель вашого особистого транспортного засобу?'
+      },
+      terms: {
+        required: 'Ви згодні?'
       }
     }
   })

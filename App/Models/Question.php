@@ -34,10 +34,10 @@ class Question extends \Core\Model {
   */
   public function validate() {
     if ($this->subject == '') {
-      $this->errors[] = 'Subject is required';
+      $this->errors[] = 'Тема обов\'язкова.';
     }
     if ($this->body == '') {
-      $this->errors[] = 'Question is required';
+      $this->errors[] = 'Питання обов\'язкове.';
     }
   }
   /**
