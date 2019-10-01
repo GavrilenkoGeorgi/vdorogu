@@ -6,6 +6,7 @@
 
 {% block footer %}
 <script src="/public/js/formValidation.js"></script>
+<script src="/public/js/showHidePassword.js"></script>
 {% endblock %}
 
 <h1 class="text-center text-primary font-weight-light py-3">Логін</h1>
@@ -49,15 +50,26 @@
         </div>
         <div class="form-group">
           <label for="loginPassword">Пароль</label>
-          <input
-            id="loginPassword"
-            type="password"
-            name="password"
-            class="form-control"
-            placeholder="Password"
-            autocomplete="current-password"
-            required
-          >
+          <div class="input-group" id="show_hide_password">
+            <input
+              id="loginPassword"
+              type="password"
+              name="password"
+              class="form-control"
+              placeholder="Password"
+              autocomplete="current-password"
+              required
+            >
+            <div class="input-group-append">
+              <span class="input-group-text" id="validationTooltipUsernamePrepend">
+                <a class="show-hide-password" href="">
+                  <i class="fa fa-eye-slash" aria-hidden="true">
+                  </i>
+                </a>
+              </span>
+            </div>
+          </div>
+          <label id="loginPassword-error"></label>
         </div>
         <!-- Checkbox -->
         <div class="custom-control custom-checkbox mb-3">

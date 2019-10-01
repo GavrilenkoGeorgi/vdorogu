@@ -37,23 +37,25 @@ class Login extends \Core\Controller {
     // get recaptcha score ???
     $score = User::getRecaptchaScore($_POST['recaptcha_response']);
     if ($score < 0.3) {
-      $errors[] = 'Оцінка Recaptcha занадто низька ' . $score;
+      $errors[] = 'Оцінка Recaptcha занадто низька: ' . $score;
     }
     $user = User::authenticate($_POST['email'], $_POST['password']);
     // if user exists and score is high enough
-    if ($user && $score >= 0.3) {
+    if ($user && empty($user->errors) && $score >= 0.3) {
       Auth::Login($user, $remember_me);
       Flash::addMessage('Login successful');
       $this->redirect(Auth::getReturnToPage());
-    } else {
-      // either user misspelled credentials or/and
-      // score is too low, add another error
-      // and render the login page
-      // Flash::addMessage('Перевірте свої дані', Flash::WARNING);
-      $errors[] = 'Перевірте свої дані';
+    } else if (!empty($user->errors)) {
+      Flash::addMessage(join(' ', $user->errors), Flash::WARNING);
       View::renderTemplate('Login/new.html', [
         'email' => $_POST['email'],
-        'errors' => $errors, // remove this
+        'remember_me' => $remember_me
+      ]);
+    } else {
+      $errors[] = 'Цю електронну адресу не знайдено!';
+      View::renderTemplate('Login/new.html', [
+        'email' => $_POST['email'],
+        'errors' => $errors,
         'remember_me' => $remember_me
       ]);
     }

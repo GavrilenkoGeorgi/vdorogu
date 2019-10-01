@@ -243,7 +243,13 @@ class User extends \Core\Model {
     if ($user && $user->is_active) {
       if (password_verify($password, $user->password_hash)) {
         return $user;
+      } else {
+        $user->errors[] = 'Неправильний пароль.';
+        return $user;
       }
+    } else if ($user && !$user->is_active) {
+      $user->errors[] = 'Не активований профіль.';
+      return $user;
     }
     return false;
   }
