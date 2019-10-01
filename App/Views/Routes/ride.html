@@ -14,8 +14,9 @@
       до <strong>{{ route.destination }}</strong><br />
       в <strong>{{ route.departure|date('d-m-Y') }}</strong><br />
       з <strong>{{ route.name }} {{ route.last_name }}</strong> в якості водія.<br />
-      Існує <strong>{{ route.pax_capacity }}</strong> місця в цілому із
-      <strong>{{ route.pax_capacity - passengers|length }}</strong> вакантних.
+      Вільно <strong>{{ route.pax_capacity - passengers|length }}</strong>
+      місц{{ route.pax_capacity - passengers|length == 1 ? 'e' : 'я'}}
+      з {{ route.pax_capacity }}{{ route.pax_capacity == 1 ? '-го' : '-х' }}.
     </div>
     <div class="pt-3 col-12 text-center">
       <form method="post" action="/routes/addPax?routeId={{ route.id }}">

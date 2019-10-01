@@ -5,7 +5,7 @@ namespace App\Controllers;
 use \Core\View;
 use \App\Auth;
 use \App\Flash;
-use \App\Models\Route;
+// use \App\Models\Route;
 
 /**
  * Profile controller
@@ -27,12 +27,12 @@ class Profile extends Authenticated {
    * @return void
    */
   public function showAction() {
-    $driverUserRoutes = Route::driverUserRoutes($this->user->id);
-    $passengerUserRoutes = Route::passengerUserRoutes($this->user->id);
+    // $driverUserRoutes = Route::driverUserRoutes($this->user->id);
+    // $passengerUserRoutes = Route::passengerUserRoutes($this->user->id);
     View::renderTemplate('Profile/show.html', [
       'user' => $this->user,
-      'routes' => $driverUserRoutes,
-      'passenger_routes' => $passengerUserRoutes
+      // 'routes' => $driverUserRoutes,
+      // 'passenger_routes' => $passengerUserRoutes
     ]);
   }
   /**

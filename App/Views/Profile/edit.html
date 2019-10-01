@@ -235,6 +235,7 @@
                 id="noCar"
                 value="0"
                 onclick="toggleCarNameField()"
+                {% if user.car == 0 %} checked {% endif %}
               >
               <label class="custom-control-label" for="noCar">
                 Ні
@@ -248,7 +249,7 @@
                 id="hasCar"
                 value="1"
                 onclick="toggleCarNameField()"
-                {% if user.car %}checked{% endif %}
+                {% if user.car %} checked {% endif %}
               >
               <label class="custom-control-label" for="hasCar">
                 Так
@@ -264,7 +265,7 @@
             id="inputCarName"
             name="carName"
             value="{{ user.car_name }}"
-            {% if user.car == 0 %}disabled{% endif %}
+            {% if user.car == 0 %} disabled {% endif %}
             placeholder="Ford, Subaru, Renault"
           >
         </div>

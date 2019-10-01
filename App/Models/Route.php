@@ -234,6 +234,26 @@ class Route extends \Core\Model {
     return $stmt->fetchAll();
   }
   /**
+   * Get routes in which user acts as a passenger
+   * 
+   * @return array Array with routes ids
+   */
+  public static function getUserRoutesIds($id) {
+    $sql = 'SELECT route_id
+            FROM pax_list
+            WHERE passenger_id = :id';
+
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindValue(':id', $id, PDO::PARAM_STR);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+  /**
    * Delete user created route
    * 
    * @param integer $id Id of the route to delete

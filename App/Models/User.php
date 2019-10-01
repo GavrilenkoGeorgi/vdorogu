@@ -430,7 +430,9 @@ class User extends \Core\Model {
     // What's this?
     $this->name = $data['name'];
     $this->lastName = $data['lastName'];
-    $this->email = $data['email'];
+    if (isset($data['email'])) {
+      $this->email = $data['email'];
+    }
     $this->birthDate = $data['birthDate'];
     $this->gender = $data['gender'];
     $this->car = $data['car'];
@@ -441,7 +443,7 @@ class User extends \Core\Model {
     }
 
     // Only validate and update the password if a value is provided
-    if ($data['password'] != '') {
+    if (isset($data['password']) && $data['password'] != '') {
       $this->password = $data['password'];
     }
     // Validate all data
