@@ -22,7 +22,12 @@
       <form method="post" id="addQuestion" action="/questions/add">
         <!-- Add question form -->
         <div class="form-group">
-          <label for="subject">Тема</label>
+          <label for="subject">
+            <span class="text-danger">
+              *
+            </span>
+            Тема
+          </label>
           <input
             type="text"
             class="form-control"
@@ -34,7 +39,12 @@
         </div>
         <!-- Text input -->
         <div class="form-group">
-          <label for="body">І ваше запитання тут:</label>
+          <label for="body">
+            <span class="text-danger">
+              *
+            </span>
+            І ваше запитання тут:
+          </label>
           <textarea
             class="form-control"
             id="body"

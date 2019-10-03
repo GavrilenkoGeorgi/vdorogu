@@ -43,31 +43,34 @@ class Route extends \Core\Model {
 
     // Origin
     if (empty($this->routeOrigin) || !is_string($this->routeOrigin)) {
-      $this->errors[] = 'Origin is required.';
+      $this->errors[] = 'Місто відправлення обов\'язкове.';
     } else if (strlen($this->routeOrigin) > 245) {
-      $this->errors[] = 'Check your origin input.';
+      $this->errors[] = 'Перевірте правильність місця відправлення.';
     }
 
     // $val = trim(htmlspecialchars($val));
     // Destination
     if (empty($this->routeDestination) || !is_string($this->routeDestination)) {
-      $this->errors[] = 'Destination is required.';
+      $this->errors[] = 'Місце призначення обов\'язкове.';
     } else if (strlen($this->routeDestination) > 245) {
-      $this->errors[] = 'Check your destination input.';
+      $this->errors[] = 'Перевірте правильність місця призначення.';
     }
 
     // Pax capacity
     if (empty($this->paxCapacity) || $this->paxCapacity > 5) {
-      $this->errors[] = 'Passengers.';
+      $this->errors[] = 'Кількість пасажирів повинна бути від 1 до 5.';
     }
 
     // Create departure date
     if (isset($this->createDepartureDate)) {
       $date = DateTime::createFromFormat("Y-m-d", $this->createDepartureDate);
+      $now = new DateTime();
     }
     $validDate = $date !== false && !array_sum($date::getLastErrors());
     if (!$validDate) {
-      $this->errors[] = 'Check your departure date.';
+      $this->errors[] = 'Перевірте дату відправлення.';
+    } else if ($date < $now){
+      $this->errors[] = 'Ви не можете планувати поїздку в минулому, перевірте дату відправлення.';
     }
   }
   /**
@@ -81,14 +84,14 @@ class Route extends \Core\Model {
 
     // Origin
     if (empty($this->routeOrigin) || !is_string($this->routeOrigin)) {
-      $this->errors[] = 'Origin is required.';
+      $this->errors[] = 'Місто відправлення обов\'язкове.';
     } else if (strlen($this->routeOrigin) > 245) {
-      $this->errors[] = 'Check your origin input.';
+      $this->errors[] = 'Перевірте правильність місця відправлення.';
     }
 
     // Destination
     if (!empty($this->routeOrigin) && strlen($this->routeDestination) > 245) {
-      $this->errors[] = 'Check your destination input.';
+      $this->errors[] = 'Перевірте правильність місця призначення.';
     }
 
     // Search departure date
@@ -96,7 +99,7 @@ class Route extends \Core\Model {
       $date = DateTime::createFromFormat("Y-m-d", $this->searchDepartureDate);
       $validDate = $date !== false && !array_sum($date::getLastErrors());
       if (!$validDate) {
-        $this->errors[] = 'Check your departure date.';
+        $this->errors[] = 'Перевірте дату відправлення.';
       }
     }
   }
@@ -514,6 +517,6 @@ class Route extends \Core\Model {
     // echo 'sending email';
     $text = View::getTemplate('Routes/notify_pass.txt', $data = (array) $data);
     $html = View::getTemplate('Routes/notify_pass.html', $data = (array) $data);
-    Mailer::send($email, 'Passenger added', $text, $html);
+    Mailer::send($email, 'Пасажира додано', $text, $html);
   }
 }

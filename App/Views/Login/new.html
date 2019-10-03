@@ -6,6 +6,7 @@
 
 {% block footer %}
 <script src="/public/js/formValidation.js"></script>
+<script src="/public/js/showHidePassword.js"></script>
 {% endblock %}
 
 <h1 class="text-center text-primary font-weight-light py-3">Логін</h1>
@@ -31,13 +32,15 @@
         class="needs-validation"
         >
         <div class="form-group">
-          <label for="loginEmail">Адреса електронної пошти</label>
+          <label for="loginEmail">
+            Адреса електронної пошти
+          </label>
           <input
             id="loginEmail"
             type="email"
             name="email"
             class="form-control"
-            aria-describedby="emailHelp"
+            aria-describedby="loginEmail"
             placeholder="Email"
             value="{{ email }}"
             autocomplete="username email"
@@ -49,15 +52,29 @@
         </div>
         <div class="form-group">
           <label for="loginPassword">Пароль</label>
-          <input
-            id="loginPassword"
-            type="password"
-            name="password"
-            class="form-control"
-            placeholder="Password"
-            autocomplete="current-password"
-            required
-          >
+          <div class="input-group" id="show_hide_password">
+            <input
+              id="loginPassword"
+              type="password"
+              name="password"
+              class="form-control"
+              placeholder="Password"
+              autocomplete="current-password"
+              required
+            >
+            <div class="input-group-append">
+              <span class="input-group-text" id="validationTooltipPasswordAppend">
+                  <a class="show-hide-password"
+                    href=""
+                    aria-label="Show hide password button"
+                  >
+                  <i class="fa fa-eye-slash" aria-hidden="true">
+                  </i>
+                </a>
+              </span>
+            </div>
+          </div>
+          <label id="loginPassword-error"></label>
         </div>
         <!-- Checkbox -->
         <div class="custom-control custom-checkbox mb-3">

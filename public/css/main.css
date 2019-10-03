@@ -35,6 +35,10 @@ body {
   margin-bottom: 0;
 }
 
+a.show-hide-password, a.show-hide-password:hover{
+  color:#333
+}
+
 .row-highlight:nth-child(even) {
   background-color: whitesmoke;
 }

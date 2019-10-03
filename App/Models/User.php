@@ -101,11 +101,11 @@ class User extends \Core\Model {
   public function validate() {
     // email
     if (filter_var($this->email, FILTER_VALIDATE_EMAIL) === false) {
-      $this->errors[] = 'Invalid email';
+      $this->errors[] = 'Недійсна електронна адреса';
     }
 
     if ($this->emailExists($this->email, $this->id ?? null)) {
-      $this->errors[] = 'Email already taken';
+      $this->errors[] = 'E-mail вже зайнято';
       // if email is already taken,
       // even if he agrees to the terms,
       // he will not be able to register with existing email
@@ -113,43 +113,43 @@ class User extends \Core\Model {
     // new email
     // check if user accepted the agreement
     if (empty($this->terms) && !$this->id) {
-      $this->errors[] = 'Check to agree to the terms and conditions';
+      $this->errors[] = 'Поставте прапорець, щоб прийняти умови.';
     }
     // Password
     if (isset($this->password)) {
       if (strlen($this->password) < 6) {
-        $this->errors[] = 'Password must be at least 6 chars';
+        $this->errors[] = 'Пароль повинен бути не менше 6 символів.';
       }
   
       if (preg_match('/.*[a-z]+.*/i', $this->password) == 0) {
-        $this->errors[] = 'Password needs at least one letter';
+        $this->errors[] = 'Для пароля потрібен хоча б одина буква.';
       }
   
       if (preg_match('/.*\d+.*/i', $this->password) == 0) {
-        $this->errors[] = 'Password needs at least one number';
+        $this->errors[] = 'Для пароля потрібно хоча б одна цифра.';
       }
     }
     // Name
     if ($this->name == '') {
-      $this->errors[] = 'Name is required';
+      $this->errors[] = 'Ім\'я обов\'язково.';
     }
     // Last Name
     if ($this->lastName == '') {
-      $this->errors[] = 'Last name is required';
+      $this->errors[] = 'Прізвище обов\'язкове.';
     }
     // Birth date
     $date = DateTime::createFromFormat("Y-m-d", $this->birthDate);
     $validDate = $date !== false && !array_sum($date::getLastErrors());
     if (!$validDate) {
-      $this->errors[] = 'Check your birthday';
+      $this->errors[] = 'Перевір свій день народження.';
     }
     // Gender
     if ($this->gender == '') {
-      $this->errors[] = 'Check your gender';
+      $this->errors[] = 'Перевірте свою стать.';
     }
     // Car exists
     if ($this->car == '1' && isset($this->carName) && $this->carName == '') {
-      $this->errors[] = 'You forgot the make of your car';
+      $this->errors[] = 'Ви забули марку свого автомобіля?';
     }
   }
   /**
@@ -243,7 +243,13 @@ class User extends \Core\Model {
     if ($user && $user->is_active) {
       if (password_verify($password, $user->password_hash)) {
         return $user;
+      } else {
+        $user->errors[] = 'Неправильний пароль.';
+        return $user;
       }
+    } else if ($user && !$user->is_active) {
+      $user->errors[] = 'Не активований профіль.';
+      return $user;
     }
     return false;
   }

@@ -5,7 +5,6 @@ namespace App\Controllers;
 use \Core\View;
 use \App\Auth;
 use \App\Flash;
-// use \App\Models\Route;
 
 /**
  * Profile controller
@@ -27,12 +26,8 @@ class Profile extends Authenticated {
    * @return void
    */
   public function showAction() {
-    // $driverUserRoutes = Route::driverUserRoutes($this->user->id);
-    // $passengerUserRoutes = Route::passengerUserRoutes($this->user->id);
     View::renderTemplate('Profile/show.html', [
       'user' => $this->user,
-      // 'routes' => $driverUserRoutes,
-      // 'passenger_routes' => $passengerUserRoutes
     ]);
   }
   /**
@@ -52,7 +47,7 @@ class Profile extends Authenticated {
    */
   public function updateAction() {
     if ($this->user->updateProfile($_POST)) {
-      Flash::addMessage('Changes saved.');
+      Flash::addMessage('Зміни збережено.');
       $this->redirect('/profile/show');
     } else {
       View::renderTemplate('Profile/edit.html', [
@@ -67,10 +62,10 @@ class Profile extends Authenticated {
    */
   public function deleteAction() {
     if ($this->user->deleteProfile($this->user->id)) {
-      Flash::addMessage('Profile deleted.');
+      Flash::addMessage('Профіль видалено.');
       $this->redirect('/');
     } else {
-      Flash::addMessage('Something went wrong while deleting your profile, try again later.');
+      Flash::addMessage('Під час видалення профілю щось пішло не так, повторіть спробу пізніше.');
       $this->redirect('/profile/show');
     }
   }
