@@ -6,6 +6,7 @@
 
 {% block footer %}
 <script src="/public/js/formValidation.js"></script>
+<script src="/public/js/showHidePassword.js"></script>
 {% endblock %}
 <section>
   <h1 class="text-center text-primary font-weight-light py-3">Зареєструватися</h1>
@@ -67,27 +68,30 @@
           </span>
           Пароль
         </label>
-        <input
-          id="inputPassword"
-          type="password"
-          name="password"
-          required
-          pattern="^.*(?=.{1,6})(?=.*\d)(?=.*[a-zA-Z]).*$"
-          class="form-control"
-          autocomplete="new-password"
-          title="Продовжуйте пробувати..."
-        >
-      </div>
-      <!-- Show password checkbox -->
-      <div class="form-group custom-control custom-checkbox">
-        <input
-          type="checkbox"
-          onclick="togglePasswordVis()"
-          class="custom-control-input"
-          id="signupPasswordCheckbox"
-          name="signupPasswordCheckbox"
-        />
-        <label class="custom-control-label" for="signupPasswordCheckbox">Показати пароль</label>
+        <div class="input-group" id="show_hide_password">
+          <input
+            id="inputPassword"
+            type="password"
+            name="password"
+            required
+            pattern="^.*(?=.{1,6})(?=.*\d)(?=.*[a-zA-Z]).*$"
+            class="form-control"
+            autocomplete="new-password"
+            title="Продовжуйте пробувати..."
+          >
+          <!-- Show password button -->
+          <div class="input-group-append">
+            <span class="input-group-text" id="validationTooltipRegPasswordAppend">
+              <a class="show-hide-password"
+                href=""
+                aria-label="Show hide password button"
+              >
+                <i class="fa fa-eye-slash" aria-hidden="true">
+                </i>
+              </a>
+            </span>
+          </div>
+        </div>
       </div>
       <!-- User name -->
       <div class="form-group">

@@ -5,53 +5,12 @@
 {% block main %}
 
 {% block footer %}
-<script src="/public/js/formValidation.js"></script>
-
-<script>
-  $(document).ready(function () {
-    const userId = '{{ user.id }}'
-    /**
-     * Validate the form
-     */
-    $('#formProfile').validate({
-      rules: {
-        name: {
-          required: true,
-          maxlength: 12
-        },
-        lastName: {
-          required: true,
-          maxlength: 12
-        },
-        carName: {
-          maxlength: 12
-        },
-        email: {
-          required: true,
-          email: true,
-          remote: {
-            url: '/account/validate-email',
-            data: { // to pass to the remote method
-              ignore_id: function () {
-                return userId
-              }
-            }
-          }
-        },
-        password: {
-          minlength: 6,
-          validPassword: true
-        },
-        birthDate: 'required'
-      },
-      messages: {
-        email: {
-          remote: 'E-mail вже зайнято'
-        }
-      }
-    })
-  })
+<script type="text/javascript">
+  const userId = '{{ user.id }}'
 </script>
+<script src="/public/js/formValidation.js"></script>
+<script src="/public/js/showHidePassword.js"></script>
+
 
 {% endblock %}
 <section class="container">
@@ -60,7 +19,7 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="px-0 col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+    <div class="px-0 col-12 col-md-8 col-lg-6">
       <!-- Errors if any -->
       {% if user.errors is not empty %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -76,7 +35,12 @@
       </div>
       {% endif %}
     <!-- Form -->
-      <form method="post" id="formProfile" action="/profile/update">
+      <form
+        method="post"
+        id="formProfile"
+        class="needs-validation"
+        action="/profile/update"
+      >
         <!-- Name -->
         <div class="form-group">
           <label for="inputName">Ім'я</label>
@@ -111,7 +75,6 @@
             type="email"
             name="email"
             value="{{ user.email }}"
-            required
             class="form-control"
             aria-describedby="inputEmail"
             placeholder="Enter email"
@@ -131,35 +94,37 @@
         <!-- Password -->
         <div class="form-group">
           <label for="inputPassword">Пароль</label>
-          <input
-            id="inputPassword"
-            type="password"
-            name="password"
-            class="form-control"
-            placeholder="Password"
-            autocomplete="new-password"
-            title="Мінімум 6 символів, принаймні одна літера та цифра."
-            aria-describedby="inputPassword"
-            {% if user.id == 1 %}
-              disabled
-            {% endif %}
-          >
+          <div class="input-group" id="show_hide_password">
+            <input
+              id="inputPassword"
+              type="password"
+              name="password"
+              class="form-control"
+              placeholder="Password"
+              autocomplete="new-password"
+              aria-describedby="inputPassword"
+              {% if user.id == 1 %}
+                disabled
+              {% endif %}
+            >
+            <!-- Show password button -->
+            <div class="input-group-append">
+              <span class="input-group-text" id="validationTooltipUserPasswordEdit">
+                <a class="show-hide-password"
+                  href=""
+                  aria-label="Show hide password button"
+                >
+                  <i class="fa fa-eye-slash" aria-hidden="true">
+                  </i>
+                </a>
+              </span>
+            </div>
+          </div>
           {% if user.id == 1 %}
           <small class="form-text text-muted">Будь ласка, не змінюйте демо-пароль.</small>
           {% else %}
           <small id="inputPasswordHelp" class="form-text text-muted">Залиште порожнє, щоб зберегти поточний пароль.</small>
           {% endif %}
-        </div>
-        <!-- Show password checkbox -->
-        <div class="form-group custom-control custom-checkbox">
-          <input
-            type="checkbox"
-            onclick="togglePasswordVis()"
-            class="custom-control-input"
-            id="signupPasswordCheckbox"
-            name="signupPasswordCheckbox"
-          />
-          <label class="custom-control-label" for="signupPasswordCheckbox">Показати пароль</label>
         </div>
         <!-- Birthday -->
         <div class="form-group">
@@ -174,8 +139,8 @@
         </div>
         <!-- Gender -->
         <fieldset class="form-group mb-0">
-          <legend class="col-form-label col-sm-2 pl-0">Стать</legend>
-          <div class="col-sm-10 pl-0">
+          <legend class="col-12 col-form-label pl-0">Стать</legend>
+          <div class="col-12 pl-0">
             <div class="py-1 custom-control custom-radio custom-control-inline">
               <input
                 class="custom-control-input"

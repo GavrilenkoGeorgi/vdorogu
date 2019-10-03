@@ -64,10 +64,13 @@ class Route extends \Core\Model {
     // Create departure date
     if (isset($this->createDepartureDate)) {
       $date = DateTime::createFromFormat("Y-m-d", $this->createDepartureDate);
+      $now = new DateTime();
     }
     $validDate = $date !== false && !array_sum($date::getLastErrors());
     if (!$validDate) {
       $this->errors[] = 'Перевірте дату відправлення.';
+    } else if ($date < $now){
+      $this->errors[] = 'Ви не можете планувати поїздку в минулому, перевірте дату відправлення.';
     }
   }
   /**
