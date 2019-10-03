@@ -59,7 +59,11 @@ $.validator.addMethod('validAge',
  */
 $.validator.addMethod('validDate',
   function (date, element, param) {
-    if (Date.parse(date) - Date.parse(new Date()) < 0) {
+    let days = (((Date.parse(date) - Date.parse(new Date())) / (60 * 60 * 24 * 1000)))
+    days = parseFloat(days).toFixed(2)
+    // No more than one days in the past,
+    // we still can go today
+    if (days < -1) {
       return false
     }
     return true
@@ -104,7 +108,9 @@ $(document).ready(function () {
         dateISO: 'Перевірте формат дати.'
       },
       paxCapacity: {
-        required: 'Ви їдете один?'
+        required: 'Ви їдете один?',
+        digits: 'Числа буде достатньо.',
+        range: 'Будь ласка, наразі не більше п’яти чоловік на поїздку'
       }
     },
     success: function (label, element) {
