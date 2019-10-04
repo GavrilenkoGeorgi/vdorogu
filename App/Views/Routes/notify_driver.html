@@ -1,0 +1,13 @@
+<h1 style="color: cornflowerblue;">У вас новий пасажир.</h1>
+<h2>{{ departure|localizeddate('long', 'none', locale) }}</h2>
+<p style="font-size: 1.2em;">
+  Пассажир: {{ pax_name }} {{ pax_last_name }} <a href="mailto:{{ pax_email }}">{{ pax_email }}</a>
+  <br />
+  Виїжджаєте з <strong>{{ origin }}</strong>.
+  <br />
+  Ви йдете до <strong>{{ destination }}</strong>.
+</p>
+
+<p>Подивитися список пасажирів або скасувати поїздку ви можете в
+  <a href="http://vdorogu.rf.gd/profile/show">вашому профілі</a>.
+</p>

@@ -332,7 +332,8 @@ class Route extends \Core\Model {
         departure,
         pax_capacity,
         name,
-        last_name
+        last_name,
+        email
     FROM vdorogu_db.routes
     INNER JOIN vdorogu_db.users
     ON routes.driver_id = users.id
@@ -506,17 +507,25 @@ class Route extends \Core\Model {
    * 
    * @return void
    */
-  public static function sendPassengerNotification($email, $data) {
-    // $url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
-    $url = 'Hi!';
-    // $email = '???';
-
-    // var_dump($this);
-    var_dump($data);
-    var_dump($email);
-    // echo 'sending email';
-    $text = View::getTemplate('Routes/notify_pass.txt', $data = (array) $data);
-    $html = View::getTemplate('Routes/notify_pass.html', $data = (array) $data);
+  public static function sendPassengerNotification($email, $route) {
+    $text = View::getTemplate('Routes/notify_pass.txt', $route = (array) $route);
+    $html = View::getTemplate('Routes/notify_pass.html', $route = (array) $route);
     Mailer::send($email, 'Пасажира додано', $text, $html);
+  }
+  /**
+   * Send driver notification 'Passenger added'
+   * 
+   * @param array $paxData Passenger data
+   * @param object $route Route data
+   * 
+   * @return void
+   */
+  public static function sendDriverNotification($paxData, $route) {
+    $paxData = (array) $paxData;
+    $route = (array) $route;
+    $messageData = array_merge($route, $paxData);
+    $text = View::getTemplate('Routes/notify_driver.txt', $messageData);
+    $html = View::getTemplate('Routes/notify_driver.html', $messageData);
+    Mailer::send($route['email'], 'Driver notification Водій', $text, $html);
   }
 }

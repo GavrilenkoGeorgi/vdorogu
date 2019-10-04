@@ -36,10 +36,11 @@ class Mailer {
       $mail->Password   = Config::GOOGLE_PHP_MAILER_PASS; // SMTP password
       $mail->SMTPSecure = 'tls';                          // Enable TLS encryption, `ssl` also accepted
       $mail->Port       = 587;                            // TCP port to connect to
+      $mail->CharSet = 'UTF-8';
 
       // Recipients
       // $mail->setFrom('gavrilenko.georgi@gmail.com', 'Vdorogu mailer.');
-      $mail->setFrom('mailer@vdorogu.rf.gd', 'Mailer Vdorogu.rf.gd');
+      $mail->setFrom('info@vdorogu.rf.gd', 'Info vdorogu.rf.gd');
       $mail->addAddress($to);
       $mail->addReplyTo('info@vdorogu.rf.gd', 'Information');
       // $mail->addCC('cc@example.com');
