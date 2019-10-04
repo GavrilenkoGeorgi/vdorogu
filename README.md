@@ -10,7 +10,7 @@ To create and view routes user must be logged in (demo account included).
 <br />
 Currently implemented features:
 - User registration
-- Login
+- Login (recaptcha v3)
 - Password reset
 - Account activation by email
 - User profile editor, users can change email, password, etc...

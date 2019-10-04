@@ -61,8 +61,8 @@ $.validator.addMethod('validDate',
   function (date, element, param) {
     let days = (((Date.parse(date) - Date.parse(new Date())) / (60 * 60 * 24 * 1000)))
     days = parseFloat(days).toFixed(2)
-    // No more than one days in the past,
-    // we still can go today
+    // No more than one day in to the past,
+    // but we still can go today
     if (days < -1) {
       return false
     }
