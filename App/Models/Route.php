@@ -526,6 +526,6 @@ class Route extends \Core\Model {
     $messageData = array_merge($route, $paxData);
     $text = View::getTemplate('Routes/notify_driver.txt', $messageData);
     $html = View::getTemplate('Routes/notify_driver.html', $messageData);
-    Mailer::send($route['email'], 'Driver notification Водій', $text, $html);
+    Mailer::send($route['email'], 'У вас новий пасажир', $text, $html);
   }
 }

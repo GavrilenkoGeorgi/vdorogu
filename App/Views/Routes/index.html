@@ -10,6 +10,7 @@
 {% endfor %}
 
 <section class="container-fluid">
+  {% include 'Routes/cancel_route_modal.html' %}
   <article class="row justify-content-center px-2">
     <div class="col-12">
       <h1 class="py-3 text-center text-primary font-weight-light">Розклад:</h1>
@@ -87,13 +88,16 @@
             </button>
           </form>
           {% elseif route.id in ids_to_check %}
-          <form method="post" action="/routes/removePassenger?routeId={{ route.id }}">
-            <button type="submit"
-              class="ml-1 btn btn-sm btn-outline-danger"
-            >
-              Відмінити
-            </button>
-          </form>
+          <button type="button"
+            class="ml-1 btn btn-sm btn-outline-danger"
+            data-toggle="modal"
+            data-target="#cancelRoute"
+            data-route-id="{{ route.id }}"
+            data-route-origin="{{ route.origin }}"
+            data-route-destination="{{ route.destination }}"
+          >
+            Відмінити
+          </button>
           {% endif %}
           <a tabindex="0" role="button"
             class="ml-1 btn btn-sm btn-outline-primary popover-dismiss"
