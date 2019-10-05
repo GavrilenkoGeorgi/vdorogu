@@ -54,7 +54,7 @@ class User extends \Core\Model {
                                 birth_date,
                                 gender,
                                 car";
-      if (isset($this->carName)) {
+      if (isset($this->car_name)) {
         $sql .= ', car_name)';
       } else {
         $sql .= ')';
@@ -67,7 +67,7 @@ class User extends \Core\Model {
                       :birth_date,
                       :gender,
                       :car";
-      if (isset($this->carName)) {
+      if (isset($this->car_name)) {
         $sql .= ', :car_name)';
       } else {
         $sql .= ')';
@@ -76,16 +76,16 @@ class User extends \Core\Model {
       $stmt = $db->prepare($sql);
       // echo $sql;
       $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
-      $stmt->bindValue(':last_name', $this->lastName, PDO::PARAM_STR);
+      $stmt->bindValue(':last_name', $this->last_name, PDO::PARAM_STR);
       $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
       $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
       $stmt->bindValue(':activation_hash', $hashed_token, PDO::PARAM_STR);
 
-      $stmt->bindValue(':birth_date', $this->birthDate, PDO::PARAM_STR);
+      $stmt->bindValue(':birth_date', $this->birth_date, PDO::PARAM_STR);
       $stmt->bindValue(':gender', $this->gender, PDO::PARAM_STR);
       $stmt->bindValue(':car', $this->car, PDO::PARAM_INT);
-      if (isset($this->carName)) {
-        $stmt->bindValue(':car_name', $this->carName, PDO::PARAM_STR);
+      if (isset($this->car_name)) {
+        $stmt->bindValue(':car_name', $this->car_name, PDO::PARAM_STR);
       }
 
       return $stmt->execute();
@@ -132,24 +132,40 @@ class User extends \Core\Model {
     // Name
     if ($this->name == '') {
       $this->errors[] = 'Ім\'я обов\'язково.';
+    } else if (strlen($this->name) > 50) {
+      $this->errors[] = 'Ім\'я занадто довге, не більше 50 символів.';
     }
     // Last Name
-    if ($this->lastName == '') {
+    if ($this->last_name == '') {
       $this->errors[] = 'Прізвище обов\'язкове.';
+    } else if (strlen($this->last_name) > 50) {
+      $this->errors[] = 'Прізвище занадто довге, не більше 50 символів.';
     }
     // Birth date
-    $date = DateTime::createFromFormat("Y-m-d", $this->birthDate);
+    $date = DateTime::createFromFormat("Y-m-d", $this->birth_date);
     $validDate = $date !== false && !array_sum($date::getLastErrors());
+
     if (!$validDate) {
       $this->errors[] = 'Перевір свій день народження.';
+    } else {
+      $today = date("Y-m-d");
+      $diff = date_diff(date_create($this->birth_date), date_create($today));
+      $age = $diff->format('%y');
+      if ($age < 18) {
+        $this->errors[] = 'Ви занадто молоді, вам ' . $age . ', а повинно бути більше 18-ти.';
+      } else if ($age > 100) {
+        $this->errors[] = 'Ви занадто старі, вам ' . $age;
+      }
     }
     // Gender
     if ($this->gender == '') {
       $this->errors[] = 'Перевірте свою стать.';
     }
     // Car exists
-    if ($this->car == '1' && isset($this->carName) && $this->carName == '') {
+    if ($this->car == '1' && $this->car_name == '') {
       $this->errors[] = 'Ви забули марку свого автомобіля?';
+    } else if (isset($this->car_name) && strlen($this->car_name) > 50) {
+      $this->errors[] = 'Назва авто занадто довга, не більше 50 символів.';
     }
   }
   /**
@@ -435,17 +451,17 @@ class User extends \Core\Model {
     // $data is $_POST from update action in profile controller
     // What's this?
     $this->name = $data['name'];
-    $this->lastName = $data['lastName'];
+    $this->last_name = $data['lastName'];
     if (isset($data['email'])) {
       $this->email = $data['email'];
     }
-    $this->birthDate = $data['birthDate'];
+    $this->birth_date = $data['birthDate'];
     $this->gender = $data['gender'];
     $this->car = $data['car'];
     if (isset($data['carName'])) {
-      $this->carName = $data['carName'];
+      $this->car_name = $data['carName'];
     } else {
-      $this->carName = null;
+      $this->car_name = null;
     }
 
     // Only validate and update the password if a value is provided
@@ -479,15 +495,15 @@ class User extends \Core\Model {
       $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
       // user data
       $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
-      $stmt->bindValue(':last_name', $this->lastName, PDO::PARAM_STR);
+      $stmt->bindValue(':last_name', $this->last_name, PDO::PARAM_STR);
       $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
-      $stmt->bindValue(':birth_date', $this->birthDate, PDO::PARAM_STR);
+      $stmt->bindValue(':birth_date', $this->birth_date, PDO::PARAM_STR);
       $stmt->bindValue(':gender', $this->gender, PDO::PARAM_STR);
       $stmt->bindValue(':car', $this->car, PDO::PARAM_INT);
-      if (!empty($this->carName)) {
-        $stmt->bindValue(':car_name', $this->carName, PDO::PARAM_STR);
+      if (!empty($this->car_name)) {
+        $stmt->bindValue(':car_name', $this->car_name, PDO::PARAM_STR);
       } else {
-        $stmt->bindValue(':car_name', $this->carName, PDO::PARAM_NULL);
+        $stmt->bindValue(':car_name', $this->car_name, PDO::PARAM_NULL);
       }
       // Add password if it's set
       if (isset($this->password)) {
@@ -495,7 +511,7 @@ class User extends \Core\Model {
         $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
       }
 
-      return $stmt->execute();;
+      return $stmt->execute();
     }
     return false;
   }
