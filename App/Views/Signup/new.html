@@ -125,9 +125,9 @@
         </label>
         <input
           id="inputLastName"
-          name="lastName"
+          name="last_name"
           type="text"
-          value="{{ user.lastName }}"
+          value="{{ user.last_name }}"
           required
           class="form-control"
           placeholder="Та прізвище"
@@ -198,7 +198,7 @@
             type="date"
             value="{{ user.birth_date }}"
             id="birthDate"
-            name="birthDate"
+            name="birth_date"
             required
           >
       </div>
@@ -253,11 +253,11 @@
         <input
           type="text"
           id="inputCarName"
-          name="carName"
+          name="car_name"
           class="form-control"
           {% if user.car == 1 %}
             disabled="false"
-            value="{{ user.carName }}"
+            value="{{ user.car_name }}"
           {% else %}
             disabled="disabled"
           {% endif %}

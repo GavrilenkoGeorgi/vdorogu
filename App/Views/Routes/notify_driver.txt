@@ -1,0 +1,8 @@
+У вас новий пасажир.
+{{ departure|localizeddate('long', 'none', locale) }}
+Пассажир: {{ pax_name }} {{ pax_last_name }} {{ pax_email }}
+Виїжджаєте з {{ origin }}
+Ви йдете до {{ destination }}
+
+Подивитися список пасажирів або скасувати поїздку
+ви можете в вашому профілі: http://vdorogu.rf.gd/profile/show

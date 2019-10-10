@@ -61,8 +61,8 @@ $.validator.addMethod('validDate',
   function (date, element, param) {
     let days = (((Date.parse(date) - Date.parse(new Date())) / (60 * 60 * 24 * 1000)))
     days = parseFloat(days).toFixed(2)
-    // No more than one days in the past,
-    // we still can go today
+    // No more than one day in to the past,
+    // but we still can go today
     if (days < -1) {
       return false
     }
@@ -299,6 +299,7 @@ $(document).ready(function () {
     messages: {
       email: {
         required: 'Це поле є обов\'язковим.',
+        email: 'Неправильна електронна пошта.',
         remote: 'E-mail вже зайнято.'
       },
       password: {
@@ -307,10 +308,12 @@ $(document).ready(function () {
         minlength: 'Мінімум 6 символів.'
       },
       name: {
-        required: 'Як вас звати.'
+        required: 'Як вас звати.',
+        maxlength: 'Ім\'я занадто довге, не більше 50 символів.'
       },
       lastName: {
-        required: 'Ваше прізвище.'
+        required: 'Ваше прізвище.',
+        maxlength: 'Прізвище занадто довге, не більше 50 символів.'
       },
       gender: {
         required: 'Ви повинні вирішити.'
@@ -319,7 +322,8 @@ $(document).ready(function () {
         required: 'Перевірте це?'
       },
       carName: {
-        required: 'Введіть назву виробника та модель вашого особистого транспортного засобу?'
+        required: 'Введіть назву виробника та модель вашого особистого транспортного засобу?',
+        maxlength: 'Назва авто занадто довга, не більше 50 символів.'
       },
       terms: {
         required: 'Ви згодні?'

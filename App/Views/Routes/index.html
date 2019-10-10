@@ -8,109 +8,136 @@
 {% for id in user_routes_ids %}
   {% set ids_to_check = ids_to_check|merge([id.route_id]) %}
 {% endfor %}
-
-<section class="container-fluid">
-  <article class="row justify-content-center px-2">
-    <div class="col-12">
-      <h1 class="py-3 text-center text-primary font-weight-light">Розклад:</h1>
-    </div>
-    <div class="col-12 col-xl-11">
-      <div class="row text-primary">
-        <div class="col-4 col-md-2">
-          Дата
-        </div>
-        <div class="col-4 col-md-3">
-          Звідки
-        </div>
-        <div class="col-4 col-md-3">
-          Куди
+<script src="/public/js/routeDisplay.js?v=1"></script>
+<h1 class="py-3 text-center text-primary font-weight-light">
+  Розклад:
+</h1>
+<div class="px-0 col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+  <div class="accordion" id="routesAccordion">
+    {% include 'Routes/cancel_route_modal.html' %}
+    {% for key, route in routes %}
+    <div class="card">
+      <div class="card-header
+          {% if key is even %}even-route-bkg-color {% endif %}"
+        id="heading{{ route.id }}"
+        >
+        <div class="row justify-content-between align-items-center">
+          <!-- Departure date, origin and destination -->
+          <div class="col-12 col-sm-2">
+            <i class="fa fa-clock-o text-secondary"></i>
+            <small class="text-center">
+              {{ route.departure|localizeddate('medium', 'none', locale) }}
+            </small>
+          </div>
+          <div class="col-10 col-sm-9">
+            <strong>
+              {{ route.origin }}
+            </strong>
+            <i class="px-2 fa fa-long-arrow-right text-primary"></i>
+            <span class="pr-3">
+              {{ route.destination }}
+            </span>
+          </div>
+          <!-- Expand button -->
+          <div class="col-2 col-sm-1">
+            <button
+              class="btn p-0 btn-link"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapse{{ route.id }}"
+              aria-expanded="false"
+              aria-controls="collapse{{ route.id }}"
+              >
+              <i class="text-center fa fa-chevron-down"></i>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    {% for route in routes %}
-    {% set origin = route.origin|split(' ') %}
-    {% set destination = route.destination|split(' ') %}
-    <div class="col-12 col-xl-11 py-2">
+      <!-- More route info collapsible-->
       <div
-        class="row py-2 border rounded
-        {{ current_user.id == route.driver_id ? 'border-success' }}"
+        id="collapse{{ route.id }}"
+        class="collapse"
+        aria-labelledby="heading{{ route.id }}"
+        data-parent="#routesAccordion"
+        data-route-id="{{ route.id }}"
       >
-        <!-- Departure and driver -->
-        <div class="col-4 col-sm-4 col-md-2">
-          {{ route.departure|date('d-m-Y') }}<br />
-          <small
-           class="{{ current_user.id == route.driver_id ? 'text-success' }}">
-            {{ route.name }} {{ route.last_name }}
-          </small>
-        </div>
-        <!-- Origin -->
-        <div class="overflow-hidden col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
-          {% set city = origin|slice(0,2) %}
-          {% set county = origin[3:] %}
-          {{ city|join(' ') }}
-          {{ county|join(' ')}}
-        </div>
-        <!-- Destination -->
-        <div class="overflow-hidden col-4 col-sm-4 col-md-3 align-self-center font-weight-bold text-dark">
-          {% set city = destination|slice(0,2) %}
-          {% set county = destination[3:] %}
-          {{ city|join(' ') }}
-          {{ county|join(' ')}}
-        </div>
-        <!-- Seats -->
-        <div class="col-6 col-sm-6 col-md-2 align-self-center text-right">
-          {% set freeSeats = route.pax_capacity - route.occupied %}
-          {% if freeSeats == 0 %}
-          <small class="text-muted">Місць не залишилося.</small>
-          {% else %}
-          <a href="/routes/details?routeId={{ route.id }}"
-            title="Список пасажирів!"
-          >
-          <small>
-            Вільні місця:<br />
-              <span class="text-primary font-weight-bold">
-                {{ freeSeats }}
+        <div class="pb-0 card-body">
+        <!-- Spinner -->
+          <div
+            class="spinner-wrapper d-flex justify-content-center position-absolute"
+            >
+            <div id="collapse{{ route.id }}loader"
+              class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <div class="row info-container invisible">
+            <!-- Departure date -->
+            <div class="py-3 col-12">
+              <i class="pr-2 fa fa-calendar text-primary"></i>
+              <strong class="pr-2">{{ route.departure|localizeddate('medium', 'none', locale) }}</strong>
+              <strong class="driver-name text-secondary">
+                {{ route.name }} {{ route.last_name}}
+              </strong>
+            </div>
+            <!-- Origin -->
+            <div class="col-6 d-flex align-items-center">
+              <i class="pr-3 fa fa-bus text-primary"></i>
+              {{ route.origin }}
+            </div>
+            <!-- Destination -->
+            <div class="col-6 d-flex align-items-center">
+              <i class="pr-3 fa fa-map-signs text-success"></i>
+              {{ route.destination }}
+            </div>
+            <!-- Seats info -->
+            <div class="py-3 col-6">
+              <!-- this doesn't spark joy ( -->
+              <i class="pl-1 pr-3 pax-icon fa fa-male">
+              </i>
+              <span class="pax-capacity">
               </span>
-              з {{ route.pax_capacity }}
-          </small>
-          </a>
-          {% endif %}
-        </div>
-        <!-- Buttons -->
-        <div class="col-6 col-sm-6 col-md-2 d-flex align-items-center justify-content-end">
-          {% if freeSeats > 0 and current_user.id != route.driver_id and route.id not in ids_to_check %}
-          <form method="post" action="/routes/ride?routeId={{ route.id }}">
-            <button type="submit"
-              class="btn btn-sm btn-outline-success"
-            >
-              Го
-            </button>
-          </form>
-          {% elseif route.id in ids_to_check %}
-          <form method="post" action="/routes/removePassenger?routeId={{ route.id }}">
-            <button type="submit"
-              class="ml-1 btn btn-sm btn-outline-danger"
-            >
-              Відмінити
-            </button>
-          </form>
-          {% endif %}
-          <a tabindex="0" role="button"
-            class="ml-1 btn btn-sm btn-outline-primary popover-dismiss"
-            data-toggle="popover"
-            data-trigger="focus"
-            title="{{ route.name }} до {{ destination|join(' ') }}"
-            data-content="Від'їжджає
-            {{ route.departure|localizeddate('long', 'none', locale) }}
-              від {{ route.origin }} до {{ route.destination }}
-              з {{ route.occupied }}  пасажир{{ route.occupied == 1 ? 'ом' : 'ами'}}."
-          >
-            Інфо
-          </a>
+            </div>
+            <!-- Free seats left -->
+            <div class="py-3 col-6">
+              <span class="free-seats">
+              </span>
+            </div>
+          <!-- Buttons -->
+            <div class="py-3 col-12 d-flex align-items-center justify-content-end">
+              {% if current_user.id != route.driver_id and route.id not in ids_to_check %}
+              <form class="go-form invisible" method="post" action="/routes/ride?routeId={{ route.id }}">
+                <button type="submit"
+                  class="btn btn-sm btn-outline-success"
+                >
+                  Го
+                </button>
+              </form>
+              {% elseif route.id in ids_to_check %}
+              <button type="button"
+                class="ml-1 btn btn-sm btn-outline-danger"
+                data-toggle="modal"
+                data-target="#cancelRoute"
+                data-route-id="{{ route.id }}"
+                data-route-origin="{{ route.origin }}"
+                data-route-destination="{{ route.destination }}"
+              >
+                Cкасувати
+              </button>
+              {% endif %}
+              <a role="button"
+                href="/routes/details?routeId={{ route.id }}"
+                class="ml-1 btn btn-sm btn-outline-primary"
+                title="Список пасажирів!"
+              >
+                Інфо
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     {% endfor %}
-  </article>
-</section>
+  </div>
+</div>
 {% endblock %}

@@ -35,6 +35,7 @@ $router->add('allquestions', ['controller' => 'AllQuestions', 'action' => 'index
 $router->add('questions', ['controller' => 'Questions', 'action' => 'index']);
 $router->add('answers', ['controller' => 'Answers', 'action' => 'index']);
 $router->add('routes', ['controller' => 'Routes', 'action' => 'index']);
+$router->add('debug', ['controller' => 'Debug', 'action' => 'index']);
 // route to items index page
 $router->add('logout', ['controller' => 'Login', 'action' => 'destroy']);
 // regexp to match token

@@ -8,7 +8,7 @@
 <script type="text/javascript">
   const userId = '{{ user.id }}'
 </script>
-<script src="/public/js/formValidation.js"></script>
+<script src="/public/js/formValidation.js?v=1"></script>
 <script src="/public/js/showHidePassword.js"></script>
 
 
@@ -23,8 +23,8 @@
       <!-- Errors if any -->
       {% if user.errors is not empty %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Please review your input:</strong>
-        <ul>
+        <strong>Перегляньте свої дані:</strong>
+        <ul class="pl-3 list-group">
         {% for error in user.errors %}
           <li>{{ error }}</li>
         {% endfor %}
@@ -252,6 +252,5 @@
     </div>
   </div>
 </div>
-  
 </section>
 {% endblock %}

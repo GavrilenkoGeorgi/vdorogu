@@ -26,10 +26,10 @@ class Routes extends Authenticated {
    * @return void
    */
   public function indexAction() {
-    $allRoutes = Route::getAll();
+    $routesHeaders = Route::getHeaders();
     $userRoutesIds = Route::getUserRoutesIds($this->user->id);
     View::renderTemplate('Routes/index.html', [
-      'routes' => $allRoutes,
+      'routes' => $routesHeaders,
       'user_routes_ids' => $userRoutesIds
     ]);
   }
@@ -54,7 +54,7 @@ class Routes extends Authenticated {
   public function createAction() {
     $route = new Route($_POST);
     if ($route->create()) {
-      Flash::addMessage('Route added.');
+      Flash::addMessage('Маршрут додано.');
       $this->redirect('/routes');
     } else {
       $errors = '';
@@ -185,10 +185,27 @@ class Routes extends Authenticated {
       Route::addPax($routeId, $passengerId);
       // Email stuff
       $route = Route::getById($_GET['routeId']);
+      // Send passenger notification
       Route::sendPassengerNotification($this->user->email, $route);
-      // Confirmation
+      // Send driver notification
+      $paxData = array(
+        'pax_email' => $this->user->email,
+        'pax_name' => $this->user->name,
+        'pax_last_name' => $this->user->last_name
+      );
+      Route::sendDriverNotification($paxData, $route);
       Flash::addMessage('Пасажира додано.');
     }
     $this->redirect('/routes');
+  }
+  /**
+   * Get route info by id
+   * 
+   * @return json Route data object
+   */
+  public function getRouteAction() {
+    $routeInfo = Route::getById($_GET['routeId']);
+    $array = array($routeInfo);
+    echo json_encode(array_values($array));
   }
 }
