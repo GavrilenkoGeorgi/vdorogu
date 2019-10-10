@@ -26,10 +26,10 @@ class Routes extends Authenticated {
    * @return void
    */
   public function indexAction() {
-    $allRoutes = Route::getAll();
+    $routesHeaders = Route::getHeaders();
     $userRoutesIds = Route::getUserRoutesIds($this->user->id);
     View::renderTemplate('Routes/index.html', [
-      'routes' => $allRoutes,
+      'routes' => $routesHeaders,
       'user_routes_ids' => $userRoutesIds
     ]);
   }
@@ -197,5 +197,15 @@ class Routes extends Authenticated {
       Flash::addMessage('Пасажира додано.');
     }
     $this->redirect('/routes');
+  }
+  /**
+   * Get route info by id
+   * 
+   * @return json Route data object
+   */
+  public function getRouteAction() {
+    $routeInfo = Route::getById($_GET['routeId']);
+    $array = array($routeInfo);
+    echo json_encode(array_values($array));
   }
 }

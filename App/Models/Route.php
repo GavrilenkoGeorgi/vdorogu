@@ -7,7 +7,6 @@ use DateTime;
 use \App\Auth;
 use \App\Mailer;
 use \Core\View;
-use Exception;
 
 /**
  * Route model
@@ -132,9 +131,9 @@ class Route extends \Core\Model {
     return false;
   }
   /**
-   * Get all current routes
+   * Get all current routes with pax data
    * 
-   * @return mixed All available routes
+   * @return mixed Route data
    */
   public static function getAll() {
 
@@ -151,6 +150,26 @@ class Route extends \Core\Model {
             FROM vdorogu_db.routes
             INNER JOIN vdorogu_db.users
             ON routes.driver_id = users.id';
+    $db = static::getDB();
+    $stmt = $db->prepare($sql);
+    $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+  /**
+   * Get routes headers to display
+   * 
+   * @return mixed All routes header data
+   */
+  public static function getHeaders() {
+
+    $sql = 'SELECT id,
+                    driver_id,
+                    origin,
+                    destination,
+                    departure
+            FROM routes';
     $db = static::getDB();
     $stmt = $db->prepare($sql);
     $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
@@ -333,7 +352,8 @@ class Route extends \Core\Model {
         pax_capacity,
         name,
         last_name,
-        email
+        email,
+        (SELECT COUNT(route_id) FROM vdorogu_db.pax_list WHERE route_id = routes.id) AS occupied
     FROM vdorogu_db.routes
     INNER JOIN vdorogu_db.users
     ON routes.driver_id = users.id

@@ -65,3 +65,13 @@ a.show-hide-password, a.show-hide-password:hover{
     column-count: 2;
     }
 }
+
+.even-route-bkg-color {
+  background-color: #fff;
+}
+
+.spinner-wrapper {
+  top: 60%;
+  left: 50%;
+  transform: translate(-60%, -50%);
+}
