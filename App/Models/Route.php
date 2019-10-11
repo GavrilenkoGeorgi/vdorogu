@@ -68,8 +68,11 @@ class Route extends \Core\Model {
     $validDate = $date !== false && !array_sum($date::getLastErrors());
     if (!$validDate) {
       $this->errors[] = 'Перевірте дату відправлення.';
-    } else if ($date < $now){
-      $this->errors[] = 'Ви не можете планувати поїздку в минулому, перевірте дату відправлення.';
+    } else {
+      $difference = $date->format("Y-m-d") <=> $now->format("Y-m-d");
+      if ($difference == -1) {
+        $this->errors[] = 'Ви не можете планувати поїздку в минулому, перевірте дату відправлення.';
+      }
     }
   }
   /**
